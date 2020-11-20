@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Login from '../components/Login.vue'
 import Home from '../components/Home.vue'
 import Users from '../components/user/Users.vue'
+import Add from '../components/manage/Add.vue'
 
 Vue.use(VueRouter)
 
@@ -22,6 +23,9 @@ const routes = [
     children: [{
       path: '/users',
       component: Users
+    }, {
+      path: '/add',
+      component: Add
     }]
   }
 ]
