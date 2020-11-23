@@ -13,7 +13,9 @@ import {
   Menu,
   Icon,
   List,
-  Avatar
+  Avatar,
+  Progress,
+  Table
 } from 'ant-design-vue'
 Vue.use(Button)
 Vue.use(Layout)
@@ -24,6 +26,8 @@ Vue.use(Menu)
 Vue.use(Icon)
 Vue.use(List)
 Vue.use(Avatar)
+Vue.use(Progress)
+Vue.use(Table)
 Vue.prototype.$message = message
 Vue.config.productionTip = false
 

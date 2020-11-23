@@ -29,81 +29,89 @@
       </a-layout-header>
       <a-layout-content>
         <a-layout class="gpt-content">
-          <a-layout-sider class="gpt-content-left">
-            <div class="gpt-menu-title">
-              菜单
-            </div>
-            <a-menu theme="light" :default-selected-keys="['1']" mode="inline" class="gpt-menu-list" @click="gptClickMenu">
-              <a-menu-item key="users">
-                <a-icon type="user" /><span>个人中心</span>
-              </a-menu-item>
-              <a-sub-menu key="sub1">
-                <span slot="title">
-                  <a-icon type="file-done" /><span>文章管理</span>
-                </span>
-                <a-menu-item key="add">
-                  文章生成
-                </a-menu-item>
-                <a-menu-item key="3">
-                  文章队列
-                </a-menu-item>
-                <a-menu-item key="4">
-                  文章处理
-                </a-menu-item>
-              </a-sub-menu>
-              <a-sub-menu key="sub2">
-                <span slot="title">
-                  <a-icon type="file-protect" /><span>文章模型</span>
-                </span>
-                <a-menu-item key="5">
-                  文章模型1
-                </a-menu-item>
-                <a-menu-item key="6">
-                  文章模型2
-                </a-menu-item>
-                <a-menu-item key="7">
-                  文章模型3
-                </a-menu-item>
-              </a-sub-menu>
-              <a-sub-menu key="sub3">
-                <span slot="title">
-                  <a-icon type="api" /><span>API接口</span>
-                </span>
-                <a-menu-item key="8">
-                  API接口1
-                </a-menu-item>
-                <a-menu-item key="9">
-                  API接口2
-                </a-menu-item>
-              </a-sub-menu>
-              <a-sub-menu key="sub4">
-                <span slot="title">
-                  <a-icon type="appstore" /><span>其他</span>
-                </span>
-                <a-menu-item key="10">
-                  其他1
-                </a-menu-item>
-                <a-menu-item key="11">
-                  其他2
-                </a-menu-item>
-              </a-sub-menu>
-            </a-menu>
-          </a-layout-sider>
-          <a-layout-content class="gpt-branch">
-            <router-view/>
-          </a-layout-content>
-          <a-layout-sider width="400" class="gpt-content-right">
-            <h3><a-icon type="question-circle" /> 媒体学院</h3>
-            <a-list item-layout="horizontal" :data-source="articleTitle" :split="false">
-              <a-list-item slot="renderItem" slot-scope="item">
-                <a-list-item-meta
-                  description="Ant Design, a design language"
-                >
-                  <a slot="title" href="javascript:;">{{ item.title }}</a>
-                </a-list-item-meta>
-              </a-list-item>
-            </a-list>
-          </a-layout-sider>
+          <a-row class="gpt-content-box" type="flex" justify="center" align="top" :gutter="15">
+            <a-col :span="3">
+              <a-layout-sider class="gpt-content-left" width="100%">
+                <div class="gpt-menu-title">
+                  菜单
+                </div>
+                <a-menu theme="light" :default-selected-keys="['1']" mode="inline" class="gpt-menu-list" @click="gptClickMenu">
+                  <a-menu-item key="users">
+                    <a-icon type="user" /><span>个人中心</span>
+                  </a-menu-item>
+                  <a-sub-menu key="sub1">
+                    <span slot="title">
+                      <a-icon type="file-done" /><span>文章管理</span>
+                    </span>
+                    <a-menu-item key="add">
+                      文章生成
+                    </a-menu-item>
+                    <a-menu-item key="3">
+                      文章队列
+                    </a-menu-item>
+                    <a-menu-item key="4">
+                      文章处理
+                    </a-menu-item>
+                  </a-sub-menu>
+                  <a-sub-menu key="sub2">
+                    <span slot="title">
+                      <a-icon type="file-protect" /><span>文章模型</span>
+                    </span>
+                    <a-menu-item key="5">
+                      文章模型1
+                    </a-menu-item>
+                    <a-menu-item key="6">
+                      文章模型2
+                    </a-menu-item>
+                    <a-menu-item key="7">
+                      文章模型3
+                    </a-menu-item>
+                  </a-sub-menu>
+                  <a-sub-menu key="sub3">
+                    <span slot="title">
+                      <a-icon type="api" /><span>API接口</span>
+                    </span>
+                    <a-menu-item key="8">
+                      API接口1
+                    </a-menu-item>
+                    <a-menu-item key="9">
+                      API接口2
+                    </a-menu-item>
+                  </a-sub-menu>
+                  <a-sub-menu key="sub4">
+                    <span slot="title">
+                      <a-icon type="appstore" /><span>其他</span>
+                    </span>
+                    <a-menu-item key="10">
+                      其他1
+                    </a-menu-item>
+                    <a-menu-item key="11">
+                      其他2
+                    </a-menu-item>
+                  </a-sub-menu>
+                </a-menu>
+              </a-layout-sider>
+            </a-col>
+            <a-col :span="14">
+              <a-layout-content class="gpt-branch">
+                <router-view/>
+              </a-layout-content>
+            </a-col>
+            <a-col :span="6">
+              <a-layout-sider class="gpt-content-right" width="100%">
+                <h3><a-icon type="question-circle" /> 媒体学院</h3>
+                <a-list item-layout="horizontal" :data-source="articleTitle" :split="false">
+                  <a-list-item slot="renderItem" slot-scope="item">
+                    <a-list-item-meta
+                      description="Ant Design, a design language"
+                    >
+                      <a slot="title" href="javascript:;">{{ item.title }}</a>
+                    </a-list-item-meta>
+                  </a-list-item>
+                </a-list>
+              </a-layout-sider>
+            </a-col>
+          </a-row>
         </a-layout>
       </a-layout-content>
       <!-- <a-layout-footer>
@@ -198,8 +206,8 @@ export default {
   margin: 0 auto;
 }
 .gpt-branch {
-  margin: 0 17px;
-  border: 1px solid red;
+  // margin: 0 17px;
+  // border: 1px solid red;
 }
 .gpt-content-right {
   padding: 20px 40px;
@@ -219,5 +227,8 @@ export default {
 }
 .gpt-content-left {
   border-radius: 20px;
+}
+.gpt-content-box {
+  width: 100%;
 }
 </style>
