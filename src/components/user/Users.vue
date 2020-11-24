@@ -18,12 +18,12 @@
         </a-row>
       </a-col>
       <a-col :span="9">
-        <a-row class="gpt-header-right">
+        <a-row class="gpt-header-right" :gutter="[0, 15]">
           <a-col>
             <a-progress type="circle" :percent="75" :width="184" :strokeWidth="10" strokeColor="#FFB41D">
               <template #format="percent">
-                <span style="color: red">{{ percent }}</span>
-                <p>当前积分</p>
+                <span style="color: #FF4747;font-weight: bold;font-size: 24px;">{{ percent }}</span>
+                <p style="margin-top: 25px;font-size: 16px;">当前积分</p>
               </template>
             </a-progress>
           </a-col>
@@ -38,7 +38,7 @@
     <a-row class="gpt-content" :gutter="18">
       <a-col :span="6">
         <div class="gpt-content-item">
-          <a-row>
+          <a-row :gutter="[0, 11]" style="padding: 20px 0;">
             <a-col><a-icon type="database" :style="{ fontSize: '20px', color: '#025AFA' }" /></a-col>
             <a-col class="gpt-content-points">我的积分</a-col>
             <a-col class="gpt-content-num">13800</a-col>
@@ -52,7 +52,7 @@
       </a-col>
       <a-col :span="6">
         <div class="gpt-content-item">
-          <a-row>
+          <a-row :gutter="[0, 11]" style="padding: 20px 0;">
             <a-col><a-icon type="database" :style="{ fontSize: '20px', color: '#025AFA' }" /></a-col>
             <a-col class="gpt-content-points">我的模型</a-col>
             <a-col class="gpt-content-num">20</a-col>
@@ -66,7 +66,7 @@
       </a-col>
       <a-col :span="6">
         <div class="gpt-content-item">
-          <a-row>
+          <a-row :gutter="[0, 11]" style="padding: 20px 0;">
             <a-col><a-icon type="database" :style="{ fontSize: '20px', color: '#025AFA' }" /></a-col>
             <a-col class="gpt-content-points">API次数</a-col>
             <a-col class="gpt-content-num">100</a-col>
@@ -80,7 +80,7 @@
       </a-col>
       <a-col :span="6">
         <div class="gpt-content-item">
-          <a-row>
+          <a-row :gutter="[0, 11]" style="padding: 20px 0;">
             <a-col><a-icon type="database" :style="{ fontSize: '20px', color: '#025AFA' }" /></a-col>
             <a-col class="gpt-content-points">生成数量</a-col>
             <a-col class="gpt-content-num">0</a-col>
@@ -95,7 +95,10 @@
     </a-row>
     <a-row class="gpt-footer">
       <a-col :span="24">
-        <a-table :columns="columns" :data-source="data" bordered>
+        <h3>最近文章列表</h3>
+      </a-col>
+      <a-col :span="24">
+        <a-table :columns="columns" :data-source="data" bordered :pagination="false">
           <template slot="name" slot-scope="text">
             <a>{{ text }}</a>
           </template>
@@ -165,11 +168,15 @@ export default {
     background-color: #fff;
     border-radius: 20px;
     line-height: normal;
-    .gpt-content-points{
+    .gpt-content-points {
       color: #040404;
+      font-size: 16px;
     }
     .gpt-content-num {
       color: #FF4747;
+      margin: 17px 0 29px 0;
+      font-weight: bold;
+      font-size: 24px;
     }
   }
 }
@@ -183,5 +190,14 @@ export default {
 }
 .gpt-name {
   color: #040404;
+}
+.gpt-footer {
+  line-height: normal;
+  padding: 30px 40px;
+  h3 {
+    font-weight: bold;
+    font-size: 20px;
+    text-align: left;
+  }
 }
 </style>

@@ -30,32 +30,32 @@
       <a-layout-content>
         <a-layout class="gpt-content">
           <a-row class="gpt-content-box" type="flex" justify="center" align="top" :gutter="15">
-            <a-col :span="3">
-              <a-layout-sider class="gpt-content-left" width="100%">
+            <a-col :span="3" style="height: 100%;">
+              <a-layout-sider class="gpt-content-left" width="100%" style="height: 100%;">
                 <div class="gpt-menu-title">
                   菜单
                 </div>
                 <a-menu theme="light" :default-selected-keys="['1']" mode="inline" class="gpt-menu-list" @click="gptClickMenu">
                   <a-menu-item key="users">
-                    <a-icon type="user" /><span>个人中心</span>
+                    <a-icon type="user" :style="{ fontSize: '16px', color: '#0039FD' }" /><span>个人中心</span>
                   </a-menu-item>
                   <a-sub-menu key="sub1">
                     <span slot="title">
-                      <a-icon type="file-done" /><span>文章管理</span>
+                      <a-icon type="file-done" :style="{ fontSize: '16px', color: '#0039FD' }" /><span>文章管理</span>
                     </span>
                     <a-menu-item key="add">
                       文章生成
                     </a-menu-item>
-                    <a-menu-item key="3">
+                    <a-menu-item key="list">
                       文章队列
                     </a-menu-item>
-                    <a-menu-item key="4">
+                    <a-menu-item key="deal">
                       文章处理
                     </a-menu-item>
                   </a-sub-menu>
                   <a-sub-menu key="sub2">
                     <span slot="title">
-                      <a-icon type="file-protect" /><span>文章模型</span>
+                      <a-icon type="file-protect" :style="{ fontSize: '16px', color: '#0039FD' }" /><span>文章模型</span>
                     </span>
                     <a-menu-item key="5">
                       文章模型1
@@ -69,7 +69,7 @@
                   </a-sub-menu>
                   <a-sub-menu key="sub3">
                     <span slot="title">
-                      <a-icon type="api" /><span>API接口</span>
+                      <a-icon type="api" :style="{ fontSize: '16px', color: '#0039FD' }" /><span>API接口</span>
                     </span>
                     <a-menu-item key="8">
                       API接口1
@@ -80,7 +80,7 @@
                   </a-sub-menu>
                   <a-sub-menu key="sub4">
                     <span slot="title">
-                      <a-icon type="appstore" /><span>其他</span>
+                      <a-icon type="appstore" :style="{ fontSize: '16px', color: '#0039FD' }" /><span>其他</span>
                     </span>
                     <a-menu-item key="10">
                       其他1
@@ -99,11 +99,11 @@
             </a-col>
             <a-col :span="6">
               <a-layout-sider class="gpt-content-right" width="100%">
-                <h3><a-icon type="question-circle" /> 媒体学院</h3>
+                <h3><a-icon type="question-circle" :style="{ fontSize: '28px', color: '#0039FD' }" /> 媒体学院</h3>
                 <a-list item-layout="horizontal" :data-source="articleTitle" :split="false">
                   <a-list-item slot="renderItem" slot-scope="item">
                     <a-list-item-meta
-                      description="Ant Design, a design language"
+                      description="2020-10-20 17:00"
                     >
                       <a slot="title" href="javascript:;">{{ item.title }}</a>
                     </a-list-item-meta>
@@ -153,7 +153,9 @@ export default {
   },
   methods: {
     gptClickMenu (item) {
-      this.$router.push(`/${item.key}`)
+      if (this.$route.path !== `/${item.key}`) {
+        this.$router.push(`/${item.key}`)
+      }
     }
   }
 }
@@ -219,6 +221,7 @@ export default {
 }
 .gpt-menu-list {
   text-align: left;
+  border: 0;
 }
 .gpt-menu-title {
   background-color: #0039FD;
@@ -227,6 +230,16 @@ export default {
 }
 .gpt-content-left {
   border-radius: 20px;
+  .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+    background-color: rgba(0 ,57 ,253 , .12);
+    color: #fff;
+  }
+  .ant-menu-inline .ant-menu-item::after {
+    border: 0;
+  }
+  .gpt-menu-list>li {
+    margin: 0;
+  }
 }
 .gpt-content-box {
   width: 100%;
