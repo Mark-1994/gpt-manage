@@ -110,6 +110,9 @@
 
 <script>
 export default {
+  created () {
+    this.getUserInfo()
+  },
   data () {
     return {
       columns: [
@@ -151,7 +154,11 @@ export default {
     }
   },
   methods: {
-
+    // 获取用户信息
+    async getUserInfo () {
+      const { data: res } = await this.$http.get('pg/index')
+      if (res.status !== 0) return this.$message.error(res.reason)
+    }
   }
 }
 </script>

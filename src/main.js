@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import axios from 'axios'
 
 import {
   Button,
@@ -22,7 +23,8 @@ import {
   InputNumber,
   Radio,
   Input,
-  Tooltip
+  Tooltip,
+  Checkbox
 } from 'ant-design-vue'
 Vue.use(Button)
 Vue.use(Layout)
@@ -42,6 +44,16 @@ Vue.use(InputNumber)
 Vue.use(Radio)
 Vue.use(Input)
 Vue.use(Tooltip)
+Vue.use(Checkbox)
+
+axios.defaults.baseURL = 'http://47.114.85.4:5001/'
+axios.defaults.withCredentials = true
+// axios.interceptors.request.use(config => {
+//   config.headers.Authorization = window.sessionStorage.getItem('token')
+//   return config
+// })
+Vue.prototype.$http = axios
+
 Vue.prototype.$message = message
 Vue.config.productionTip = false
 
