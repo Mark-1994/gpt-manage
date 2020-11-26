@@ -46,8 +46,9 @@ Vue.use(Input)
 Vue.use(Tooltip)
 Vue.use(Checkbox)
 
-axios.defaults.baseURL = 'http://47.114.85.4:5001/'
+axios.defaults.baseURL = 'http://api.91nlp.cn/'
 axios.defaults.withCredentials = true
+// axios.defaults.headers = { 'Content-Type': 'multipart/form-data' }
 // axios.interceptors.request.use(config => {
 //   config.headers.Authorization = window.sessionStorage.getItem('token')
 //   return config

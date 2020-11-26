@@ -2,9 +2,12 @@
   <div class="list_container">
     <h3>文章队列</h3>
 
-    <a-table :columns="columns" :data-source="data" bordered>
-      <template slot="name" slot-scope="text">
-        <a>{{ text }}</a>
+    <a-table :columns="columns" :data-source="allTask" bordered>
+      <template slot="keywords">
+        <a href="javascript:;">查看</a>
+      </template>
+      <template slot="deal">
+        <a href="javascript:;">操作</a>
       </template>
     </a-table>
 
@@ -18,6 +21,9 @@
 
 <script>
 export default {
+  created () {
+    this.getAllTask(10, 1)
+  },
   data () {
     return {
       columns: [
@@ -27,72 +33,75 @@ export default {
         },
         {
           title: '项目名称',
-          dataIndex: 'name'
+          dataIndex: 'gn'
         },
         {
           title: '字数',
-          dataIndex: 'words'
+          dataIndex: 'wn'
         },
         {
           title: '文章数量',
-          dataIndex: 'articles'
+          dataIndex: 'post_num'
         },
         {
           title: '关键词',
-          dataIndex: 'keywords'
+          scopedSlots: { customRender: 'keywords' }
         },
         {
-          title: '文章类型',
-          dataIndex: 'type'
+          title: '文章开头',
+          dataIndex: 'prefix'
+        },
+        {
+          title: '模型名',
+          dataIndex: 'model_name'
         },
         {
           title: '创建时间',
-          dataIndex: 'time'
+          dataIndex: 'create_at'
         },
         {
           title: '状态',
-          dataIndex: 'status'
+          dataIndex: 'state'
         },
         {
           title: '文章处理',
-          dataIndex: 'deal'
+          scopedSlots: { customRender: 'deal' }
         }
       ],
-      data: [
-        {
-          key: '1',
-          name: '测试1',
-          words: '500',
-          articles: '232',
-          keywords: '查看',
-          type: '足球',
-          time: '2011/01/01 14:00',
-          status: '生成中',
-          deal: '操作'
-        },
-        {
-          key: '2',
-          name: '测试2',
-          words: '1000',
-          articles: '1001',
-          keywords: '查看',
-          type: '小说',
-          time: '2011/01/01 14:00',
-          status: '生成中',
-          deal: '操作'
-        },
-        {
-          key: '3',
-          name: '测试3',
-          words: '1000',
-          articles: '1002',
-          keywords: '查看',
-          type: '小说',
-          time: '2011/01/01 14:00',
-          status: '生成中',
-          deal: '操作'
-        }
-      ]
+      // 所有任务进度
+      allTask: []
+    }
+  },
+  methods: {
+    // 获取所有任务进度
+    async getAllTask (rn, pn) {
+      const { data: res } = await this.$http.get(`pg/task_ls?rn=${rn}&pn=${pn}`)
+      if (res.status !== 0) return this.$message.error(res.reason)
+      // res.list = [
+      //   {
+      //     gn: 'string',
+      //     wn: 'number',
+      //     post_num: 'number',
+      //     prefix: 'string',
+      //     model_name: 'string',
+      //     create_at: 'number',
+      //     state: 1
+      //   }, {
+      //     gn: 'string',
+      //     wn: 'number',
+      //     post_num: 'number',
+      //     prefix: 'string',
+      //     model_name: 'string',
+      //     create_at: 'number',
+      //     state: 2
+      //   }
+      // ]
+      let i = 1
+      res.list = res.list.map(v => {
+        v.state = v.state === 1 ? '生产中' : '完成'
+        return { ...v, key: i++ }
+      })
+      this.allTask = res.list
     }
   }
 }

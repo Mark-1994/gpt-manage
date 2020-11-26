@@ -4,12 +4,15 @@
       <a-col :span="6">
         <a-row class="gpt-header-left" :gutter="[0, 15]">
           <a-col>
-            <img src="../../assets/gpt-member.png" alt="" />
+            <img v-if="!indexInfo.member" src="../../assets/gpt-member.png" alt="" />
+            <img v-else-if="indexInfo.member === 1" src="../../assets/gpt-member.png" alt="" />
+            <img v-else-if="indexInfo.member === 2" src="../../assets/gpt-member.png" alt="" />
+            <img v-else-if="indexInfo.member === 3" src="../../assets/gpt-member.png" alt="" />
           </a-col>
           <a-col>
             <a-avatar :size="128" :src="require('../../assets/gpt-head.png')" />
           </a-col>
-          <a-col class="gpt-name">我的昵称</a-col>
+          <a-col class="gpt-name">{{indexInfo.nick_name}}</a-col>
           <a-col>
             <a-button type="primary" shape="round" size="large">
               充值会员
@@ -20,7 +23,7 @@
       <a-col :span="9">
         <a-row class="gpt-header-right" :gutter="[0, 15]">
           <a-col>
-            <a-progress type="circle" :percent="75" :width="184" :strokeWidth="10" strokeColor="#FFB41D">
+            <a-progress type="circle" :percent="indexInfo.qd_coin" :width="184" :strokeWidth="10" strokeColor="#FFB41D">
               <template #format="percent">
                 <span style="color: #FF4747;font-weight: bold;font-size: 24px;">{{ percent }}</span>
                 <p style="margin-top: 25px;font-size: 16px;">当前积分</p>
@@ -41,7 +44,7 @@
           <a-row :gutter="[0, 11]" style="padding: 20px 0;">
             <a-col><a-icon type="database" :style="{ fontSize: '20px', color: '#025AFA' }" /></a-col>
             <a-col class="gpt-content-points">我的积分</a-col>
-            <a-col class="gpt-content-num">13800</a-col>
+            <a-col class="gpt-content-num">{{indexInfo.balance}}</a-col>
             <a-col>
               <a-button type="primary" shape="round" size="large">
                 开始生成文章
@@ -55,7 +58,7 @@
           <a-row :gutter="[0, 11]" style="padding: 20px 0;">
             <a-col><a-icon type="database" :style="{ fontSize: '20px', color: '#025AFA' }" /></a-col>
             <a-col class="gpt-content-points">我的模型</a-col>
-            <a-col class="gpt-content-num">20</a-col>
+            <a-col class="gpt-content-num">{{indexInfo.pri_model_num}}</a-col>
             <a-col>
               <a-button type="primary" shape="round" size="large">
                 创建文章模型
@@ -69,7 +72,7 @@
           <a-row :gutter="[0, 11]" style="padding: 20px 0;">
             <a-col><a-icon type="database" :style="{ fontSize: '20px', color: '#025AFA' }" /></a-col>
             <a-col class="gpt-content-points">API次数</a-col>
-            <a-col class="gpt-content-num">100</a-col>
+            <a-col class="gpt-content-num">{{indexInfo.api_use_times}}</a-col>
             <a-col>
               <a-button type="primary" shape="round" size="large">
                 设置API参数
@@ -83,7 +86,7 @@
           <a-row :gutter="[0, 11]" style="padding: 20px 0;">
             <a-col><a-icon type="database" :style="{ fontSize: '20px', color: '#025AFA' }" /></a-col>
             <a-col class="gpt-content-points">生成数量</a-col>
-            <a-col class="gpt-content-num">0</a-col>
+            <a-col class="gpt-content-num">{{indexInfo.post_num}}</a-col>
             <a-col>
               <a-button type="primary" shape="round" size="large">
                 查看队列
@@ -98,11 +101,7 @@
         <h3>最近文章列表</h3>
       </a-col>
       <a-col :span="24">
-        <a-table :columns="columns" :data-source="data" bordered :pagination="false">
-          <template slot="name" slot-scope="text">
-            <a>{{ text }}</a>
-          </template>
-        </a-table>
+        <a-table :columns="columns" :data-source="indexInfo.last_post" bordered :pagination="false" />
       </a-col>
     </a-row>
   </div>
@@ -117,40 +116,20 @@ export default {
     return {
       columns: [
         {
-          title: 'Name',
-          dataIndex: 'name',
-          scopedSlots: { customRender: 'name' }
+          title: '模型名',
+          dataIndex: 'model_name'
         },
         {
-          title: 'Cash Assets',
-          className: 'column-money',
-          dataIndex: 'money'
+          title: '文章内容',
+          dataIndex: 'txt'
         },
         {
-          title: 'Address',
-          dataIndex: 'address'
+          title: '生成成功时间',
+          dataIndex: 'done_at'
         }
       ],
-      data: [
-        {
-          key: '1',
-          name: 'John Brown',
-          money: '￥300,000.00',
-          address: 'New York No. 1 Lake Park'
-        },
-        {
-          key: '2',
-          name: 'Jim Green',
-          money: '￥1,256,000.00',
-          address: 'London No. 1 Lake Park'
-        },
-        {
-          key: '3',
-          name: 'Joe Black',
-          money: '￥120,000.00',
-          address: 'Sidney No. 1 Lake Park'
-        }
-      ]
+      // 首页信息
+      indexInfo: {}
     }
   },
   methods: {
@@ -158,6 +137,26 @@ export default {
     async getUserInfo () {
       const { data: res } = await this.$http.get('pg/index')
       if (res.status !== 0) return this.$message.error(res.reason)
+      this.indexInfo = res
+      // this.indexInfo.last_post = [
+      //   {
+      //     done_at: 'number',
+      //     txt: 'string',
+      //     model_name: 'string'
+      //   }, {
+      //     done_at: 'number',
+      //     txt: 'string',
+      //     model_name: 'string'
+      //   }, {
+      //     done_at: 'number',
+      //     txt: 'string',
+      //     model_name: 'string'
+      //   }
+      // ]
+      let i = 0
+      this.indexInfo.last_post = this.indexInfo.last_post.map(v => {
+        return { ...v, key: i++ }
+      })
     }
   }
 }
