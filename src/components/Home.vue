@@ -49,7 +49,7 @@
                     <a-menu-item key="list">
                       文章队列
                     </a-menu-item>
-                    <a-menu-item key="deal">
+                    <a-menu-item key="deal" class="articleDeal">
                       文章处理
                     </a-menu-item>
                   </a-sub-menu>

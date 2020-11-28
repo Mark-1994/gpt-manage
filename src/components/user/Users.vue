@@ -4,10 +4,10 @@
       <a-col :span="6">
         <a-row class="gpt-header-left" :gutter="[0, 15]">
           <a-col>
-            <img v-if="!indexInfo.member" src="../../assets/gpt-member.png" alt="" />
-            <img v-else-if="indexInfo.member === 1" src="../../assets/gpt-member.png" alt="" />
-            <img v-else-if="indexInfo.member === 2" src="../../assets/gpt-member.png" alt="" />
-            <img v-else-if="indexInfo.member === 3" src="../../assets/gpt-member.png" alt="" />
+            <img v-if="!indexInfo.member" src="../../assets/gpt-member00.png" alt="" />
+            <img v-else-if="indexInfo.member === 1" src="../../assets/gpt-member01.png" alt="" />
+            <img v-else-if="indexInfo.member === 2" src="../../assets/gpt-member02.png" alt="" />
+            <img v-else-if="indexInfo.member === 3" src="../../assets/gpt-member03.png" alt="" />
           </a-col>
           <a-col>
             <a-avatar :size="128" :src="require('../../assets/gpt-head.png')" />
@@ -26,7 +26,7 @@
             <a-progress type="circle" :percent="indexInfo.qd_coin" :width="184" :strokeWidth="10" strokeColor="#FFB41D">
               <template #format="percent">
                 <span style="color: #FF4747;font-weight: bold;font-size: 24px;">{{ percent }}</span>
-                <p style="margin-top: 25px;font-size: 16px;">当前积分</p>
+                <p style="margin-top: 25px;font-size: 16px;">今日签到可领积分</p>
               </template>
             </a-progress>
           </a-col>
@@ -101,7 +101,11 @@
         <h3>最近文章列表</h3>
       </a-col>
       <a-col :span="24">
-        <a-table :columns="columns" :data-source="indexInfo.last_post" bordered :pagination="false" />
+        <a-table :columns="columns" :data-source="indexInfo.last_post" bordered :pagination="false">
+          <template slot="done_at" slot-scope="text">
+            {{ text | dateFormat }}
+          </template>
+        </a-table>
       </a-col>
     </a-row>
   </div>
@@ -121,11 +125,13 @@ export default {
         },
         {
           title: '文章内容',
-          dataIndex: 'txt'
+          dataIndex: 'txt',
+          ellipsis: true
         },
         {
           title: '生成成功时间',
-          dataIndex: 'done_at'
+          dataIndex: 'done_at',
+          scopedSlots: { customRender: 'done_at' }
         }
       ],
       // 首页信息

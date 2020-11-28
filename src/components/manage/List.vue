@@ -6,8 +6,14 @@
       <template slot="keywords">
         <a href="javascript:;">查看</a>
       </template>
+      <template slot="create_at" slot-scope="text">
+        {{ text | dateFormat }}
+      </template>
       <template slot="deal">
-        <a href="javascript:;">操作</a>
+        <!-- <router-link to="/deal">
+          操作
+        </router-link> -->
+        <a href="javascript:;" @click="handle()">操作</a>
       </template>
     </a-table>
 
@@ -28,11 +34,11 @@ export default {
     return {
       columns: [
         {
-          title: '序号',
+          title: 'id',
           dataIndex: 'key'
         },
         {
-          title: '项目名称',
+          title: '名称',
           dataIndex: 'gn'
         },
         {
@@ -40,7 +46,7 @@ export default {
           dataIndex: 'wn'
         },
         {
-          title: '文章数量',
+          title: '数量',
           dataIndex: 'post_num'
         },
         {
@@ -48,7 +54,7 @@ export default {
           scopedSlots: { customRender: 'keywords' }
         },
         {
-          title: '文章开头',
+          title: '开头',
           dataIndex: 'prefix'
         },
         {
@@ -57,14 +63,15 @@ export default {
         },
         {
           title: '创建时间',
-          dataIndex: 'create_at'
+          dataIndex: 'create_at',
+          scopedSlots: { customRender: 'create_at' }
         },
         {
           title: '状态',
           dataIndex: 'state'
         },
         {
-          title: '文章处理',
+          title: '处理',
           scopedSlots: { customRender: 'deal' }
         }
       ],
@@ -102,6 +109,9 @@ export default {
         return { ...v, key: i++ }
       })
       this.allTask = res.list
+    },
+    handle () {
+      document.querySelector('.articleDeal').click()
     }
   }
 }
