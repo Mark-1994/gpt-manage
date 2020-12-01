@@ -21,7 +21,7 @@
               'userName',
               { rules: [{ required: true, message: 'Please input your username!' }] },
             ]"
-            placeholder="Username"
+            placeholder="手机号"
           >
             <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)" />
           </a-input>
@@ -33,7 +33,7 @@
               { rules: [{ required: true, message: 'Please input your Password!' }] },
             ]"
             type="password"
-            placeholder="Password"
+            placeholder="密码"
           >
             <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
           </a-input>
@@ -48,17 +48,17 @@
               },
             ]"
           >
-            Remember me
+            记住密码
           </a-checkbox>
           <a class="login-form-forgot" href="javascript:;">
-            Forgot password
+            忘记密码
           </a>
           <a-button type="primary" html-type="submit" class="login-form-button">
             登录
           </a-button>
           Or
           <a href="javascript:;" @click="showRegister">
-            register now!
+            注册!
           </a>
         </a-form-item>
       </a-form>
@@ -77,7 +77,8 @@
               'registerUserName',
               { rules: [{ required: true, message: 'Please input your username!' }] },
             ]"
-            placeholder="Username"
+            placeholder="手机号"
+            ref="mb"
           >
             <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)" />
           </a-input>
@@ -86,15 +87,15 @@
           <a-input
             v-decorator="[
               'registerPassword',
-              { rules: [{ required: true, message: 'Please input your Password!' }] },
+              { rules: [{ required: true, message: 'Please input your Password!' }, { min: 6, max: 18, message: '密码长度 6 - 18 位' }] },
             ]"
             type="password"
-            placeholder="Password"
+            placeholder="密码"
           >
             <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
           </a-input>
         </a-form-item>
-        <a-form-item style="margin-bottom: 10px;">
+        <a-form-item style="margin-bottom: 10px;" v-if="false">
           <a-input
             v-decorator="[
               'phone',
@@ -103,7 +104,7 @@
               },
             ]"
             style="width: 100%"
-            placeholder="Phone Number"
+            placeholder="手机号"
             ref="mb"
           >
             <a-select
@@ -128,12 +129,13 @@
                   'captcha',
                   { rules: [{ required: true, message: 'Please input the captcha you got!' }] },
                 ]"
-                placeholder="captcha"
+                placeholder="验证码"
               >
               </a-input>
             </a-col>
             <a-col :span="9">
-              <a-button @click="getCaptcha">Get captcha</a-button>
+              <a-button v-if="showCountDown" @click="getCaptcha">获取验证码</a-button>
+              <a-button v-else disabled>{{countNum}} s</a-button>
             </a-col>
           </a-row>
         </a-form-item>
@@ -143,7 +145,7 @@
           </a-button>
           Or
           <a href="javascript:;" @click="showRegister">
-            login now!
+            登录!
           </a>
         </a-form-item>
       </a-form>
@@ -164,7 +166,13 @@ export default {
   data () {
     return {
       // 登录、注册切换
-      showLogin: 0
+      showLogin: 0,
+      // 显示隐藏 60s 倒计时
+      showCountDown: true,
+      // 60s
+      countNum: '',
+      // 定时器
+      timer: null
     }
   },
   methods: {
@@ -199,7 +207,7 @@ export default {
             ticket: localStorage.getItem('ticket')
           })
           if (res.status !== 0) return this.$message.error(res.reason)
-          this.$message.success(res.reason)
+          this.$message.success('注册了')
           this.showLogin = 0
         }
       })
@@ -212,6 +220,22 @@ export default {
       if (res.status !== 0) return this.$message.error(res.reason)
       localStorage.setItem('ticket', res.ticket)
       this.$message.success('发送了')
+
+      // 倒计时
+      const timeCount = 60
+      if (!this.timer) {
+        this.countNum = timeCount
+        this.showCountDown = false
+        this.timer = setInterval(() => {
+          if (this.countNum > 0 && this.countNum <= timeCount) {
+            this.countNum--
+          } else {
+            this.showCountDown = true
+            clearInterval(this.timer)
+            this.timer = null
+          }
+        }, 1000)
+      }
     }
   }
 }
@@ -223,7 +247,7 @@ body {
 }
 .login_container {
   width: 500px;
-  height: 300px;
+  height: 350px;
   padding: 0 50px;
   border-radius: 5px;
   box-shadow: 0px 2px 12px 0px rgba(105, 105, 105,  .07);
@@ -288,43 +312,43 @@ body {
   }
 
   55% {
-    height: 30px;
+    height: 35px;
   }
 
   60% {
-    height: 60px;
+    height: 70px;
   }
 
   65% {
-    height: 90px;
+    height: 105px;
   }
 
   70% {
-    height: 120px;
+    height: 140px;
   }
 
   75% {
-    height: 150px;
+    height: 175px;
   }
 
   80% {
-    height: 180px;
-  }
-
-  85% {
     height: 210px;
   }
 
+  85% {
+    height: 245px;
+  }
+
   90% {
-    height: 240px;
+    height: 280px;
   }
 
   95% {
-    height: 240px;
+    height: 315px;
   }
 
   100% {
-    height: 300px;
+    height: 350px;
   }
 }
 .title {

@@ -24,7 +24,9 @@ import {
   Radio,
   Input,
   Tooltip,
-  Checkbox
+  Checkbox,
+  Modal,
+  Tag
 } from 'ant-design-vue'
 Vue.use(Button)
 Vue.use(Layout)
@@ -45,6 +47,8 @@ Vue.use(Radio)
 Vue.use(Input)
 Vue.use(Tooltip)
 Vue.use(Checkbox)
+Vue.use(Modal)
+Vue.use(Tag)
 
 axios.defaults.baseURL = 'http://api.91nlp.cn/'
 axios.defaults.withCredentials = true

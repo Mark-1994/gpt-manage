@@ -4,12 +4,14 @@
       <a-layout-header>
         <a-row type="flex" justify="space-between" class="gpt-header">
           <a-col :span="4" class="header-left">
-            <img src="../assets/gpt-white.png" alt="" />
+            <router-link to="/home">
+              <img src="../assets/gpt-white.png" alt="" />
+            </router-link>
           </a-col>
           <a-col :span="4" class="header-right">
             <a-dropdown :trigger="['click']">
               <a class="ant-dropdown-link" @click="e => e.preventDefault()">
-                CYR0904 <a-icon type="down" />
+                {{nick_name}} <a-icon type="down" />
               </a>
               <a-menu slot="overlay">
                 <a-menu-item key="0">
@@ -57,8 +59,8 @@
                     <span slot="title">
                       <a-icon type="file-protect" :style="{ fontSize: '16px', color: '#0039FD' }" /><span>文章模型</span>
                     </span>
-                    <a-menu-item key="5">
-                      文章模型1
+                    <a-menu-item key="modelslist">
+                      模型列表
                     </a-menu-item>
                     <a-menu-item key="6">
                       文章模型2
@@ -94,7 +96,7 @@
             </a-col>
             <a-col :span="14">
               <a-layout-content class="gpt-branch">
-                <router-view/>
+                <router-view @getNickName="showNickName"/>
               </a-layout-content>
             </a-col>
             <a-col :span="6">
@@ -123,6 +125,9 @@
 
 <script>
 export default {
+  created () {
+
+  },
   data () {
     return {
       // 右侧文章标题
@@ -148,7 +153,9 @@ export default {
         }, {
           title: '产品矩阵，品牌必修课（三）'
         }
-      ]
+      ],
+      // 用户昵称
+      nick_name: window.localStorage.getItem('nick_name') ? window.localStorage.getItem('nick_name') : ''
     }
   },
   methods: {
@@ -156,6 +163,10 @@ export default {
       if (this.$route.path !== `/${item.key}`) {
         this.$router.push(`/${item.key}`)
       }
+    },
+    // 接收子组件传过来的 昵称
+    showNickName (value) {
+      this.nick_name = value
     }
   }
 }

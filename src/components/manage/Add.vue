@@ -94,6 +94,7 @@
                   'gn',
                   { rules: [{ required: true, message: '请输入!' }] }
                 ]"
+                @change="detectionArticleName()"
               />
             </a-form-item>
 
@@ -279,6 +280,10 @@ export default {
     orderCost () {
       this.articleOrderPrice = this.articleNum * this.articleItemPrice
       this.onSale = this.articleNum * this.articleItemPrices - this.articleOrderPrice
+    },
+    // 检测文章项目名是否重复
+    detectionArticleName () {
+      // console.log(this.form)
     }
   }
 }
