@@ -8,6 +8,7 @@
             :colon="false"
             labelAlign="left"
             :hideRequiredMark="true"
+            style="border: 1px solid transparent"
           >
             <a-form-item label="标题处理" class="gpt-article-generate-title"></a-form-item>
 
@@ -36,7 +37,7 @@
               </a-select>
             </a-form-item>
 
-            <a-form-item label="标题列表">
+            <a-form-item label="标题列表" v-if="headingProcessingVal === '1' || headingProcessingVal === '2'">
               <a-table :row-selection="rowSelection" :columns="columns" :data-source="data" bordered :locale="{ filterConfirm: '确定', filterReset: '重置' }" :scroll="{ x: 200, y: 300 }">
                 <!-- <template slot="keywords">
                   <a href="javascript:;" @click="titleKeywords">查看</a>
@@ -53,7 +54,7 @@
               </a-table>
             </a-form-item>
 
-            <a-form-item label="类型">
+            <a-form-item label="类型" v-if="headingProcessingVal === '1' || headingProcessingVal === '2'">
               <a-select v-model="typeSelectValue">
                 <a-select-option value="前缀">
                   前缀
@@ -67,7 +68,7 @@
               </a-select>
             </a-form-item>
 
-            <a-form-item label="关键词" extra="关键词格式用“，”隔开" style="text-align: left;">
+            <a-form-item label="关键词" extra="关键词格式用“，”隔开" style="text-align: left;" v-if="headingProcessingVal === '1' || headingProcessingVal === '2'">
               <a-textarea
                 placeholder=""
                 :auto-size="{ minRows: 2, maxRows: 6 }"
@@ -75,7 +76,7 @@
               />
             </a-form-item>
 
-            <a-form-item label="标题命名" style="text-align: left;">
+            <a-form-item label="标题命名" style="text-align: left;" v-if="headingProcessingVal === '1' || headingProcessingVal === '2'">
               <a-input placeholder="" style="width: 131px;margin-right: 16px;" v-model="formcreateHeaderGroups.gn" />
               <a-button type="primary" @click="createHeaderGroups">
                 保存
@@ -87,7 +88,7 @@
       </a-col>
       <a-col style="margin-top: 25px;">
         <div class="gpt-order-info">
-          <a-form :colon="false" :labelCol="{ span: 3, offset: 1 }" :wrapperCol="{ span: 19 }" labelAlign="left">
+          <a-form :colon="false" :labelCol="{ span: 3, offset: 1 }" :wrapperCol="{ span: 19 }" labelAlign="left" style="border: 1px solid transparent;">
             <a-form-item label="内容处理" class="gpt-order-info-title"></a-form-item>
 
             <a-form-item label="内链列表">
@@ -104,10 +105,10 @@
               </a-table>
             </a-form-item>
 
-            <a-form-item label="自动内链" style="text-align: left;">
-              <a-radio-group v-model="autoInternalChain">
-                <a-radio value="1">是</a-radio>
-                <a-radio value="0">否</a-radio>
+            <a-form-item label="下载方式" style="text-align: left;">
+              <a-radio-group v-model="downloadType">
+                <a-radio value="1">所有文章装进一个 txt 中</a-radio>
+                <a-radio value="2">每个文章一个 txt，装进压缩包</a-radio>
               </a-radio-group>
             </a-form-item>
 
@@ -118,14 +119,14 @@
               </a-radio-group>
             </a-form-item>
 
-            <a-form-item label="下载方式" style="text-align: left;">
-              <a-radio-group v-model="downloadType">
-                <a-radio value="1">所有文章装进一个 txt 中</a-radio>
-                <a-radio value="2">每个文章一个 txt，装进压缩包</a-radio>
+            <a-form-item label="自动内链" style="text-align: left;">
+              <a-radio-group v-model="autoInternalChain">
+                <a-radio value="1">是</a-radio>
+                <a-radio value="0">否</a-radio>
               </a-radio-group>
             </a-form-item>
 
-            <a-form-item label="关键词" extra="关键词格式用“，”隔开" style="text-align: left;">
+            <a-form-item label="关键词" extra="关键词格式用“，”隔开" style="text-align: left;" v-if="autoInternalChain === '1'">
               <a-textarea
                 placeholder=""
                 :auto-size="{ minRows: 2, maxRows: 6 }"
@@ -133,11 +134,11 @@
               />
             </a-form-item>
 
-            <a-form-item label="内链">
+            <a-form-item label="内链" v-if="autoInternalChain === '1'">
               <a-input placeholder="" v-model="formCreateInternalChainGroups.link" />
             </a-form-item>
 
-            <a-form-item label="分组名" style="text-align: left;">
+            <a-form-item label="分组名" style="text-align: left;" v-if="autoInternalChain === '1'">
               <a-input placeholder="" style="width: 131px;margin-right: 16px;" v-model="formCreateInternalChainGroups.gn" />
               <a-button type="primary" @click="createInternalChainGroups">
                 保存
