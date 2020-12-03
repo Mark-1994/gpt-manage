@@ -54,8 +54,8 @@
             <a-col class="gpt-content-points">我的积分</a-col>
             <a-col class="gpt-content-num">{{indexInfo.balance}}</a-col>
             <a-col>
-              <a-button type="primary" shape="round" size="large">
-                开始生成文章
+              <a-button type="primary" shape="round" size="large" @click="articleProduce">
+                文章生成
               </a-button>
             </a-col>
           </a-row>
@@ -82,7 +82,7 @@
             <a-col class="gpt-content-points">API次数</a-col>
             <a-col class="gpt-content-num">{{indexInfo.api_use_times}}</a-col>
             <a-col>
-              <a-button type="primary" shape="round" size="large">
+              <a-button type="primary" shape="round" size="large" @click="setApiParam">
                 设置API参数
               </a-button>
             </a-col>
@@ -132,7 +132,11 @@
       </div>
 
       <!-- 充值积分 -->
-      <a-table v-if="!Number(integralOrMember)" :row-selection="rechargeSelect" :columns="rechargeColumns" :data-source="rechargeData" size="small" />
+      <a-table v-if="!Number(integralOrMember)" :row-selection="rechargeSelect" :columns="rechargeColumns" :data-source="rechargeData" size="small">
+        <template slot="rmb_fen" slot-scope="text">
+          {{ text / 100 }}
+        </template>
+      </a-table>
 
       <!-- 开通会员 -->
       <div v-else>
@@ -152,6 +156,7 @@
 export default {
   created () {
     this.getUserInfo()
+    this.judgeDomain()
   },
   data () {
     return {
@@ -193,7 +198,8 @@ export default {
         },
         {
           title: '人民币元',
-          dataIndex: 'rmb_yuan'
+          dataIndex: 'rmb_fen',
+          scopedSlots: { customRender: 'rmb_fen' }
         }
       ],
       // 充值套餐 data
@@ -287,7 +293,7 @@ export default {
       return {
         type: 'radio',
         onChange: (selectedRowKeys, selectedRows) => {
-          this.rechargeSelectValue = selectedRows[0].rmb_yuan
+          this.rechargeSelectValue = selectedRows[0].id
         }
       }
     },
@@ -321,6 +327,7 @@ export default {
     async getUserInfo () {
       const { data: res } = await this.$http.get('pg/index')
       window.localStorage.setItem('nick_name', '')
+      if (res.status === 10) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/' })
       if (res.status !== 0) return this.$message.error(res.reason)
       this.indexInfo = res
       window.localStorage.setItem('nick_name', res.nick_name)
@@ -363,7 +370,7 @@ export default {
     // 充值积分
     async getTopUpIntegral (rmbValue) {
       const { data: res } = await this.$http.post('rc', {
-        rmb_y: rmbValue
+        id: rmbValue
       })
       if (res.status !== 0) return this.$message.error(res.reason)
       window.open(res.pay_link)
@@ -394,6 +401,14 @@ export default {
     // 文章模型页面
     createArticleModel () {
       this.$router.push('/modelslist')
+    },
+    // 设置 API 参数页面
+    setApiParam () {
+      this.$router.push('/apimanage')
+    },
+    // 文章生成页面
+    articleProduce () {
+      this.$router.push('/add')
     },
     // 获取会员套餐列表
     async getMemberMealList () {
@@ -435,6 +450,14 @@ export default {
       this.$message.success('开通了')
       this.getUserInfo()
       this.rechargeVisible = false
+    },
+    // 判断当前页面是否是指定域名
+    judgeDomain () {
+      if (window.location.host !== 'a.91nlp.cn') {
+        this.$message.error('Error', function () {
+          window.location.href = 'http://a.91nlp.cn/'
+        })
+      }
     }
   }
 }

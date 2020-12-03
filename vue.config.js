@@ -8,5 +8,7 @@ module.exports = {
     disableHostCheck: true
   },
   // 关闭 eslint 规范
-  lintOnSave: true
+  lintOnSave: true,
+  // 配置静态资源基本路径
+  publicPath: 'http://a.91nlp.cn/'
 }

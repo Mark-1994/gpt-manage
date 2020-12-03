@@ -48,8 +48,14 @@
                 <template slot="type" slot-scope="text">
                   {{ text === 1 ? '前缀' : text === 2 ? '后缀' : '随机标题' }}
                 </template>
-                <template slot="del">
-                  <a href="javascript:;">删除</a>
+                <template slot="del" slot-scope="record">
+                  <a-popconfirm
+                    v-if="data.length"
+                    title="确定删除？"
+                    @confirm="() => onDeleteTitle(record.key)"
+                  >
+                    <a href="javascript:;">删除</a>
+                  </a-popconfirm>
                 </template>
               </a-table>
             </a-form-item>
@@ -91,7 +97,7 @@
           <a-form :colon="false" :labelCol="{ span: 3, offset: 1 }" :wrapperCol="{ span: 19 }" labelAlign="left" style="border: 1px solid transparent;">
             <a-form-item label="内容处理" class="gpt-order-info-title"></a-form-item>
 
-            <a-form-item label="内链列表">
+            <a-form-item label="内链列表" v-if="autoInternalChain === '1' || autoKeywordsBold === '1'">
               <a-table :row-selection="internalChainSelect" :columns="internalChainTitle" :data-source="internalChainData" bordered :scroll="{ x: 200, y: 300 }">
                 <!-- <template slot="keywords">
                   <a href="javascript:;">查看</a>
@@ -99,8 +105,14 @@
                 <template slot="create_at" slot-scope="text">
                   {{ text | dateFormat }}
                 </template>
-                <template slot="del">
-                  <a href="javascript:;">删除</a>
+                <template slot="del" slot-scope="record">
+                  <a-popconfirm
+                    v-if="internalChainData.length"
+                    title="确定删除？"
+                    @confirm="() => onDelete(record.key)"
+                  >
+                    <a href="javascript:;">删除</a>
+                  </a-popconfirm>
                 </template>
               </a-table>
             </a-form-item>
@@ -126,7 +138,7 @@
               </a-radio-group>
             </a-form-item>
 
-            <a-form-item label="关键词" extra="关键词格式用“，”隔开" style="text-align: left;" v-if="autoInternalChain === '1'">
+            <a-form-item label="关键词" extra="关键词格式用“，”隔开" style="text-align: left;" v-if="autoInternalChain === '1' || autoKeywordsBold === '1'">
               <a-textarea
                 placeholder=""
                 :auto-size="{ minRows: 2, maxRows: 6 }"
@@ -134,11 +146,11 @@
               />
             </a-form-item>
 
-            <a-form-item label="内链" v-if="autoInternalChain === '1'">
+            <a-form-item label="内链" v-if="autoInternalChain === '1' || autoKeywordsBold === '1'">
               <a-input placeholder="" v-model="formCreateInternalChainGroups.link" />
             </a-form-item>
 
-            <a-form-item label="分组名" style="text-align: left;" v-if="autoInternalChain === '1'">
+            <a-form-item label="分组名" style="text-align: left;" v-if="autoInternalChain === '1' || autoKeywordsBold === '1'">
               <a-input placeholder="" style="width: 131px;margin-right: 16px;" v-model="formCreateInternalChainGroups.gn" />
               <a-button type="primary" @click="createInternalChainGroups">
                 保存
@@ -280,7 +292,7 @@ export default {
     // 项目名
     itemName: window.sessionStorage.getItem('itemName'),
     // 标题处理方式
-    headingProcessingVal: '',
+    headingProcessingVal: '0',
     // 标题前缀标签
     titlePrefixName: '',
     // 标题后缀标签
@@ -288,13 +300,13 @@ export default {
     // 随机标题标签
     titleRandomName: '',
     // 是否自动内链
-    autoInternalChain: '',
+    autoInternalChain: '0',
     // 选中的内链分组名
     internalChainName: '',
     // 是否关键词加粗
-    autoKeywordsBold: '',
+    autoKeywordsBold: '0',
     // 下载方式
-    downloadType: '',
+    downloadType: '1',
     // 标题列表关键词显示隐藏
     titleVisible: false,
     // 标题列表关键词
@@ -374,6 +386,10 @@ export default {
     },
     // 下载文章
     async downloadArticle () {
+      // 如果关键词加粗 或者 自动内链 有一个选了是 内链列表就是必选
+      if (this.autoInternalChain === '1' || this.autoKeywordsBold === '1') {
+        if (!this.internalChainName) return this.$message.error('请选择一个内链分组')
+      }
       const downloadArgument = {
         gn: this.itemName,
         tt_pm: this.headingProcessingVal,
@@ -419,6 +435,20 @@ export default {
       if (res.status !== 0) return this.$message.error(res.reason)
       this.showKeyword = res.kw.split(',')
       this.titleVisible = true
+    },
+    // 删除内链
+    async onDelete (key) {
+      const { data: res } = await this.$http.get(`rmil?ilid=${key}`)
+      if (res.status !== 0) return this.$message.error(res.reason)
+      const internalChainData = [...this.internalChainData]
+      this.internalChainData = internalChainData.filter(item => item.key !== key)
+    },
+    // 删除标题
+    async onDeleteTitle (key) {
+      const { data: res } = await this.$http.get(`rmtt?ttid=${key}`)
+      if (res.status !== 0) return this.$message.error(res.reason)
+      const data = [...this.data]
+      this.data = data.filter(item => item.key !== key)
     }
   }
 }

@@ -50,11 +50,13 @@ export default {
         },
         {
           title: '字数',
-          dataIndex: 'wn'
+          dataIndex: 'wn',
+          sorter: (a, b) => a.wn - b.wn
         },
         {
           title: '文章数量',
-          dataIndex: 'post_num'
+          dataIndex: 'post_num',
+          sorter: (a, b) => a.post_num - b.post_num
         },
         {
           title: '关键词',
@@ -67,11 +69,24 @@ export default {
         {
           title: '创建时间',
           dataIndex: 'create_at',
-          scopedSlots: { customRender: 'create_at' }
+          scopedSlots: { customRender: 'create_at' },
+          sorter: (a, b) => a.create_at - b.create_at
         },
         {
           title: '状态',
-          dataIndex: 'state'
+          dataIndex: 'state',
+          filters: [
+            {
+              text: '生产中',
+              value: '生产中'
+            },
+            {
+              text: '完成',
+              value: '完成'
+            }
+          ],
+          filterMultiple: false,
+          onFilter: (value, record) => record.state.indexOf(value) === 0
         },
         {
           title: '处理',
@@ -122,7 +137,12 @@ export default {
     handle (event) {
       const itemName = event.currentTarget.parentElement.parentElement.children[1].innerText
       window.sessionStorage.setItem('itemName', itemName)
-      document.querySelector('.articleDeal').click()
+      if (document.querySelector('.articleDeal')) {
+        document.querySelector('.articleDeal').click()
+      } else {
+        document.querySelector('.article-manage>div').click()
+        setTimeout(function () { document.querySelector('.articleDeal').click() }, 0)
+      }
     },
     // 展示关键词
     async showKeywords () {

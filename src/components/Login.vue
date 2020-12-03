@@ -38,7 +38,7 @@
             <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
           </a-input>
         </a-form-item>
-        <a-form-item style="margin-bottom: 10px;">
+        <a-form-item style="margin-bottom: 0;">
           <a-checkbox
             v-decorator="[
               'remember',
@@ -50,7 +50,7 @@
           >
             记住密码
           </a-checkbox>
-          <a class="login-form-forgot" href="javascript:;">
+          <a class="login-form-forgot" href="javascript:;" @click="showReset">
             忘记密码
           </a>
           <a-button type="primary" html-type="submit" class="login-form-button">
@@ -139,7 +139,7 @@
             </a-col>
           </a-row>
         </a-form-item>
-        <a-form-item style="margin-bottom: 10px;">
+        <a-form-item style="margin-bottom: 0;">
           <a-button type="primary" html-type="submit" class="login-form-button">
             注册
           </a-button>
@@ -236,6 +236,10 @@ export default {
           }
         }, 1000)
       }
+    },
+    // 点击忘记密码
+    showReset () {
+      console.log('忘记密码')
     }
   }
 }

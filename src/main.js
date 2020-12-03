@@ -26,7 +26,9 @@ import {
   Tooltip,
   Checkbox,
   Modal,
-  Tag
+  Tag,
+  Popconfirm,
+  Switch
 } from 'ant-design-vue'
 Vue.use(Button)
 Vue.use(Layout)
@@ -49,6 +51,8 @@ Vue.use(Tooltip)
 Vue.use(Checkbox)
 Vue.use(Modal)
 Vue.use(Tag)
+Vue.use(Popconfirm)
+Vue.use(Switch)
 
 axios.defaults.baseURL = 'http://api.91nlp.cn/'
 axios.defaults.withCredentials = true

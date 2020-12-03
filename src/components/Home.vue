@@ -20,9 +20,9 @@
                   </a>
                 </a-menu-item>
                 <a-menu-item key="1">
-                  <a href="javascript:;">
+                  <router-link to="/login">
                     <a-icon type="logout" :style="{ color: '#0039FD' }" /> 退出
-                  </a>
+                  </router-link>
                 </a-menu-item>
               </a-menu>
             </a-dropdown>
@@ -41,7 +41,7 @@
                   <a-menu-item key="users">
                     <a-icon type="user" :style="{ fontSize: '16px', color: '#0039FD' }" /><span>个人中心</span>
                   </a-menu-item>
-                  <a-sub-menu key="sub1">
+                  <a-sub-menu key="sub1" class="article-manage">
                     <span slot="title">
                       <a-icon type="file-done" :style="{ fontSize: '16px', color: '#0039FD' }" /><span>文章管理</span>
                     </span>
@@ -62,34 +62,34 @@
                     <a-menu-item key="modelslist">
                       模型列表
                     </a-menu-item>
-                    <a-menu-item key="6">
+                    <!-- <a-menu-item key="6">
                       文章模型2
                     </a-menu-item>
                     <a-menu-item key="7">
                       文章模型3
-                    </a-menu-item>
+                    </a-menu-item> -->
                   </a-sub-menu>
                   <a-sub-menu key="sub3">
                     <span slot="title">
                       <a-icon type="api" :style="{ fontSize: '16px', color: '#0039FD' }" /><span>API接口</span>
                     </span>
-                    <a-menu-item key="8">
-                      API接口1
+                    <a-menu-item key="apimanage">
+                      API管理
                     </a-menu-item>
-                    <a-menu-item key="9">
+                    <!-- <a-menu-item key="9">
                       API接口2
-                    </a-menu-item>
+                    </a-menu-item> -->
                   </a-sub-menu>
                   <a-sub-menu key="sub4">
                     <span slot="title">
                       <a-icon type="appstore" :style="{ fontSize: '16px', color: '#0039FD' }" /><span>其他</span>
                     </span>
-                    <a-menu-item key="10">
+                    <!-- <a-menu-item key="10">
                       其他1
                     </a-menu-item>
                     <a-menu-item key="11">
                       其他2
-                    </a-menu-item>
+                    </a-menu-item> -->
                   </a-sub-menu>
                 </a-menu>
               </a-layout-sider>
