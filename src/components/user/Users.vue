@@ -156,7 +156,7 @@
 export default {
   created () {
     this.getUserInfo()
-    this.judgeDomain()
+    // this.judgeDomain()
   },
   data () {
     return {
@@ -312,7 +312,14 @@ export default {
             case '钻石会员': this.memberLevel = 3
               break
           }
-        }
+        },
+        // 选择框的默认属性配置
+        getCheckboxProps: record => ({
+          props: {
+            // 某几项默认禁止选中(R: 当 member_level 等于 0 时)
+            disabled: record.member_level === '普通用户'
+          }
+        })
       }
     },
     // 签到天数
@@ -327,7 +334,21 @@ export default {
     async getUserInfo () {
       const { data: res } = await this.$http.get('pg/index')
       window.localStorage.setItem('nick_name', '')
+
+      if (window.location.host !== 'a.91nlp.cn') {
+        if (res.status !== 0) {
+          return this.$message.error('Error', function () {
+            window.location.href = '/login/#/login'
+          })
+        } else {
+          return this.$message.error('Error', function () {
+            window.location.href = 'http://a.91nlp.cn/#/login'
+          })
+        }
+      }
+
       if (res.status === 10) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/' })
+      if (res.status === 3) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/#/login' })
       if (res.status !== 0) return this.$message.error(res.reason)
       this.indexInfo = res
       window.localStorage.setItem('nick_name', res.nick_name)
@@ -448,7 +469,9 @@ export default {
       })
       if (res.status !== 0) return this.$message.error(res.reason)
       this.$message.success('开通了')
-      this.getUserInfo()
+      setTimeout(() => {
+        this.getUserInfo()
+      }, 500)
       this.rechargeVisible = false
     },
     // 判断当前页面是否是指定域名

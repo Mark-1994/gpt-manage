@@ -9,11 +9,19 @@
       <template slot="create_at" slot-scope="text">
         {{ text | dateFormat }}
       </template>
-      <template slot="deal">
+      <template slot="deal" slot-scope="record">
         <!-- <router-link to="/deal">
           操作
         </router-link> -->
-        <a href="javascript:;" @click="handle($event)">操作</a>
+        <a href="javascript:;" @click="handle($event)">处理&nbsp;</a>
+        &nbsp;
+        <a-popconfirm
+          v-if="allTask.length"
+          title="确定删除?"
+          @confirm="() => onDelete(record.gn)"
+        >
+          <a href="javascript:;">&nbsp;删除</a>
+        </a-popconfirm>
       </template>
     </a-table>
 
@@ -89,7 +97,7 @@ export default {
           onFilter: (value, record) => record.state.indexOf(value) === 0
         },
         {
-          title: '处理',
+          title: '操作',
           scopedSlots: { customRender: 'deal' }
         }
       ],
@@ -156,6 +164,15 @@ export default {
     // 表格翻页事件
     pageTurning () {
       // console.log('翻页')
+    },
+    // 删除文章事件
+    async onDelete (gn) {
+      const { data: res } = await this.$http.post('rmpg', {
+        gn: gn
+      })
+      if (res.status !== 0) return this.$message.error(res.reason)
+      const dataSource = [...this.allTask]
+      this.allTask = dataSource.filter(item => item.gn !== gn)
     }
   }
 }

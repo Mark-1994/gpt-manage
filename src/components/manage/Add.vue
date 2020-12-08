@@ -35,6 +35,7 @@
                 allow-clear
                 :auto-size="{ minRows: 1, maxRows: 6 }"
                 v-model="kwValue"
+                @change="manualModifyKeywords"
               />
               <a-upload
                 list-type="text"
@@ -67,7 +68,7 @@
             </a-form-item>
 
             <a-form-item label="文章数量" extra="文章数量不得低于※" style="text-align: left;">
-              <a-input-number v-model="articleNum" :min="kwValue.split('\r\n').length" @blur="articleNumber" />
+              <a-input-number v-model="articleNum" :min="kwValue.split('\n').length" @blur="articleNumber" />
             </a-form-item>
 
             <a-form-item label="文章字数" extra="VIP会员可选择1000字文章 升级会员" style="text-align: left;">
@@ -102,7 +103,7 @@
               <div style="line-height: normal;display: inline-block;text-align: right;margin-right: 34px;vertical-align: middle;">
                 <p style="margin: 0 0 10px;">
                   订单费用
-                  <span style="color: #FFB05D;font-size: 24px;margin: 0 5px 0 10px;">{{articleOrderPrice}}积分</span>
+                  <span style="color: #FFB05D;font-size: 24px;margin: 0 5px 0 10px;">{{articleOrderPrice}} 积分</span>
                   <a-tooltip placement="topLeft">
                     <template slot="title">
                       提示文字
@@ -110,7 +111,7 @@
                     <a-icon type="question-circle" />
                   </a-tooltip>
                 </p>
-                <p style="margin: 0;">省 <span style="color: #0039FD;margin-left: 10px;">{{onSale}}元</span></p>
+                <p style="margin: 0;">省 <span style="color: #0039FD;margin-left: 10px;">{{onSale}} 积分</span></p>
               </div>
               <a-button type="primary" html-type="submit" style="margin-right: 14px;">
                 提交
@@ -218,7 +219,7 @@ export default {
       e.preventDefault()
       this.form.validateFields((err, values) => {
         if (!err) {
-          values.prefix = this.kwValue.split('\r\n')
+          values.prefix = this.kwValue.split('\n')
           values.post_num = this.articleNum
           this.getArticleGenerate(values)
         }
@@ -284,6 +285,11 @@ export default {
     // 检测文章项目名是否重复
     detectionArticleName () {
       // console.log(this.form)
+    },
+    // 手动修改关键词事件
+    manualModifyKeywords (e) {
+      // console.log(e.target.value)
+      // console.log(this.kwValue)
     }
   }
 }

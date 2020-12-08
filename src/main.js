@@ -28,7 +28,11 @@ import {
   Modal,
   Tag,
   Popconfirm,
-  Switch
+  Switch,
+  Drawer,
+  Divider,
+  Tabs,
+  Steps
 } from 'ant-design-vue'
 Vue.use(Button)
 Vue.use(Layout)
@@ -53,12 +57,20 @@ Vue.use(Modal)
 Vue.use(Tag)
 Vue.use(Popconfirm)
 Vue.use(Switch)
+Vue.use(Drawer)
+Vue.use(Divider)
+Vue.use(Tabs)
+Vue.use(Steps)
 
 axios.defaults.baseURL = 'http://api.91nlp.cn/'
 axios.defaults.withCredentials = true
 // axios.defaults.headers = { 'Content-Type': 'multipart/form-data' }
 // axios.interceptors.request.use(config => {
 //   config.headers.Authorization = window.sessionStorage.getItem('token')
+//   return config
+// })
+// axios.interceptors.request.use(config => {
+//   console.log(config)
 //   return config
 // })
 Vue.prototype.$http = axios

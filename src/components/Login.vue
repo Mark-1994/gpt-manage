@@ -60,6 +60,7 @@
           <a href="javascript:;" @click="showRegister">
             注册!
           </a>
+          <span>开启Cookie之后才能登录,如何开启?</span>
         </a-form-item>
       </a-form>
 

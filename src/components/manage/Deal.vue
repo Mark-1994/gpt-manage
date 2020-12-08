@@ -3,467 +3,740 @@
     <a-row>
       <a-col>
         <div class="gpt-article-generate">
-          <a-form
-            v-bind="formItemLayout"
-            :colon="false"
-            labelAlign="left"
-            :hideRequiredMark="true"
-            style="border: 1px solid transparent"
-          >
-            <a-form-item label="标题处理" class="gpt-article-generate-title"></a-form-item>
+          <h3>文章处理</h3>
+          <div style="text-align: left;padding: 15px 40px 40px;color: rgba(0, 0, 0, 0.85);">
+            <a-steps :current="current">
+              <a-step v-for="item in steps" :key="item.title" :title="item.title" />
+            </a-steps>
+            <div class="steps-content">
+              <div class="content-box" v-if="current === 0">
+                <a-row :gutter="[16, 16]">
+                  <a-col :span="12">
+                    <a-textarea placeholder="地区 关键词格式：每行一个" :rows="10" v-model="area" />
+                    <a-button type="primary" block style="margin-top: 8px;">
+                      小助手
+                    </a-button>
+                  </a-col>
+                  <a-col :span="12">
+                    <a-textarea placeholder="词头 关键词格式：每行一个" :rows="10" v-model="prefix" />
+                    <a-button type="primary" block style="margin-top: 8px;">
+                      小助手
+                    </a-button>
+                  </a-col>
+                  <a-col :span="12">
+                    <a-textarea placeholder="主词 关键词格式：每行一个" :rows="10" v-model="mk" />
+                    <a-button type="primary" block style="margin-top: 8px;">
+                      小助手
+                    </a-button>
+                  </a-col>
+                  <a-col :span="12">
+                    <a-textarea placeholder="词尾 关键词格式：每行一个" :rows="10" v-model="tail" />
+                    <a-button type="primary" block style="margin-top: 8px;">
+                      小助手
+                    </a-button>
+                  </a-col>
+                </a-row>
+                <a-row style="text-align: left;">
+                  <a-col>
+                    <a-radio-group v-model="value" @change="compoundMode">
+                      <a-radio :value="0" style="width: 252px;">
+                        【主词】
+                      </a-radio>
+                      <a-radio :value="1" style="width: 252px;">
+                        【地区】【主词】
+                      </a-radio>
+                      <a-radio :value="2" style="width: 252px;">
+                        【词头】【主词】
+                      </a-radio>
+                      <a-radio :value="3" style="width: 252px;">
+                        【主词】【词尾】
+                      </a-radio>
+                      <a-radio :value="4" style="width: 252px;">
+                        【地区】【词头】【主词】
+                      </a-radio>
+                      <a-radio :value="5" style="width: 252px;">
+                        【词头】【主词】【词尾】
+                      </a-radio>
+                      <a-radio :value="6" style="width: 252px;">
+                        【地区】【主词】【词尾】
+                      </a-radio>
+                      <a-radio :value="7" style="width: 252px;">
+                        【地区】【词头】【主词】【词尾】
+                      </a-radio>
+                    </a-radio-group>
+                  </a-col>
+                </a-row>
+              </div>
+              <div class="content-box" v-else-if="current === 1">
+                <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
+                  <a-form-item label="项目名">
+                    <a-input v-model="downloadArticle.gn" disabled />
+                  </a-form-item>
+                  <a-form-item label="插入段首">
+                    <a-input v-model="downloadArticle.post_prefix" />
+                  </a-form-item>
+                  <a-form-item label="插入断尾">
+                    <a-input v-model="downloadArticle.post_suffix" />
+                  </a-form-item>
+                  <a-form-item label="小标题" extra="将标题以H2形式插入到文章内容中。只插入一次。" style="text-align: left;">
+                    <a-radio-group v-model="downloadArticle.enable_subtt">
+                      <a-radio :value="1">
+                        是
+                      </a-radio>
+                      <a-radio :value="0">
+                        否
+                      </a-radio>
+                    </a-radio-group>
+                  </a-form-item>
+                  <a-form-item label="关键词加粗" extra="是否关键词(即文章前缀)加粗" style="text-align: left;">
+                    <a-radio-group v-model="downloadArticle.kw_bold">
+                      <a-radio :value="1">
+                        是
+                      </a-radio>
+                      <a-radio :value="0">
+                        否
+                      </a-radio>
+                    </a-radio-group>
+                  </a-form-item>
+                  <a-form-item label="内链加粗" style="text-align: left;">
+                    <a-radio-group v-model="downloadArticle.il_bold">
+                      <a-radio :value="1">
+                        是
+                      </a-radio>
+                      <a-radio :value="0">
+                        否
+                      </a-radio>
+                    </a-radio-group>
+                  </a-form-item>
+                  <a-form-item label="内链组" style="text-align: left;">
+                    <a-button class="editable-add-btn" @click="showModal">
+                      新增内链
+                    </a-button>
+                    <a-table :columns="columns" :data-source="data" bordered size="small" rowKey="id" :row-selection="rowSelection" :pagination="pagination">
+                      <template slot="create_at" slot-scope="text">
+                        {{ text | dateFormat }}
+                      </template>
 
-            <a-form-item label="选择任务">
-              <a-select :default-value="itemName" disabled>
-                <a-select-option value="jack">
-                  Jack
-                </a-select-option>
-              </a-select>
-            </a-form-item>
+                      <template
+                        v-for="col in ['gn', 'link', 'value']"
+                        :slot="col"
+                        slot-scope="text, record"
+                      >
+                        <div :key="col">
+                          <a-input
+                            v-if="record.editable"
+                            style="margin: -5px 0"
+                            :value="text"
+                            @change="e => handleChange(e.target.value, record.id, col)"
+                          />
+                          <template v-else>
+                            {{ text }}
+                          </template>
+                        </div>
+                      </template>
 
-            <a-form-item label="处理方式">
-              <a-select v-model="headingProcessingVal">
-                <a-select-option value="0">
-                  不处理
-                </a-select-option>
-                <a-select-option value="1">
-                  扩展头尾词
-                </a-select-option>
-                <a-select-option value="2">
-                  随机百度新闻标题
-                </a-select-option>
-                <a-select-option value="3">
-                  提取文章第一个句号
-                </a-select-option>
-              </a-select>
-            </a-form-item>
+                      <template slot="handle" slot-scope="record">
 
-            <a-form-item label="标题列表" v-if="headingProcessingVal === '1' || headingProcessingVal === '2'">
-              <a-table :row-selection="rowSelection" :columns="columns" :data-source="data" bordered :locale="{ filterConfirm: '确定', filterReset: '重置' }" :scroll="{ x: 200, y: 300 }">
-                <!-- <template slot="keywords">
-                  <a href="javascript:;" @click="titleKeywords">查看</a>
-                </template> -->
-                <template slot="create_at" slot-scope="text">
-                  {{ text | dateFormat }}
-                </template>
-                <template slot="type" slot-scope="text">
-                  {{ text === 1 ? '前缀' : text === 2 ? '后缀' : '随机标题' }}
-                </template>
-                <template slot="del" slot-scope="record">
-                  <a-popconfirm
-                    v-if="data.length"
-                    title="确定删除？"
-                    @confirm="() => onDeleteTitle(record.key)"
-                  >
-                    <a href="javascript:;">删除</a>
-                  </a-popconfirm>
-                </template>
-              </a-table>
-            </a-form-item>
+                        <span v-if="record.editable">
+                          <a @click="() => save(record.id)">保存</a>&nbsp;
+                          <a-popconfirm title="确定取消?" @confirm="() => cancel(record.id)">
+                            <a>取消</a>
+                          </a-popconfirm>
+                        </span>
+                        <span v-else>
+                          <a :disabled="editingKey !== ''" @click="() => edit(record.id)">编辑</a>
+                        </span>
 
-            <a-form-item label="类型" v-if="headingProcessingVal === '1' || headingProcessingVal === '2'">
-              <a-select v-model="typeSelectValue">
-                <a-select-option value="前缀">
-                  前缀
-                </a-select-option>
-                <a-select-option value="后缀">
-                  后缀
-                </a-select-option>
-                <a-select-option value="随机标题">
-                  随机标题
-                </a-select-option>
-              </a-select>
-            </a-form-item>
-
-            <a-form-item label="关键词" extra="关键词格式用“，”隔开" style="text-align: left;" v-if="headingProcessingVal === '1' || headingProcessingVal === '2'">
-              <a-textarea
-                placeholder=""
-                :auto-size="{ minRows: 2, maxRows: 6 }"
-                v-model="formcreateHeaderGroups.value"
-              />
-            </a-form-item>
-
-            <a-form-item label="标题命名" style="text-align: left;" v-if="headingProcessingVal === '1' || headingProcessingVal === '2'">
-              <a-input placeholder="" style="width: 131px;margin-right: 16px;" v-model="formcreateHeaderGroups.gn" />
-              <a-button type="primary" @click="createHeaderGroups">
-                保存
+                        <a-divider type="vertical" />
+                        <a-popconfirm
+                          v-if="data.length"
+                          title="确定删除?"
+                          @confirm="() => onDelete(record.id)"
+                        >
+                          <a href="javascript:;">删除</a>
+                        </a-popconfirm>
+                      </template>
+                    </a-table>
+                  </a-form-item>
+                  <a-form-item label="文本格式" style="text-align: left;">
+                    <a-radio-group v-model="downloadArticle.ptag">
+                      <a-radio :value="0">
+                        纯文本格式
+                      </a-radio>
+                      <a-radio :value="1">
+                        富文本格式
+                      </a-radio>
+                    </a-radio-group>
+                  </a-form-item>
+                  <a-form-item label="下载方式" style="text-align: left;">
+                    <a-radio-group v-model="downloadArticle.dl_opt">
+                      <a-radio :value="1">
+                        所有文章装进一个 txt 中
+                      </a-radio>
+                      <a-radio :value="2">
+                        每个文章一个 txt,装进压缩包
+                      </a-radio>
+                    </a-radio-group>
+                  </a-form-item>
+                </a-form>
+              </div>
+              <div class="content-box" v-else-if="current === 2">
+                <a-table :columns="articleListColumns" :data-source="articleListData" bordered :row-selection="articleListRowSelection">
+                  <template slot="name" slot-scope="text">
+                    <a>{{ text }}</a>
+                  </template>
+                </a-table>
+              </div>
+            </div>
+            <div class="steps-action">
+              <a-button v-if="current < steps.length - 1" type="primary" @click="next">
+                下一步
               </a-button>
-            </a-form-item>
-
-          </a-form>
-        </div>
-      </a-col>
-      <a-col style="margin-top: 25px;">
-        <div class="gpt-order-info">
-          <a-form :colon="false" :labelCol="{ span: 3, offset: 1 }" :wrapperCol="{ span: 19 }" labelAlign="left" style="border: 1px solid transparent;">
-            <a-form-item label="内容处理" class="gpt-order-info-title"></a-form-item>
-
-            <a-form-item label="内链列表" v-if="autoInternalChain === '1' || autoKeywordsBold === '1'">
-              <a-table :row-selection="internalChainSelect" :columns="internalChainTitle" :data-source="internalChainData" bordered :scroll="{ x: 200, y: 300 }">
-                <!-- <template slot="keywords">
-                  <a href="javascript:;">查看</a>
-                </template> -->
-                <template slot="create_at" slot-scope="text">
-                  {{ text | dateFormat }}
-                </template>
-                <template slot="del" slot-scope="record">
-                  <a-popconfirm
-                    v-if="internalChainData.length"
-                    title="确定删除？"
-                    @confirm="() => onDelete(record.key)"
-                  >
-                    <a href="javascript:;">删除</a>
-                  </a-popconfirm>
-                </template>
-              </a-table>
-            </a-form-item>
-
-            <a-form-item label="下载方式" style="text-align: left;">
-              <a-radio-group v-model="downloadType">
-                <a-radio value="1">所有文章装进一个 txt 中</a-radio>
-                <a-radio value="2">每个文章一个 txt，装进压缩包</a-radio>
-              </a-radio-group>
-            </a-form-item>
-
-            <a-form-item label="关键词加粗" style="text-align: left;">
-              <a-radio-group v-model="autoKeywordsBold">
-                <a-radio value="1">是</a-radio>
-                <a-radio value="0">否</a-radio>
-              </a-radio-group>
-            </a-form-item>
-
-            <a-form-item label="自动内链" style="text-align: left;">
-              <a-radio-group v-model="autoInternalChain">
-                <a-radio value="1">是</a-radio>
-                <a-radio value="0">否</a-radio>
-              </a-radio-group>
-            </a-form-item>
-
-            <a-form-item label="关键词" extra="关键词格式用“，”隔开" style="text-align: left;" v-if="autoInternalChain === '1' || autoKeywordsBold === '1'">
-              <a-textarea
-                placeholder=""
-                :auto-size="{ minRows: 2, maxRows: 6 }"
-                v-model="formCreateInternalChainGroups.value"
-              />
-            </a-form-item>
-
-            <a-form-item label="内链" v-if="autoInternalChain === '1' || autoKeywordsBold === '1'">
-              <a-input placeholder="" v-model="formCreateInternalChainGroups.link" />
-            </a-form-item>
-
-            <a-form-item label="分组名" style="text-align: left;" v-if="autoInternalChain === '1' || autoKeywordsBold === '1'">
-              <a-input placeholder="" style="width: 131px;margin-right: 16px;" v-model="formCreateInternalChainGroups.gn" />
-              <a-button type="primary" @click="createInternalChainGroups">
-                保存
+              <a-button
+                v-if="current == steps.length - 1"
+                type="primary"
+                @click="downloadArticleBtn"
+              >
+                下载
               </a-button>
-            </a-form-item>
-
-            <a-form-item label=" " style="text-align: left;">
-              <a-button style="background: linear-gradient(0deg, #fb8116 0%, #ffad56 99%);color: #fff;border: 0;" @click="downloadArticle">
-                下载文章
+              <a-button v-if="current > 0" style="margin-left: 8px" @click="prev">
+                上一步
               </a-button>
-            </a-form-item>
-
-          </a-form>
+            </div>
+          </div>
         </div>
       </a-col>
     </a-row>
 
-    <!-- 标题列表-关键词 -->
-    <a-modal v-model="titleVisible" title="Basic Modal" :footer="null">
-      <div>
-        <a-tag v-for="(item, index) in showKeyword" :key="index">{{item}}</a-tag>
-      </div>
+    <!-- 新增内链 对话框 -->
+    <a-modal v-model="visible" title="新增内链" @ok="handleOk">
+      <a-form :label-col="{ span: 3 }" :wrapper-col="{ span: 21 }">
+        <a-form-item label="分组名">
+          <a-input v-model="newAddInternalChain.gn" />
+        </a-form-item>
+        <a-form-item label="内链">
+          <a-input v-model="newAddInternalChain.link" />
+        </a-form-item>
+        <a-form-item label="关键词" extra="关键词以 “,” 分隔">
+          <a-textarea placeholder="" :rows="2" v-model="newAddInternalChain.value" />
+        </a-form-item>
+      </a-form>
     </a-modal>
 
   </div>
 </template>
 
 <script>
+const columns = [
+  {
+    title: 'Id',
+    dataIndex: 'id',
+    scopedSlots: { customRender: 'id' }
+  },
+  {
+    title: '分组名',
+    dataIndex: 'gn',
+    scopedSlots: { customRender: 'gn' }
+  },
+  {
+    title: '链接',
+    dataIndex: 'link',
+    scopedSlots: { customRender: 'link' }
+  },
+  {
+    title: '关键词',
+    dataIndex: 'value',
+    scopedSlots: { customRender: 'value' },
+    ellipsis: true
+  },
+  {
+    title: '时间',
+    dataIndex: 'create_at',
+    scopedSlots: { customRender: 'create_at' }
+  },
+  {
+    title: '操作',
+    scopedSlots: { customRender: 'handle' }
+  }
+]
+
+const articleListColumns = [
+  {
+    title: '序号',
+    dataIndex: 'key',
+    scopedSlots: { customRender: 'key' }
+  },
+  {
+    title: '标题',
+    dataIndex: 'tt',
+    scopedSlots: { customRender: 'tt' }
+  },
+  {
+    title: '内容',
+    dataIndex: 'txt',
+    scopedSlots: { customRender: 'txt' },
+    ellipsis: true
+  }
+]
+
 export default {
-  beforeCreate () {
-    this.form = this.$form.createForm(this, { name: 'validate_other' })
-  },
   created () {
+    this.getIlls()
     this.meansJudgement()
-    this.getTitleList()
-    this.getInternalChainList()
+    this.getMkDefaultVal()
   },
-  mounted () {
-    document.querySelector('.gpt-article-generate-title .ant-form-item-label-left label').style.fontSize = '16px'
-    document.querySelector('.gpt-order-info-title .ant-form-item-label-left label').style.fontSize = '16px'
-  },
-  data: () => ({
-    formItemLayout: {
-      labelCol: { span: 3, offset: 1 },
-      wrapperCol: { span: 19 }
-    },
-    columns: [
-      {
-        title: 'id',
-        dataIndex: 'key'
+  data () {
+    return {
+      columns,
+      data: [],
+      articleListColumns,
+      articleListData: [],
+      current: 0,
+      steps: [
+        {
+          title: '标题处理',
+          content: 'First-content'
+        },
+        {
+          title: '内容处理',
+          content: 'Second-content'
+        },
+        {
+          title: '完成',
+          content: 'Last-content'
+        }
+      ],
+      // 组合方式
+      value: 0,
+      // 新增内链对话框 显示/隐藏
+      visible: false,
+      // 新增内链 参数
+      newAddInternalChain: {
+        gn: '',
+        link: '',
+        value: ''
       },
-      {
-        title: '类型',
-        dataIndex: 'type',
-        scopedSlots: { customRender: 'type' },
-        filters: [
+      // 下载生成的文章 参数
+      downloadArticle: {
+        // 标题处理
+        tt: [
           {
-            text: '前缀',
-            value: '1'
-          },
-          {
-            text: '后缀',
-            value: '2'
-          },
-          {
-            text: '随机',
-            value: '3'
+            type: 'mk',
+            strs: []
           }
         ],
-        filterMultiple: false,
-        onFilter: (value, record) => (record.type + '').indexOf(value) === 0
+        // 内容处理
+        post_prefix: '',
+        post_suffix: '',
+        enable_subtt: 0,
+        kw_bold: 0,
+        il_bold: 0,
+        il_gn: '',
+        ptag: 0,
+        // -------------------------
+        gn: window.sessionStorage.getItem('itemName'),
+        dl_opt: 1
       },
-      {
-        title: '分组名',
-        dataIndex: 'gn'
+      // 地区
+      area: '',
+      // 词头
+      prefix: '',
+      // 主词
+      mk: '',
+      // 词尾
+      tail: '',
+      // 内链组 分页器 配置
+      pagination: {
+        defaultPageSize: 5
       },
-      {
-        title: '关键词',
-        // scopedSlots: { customRender: 'keywords' },
-        dataIndex: 'value',
-        ellipsis: true
-      },
-      {
-        title: '创建时间',
-        dataIndex: 'create_at',
-        scopedSlots: { customRender: 'create_at' }
-      },
-      {
-        title: '操作',
-        scopedSlots: { customRender: 'del' }
-      }
-    ],
-    data: [],
-    // 创建标题分组参数
-    formcreateHeaderGroups: {
-      type: '',
-      gn: '',
-      value: ''
-    },
-    // 类型-下拉框的值
-    typeSelectValue: '',
-    // 创建内链分组参数
-    formCreateInternalChainGroups: {
-      link: '',
-      gn: '',
-      value: ''
-    },
-    // 内链表格参数
-    internalChainTitle: [
-      {
-        title: 'id',
-        dataIndex: 'key'
-      },
-      {
-        title: '分组名',
-        dataIndex: 'gn'
-      },
-      {
-        title: '关键词',
-        // scopedSlots: { customRender: 'keywords' },
-        dataIndex: 'value',
-        ellipsis: true
-      },
-      {
-        title: '内链',
-        dataIndex: 'link'
-      },
-      {
-        title: '创建时间',
-        dataIndex: 'create_at',
-        scopedSlots: { customRender: 'create_at' }
-      },
-      {
-        title: '操作',
-        scopedSlots: { customRender: 'del' }
-      }
-    ],
-    internalChainData: [],
-    // 项目名
-    itemName: window.sessionStorage.getItem('itemName'),
-    // 标题处理方式
-    headingProcessingVal: '0',
-    // 标题前缀标签
-    titlePrefixName: '',
-    // 标题后缀标签
-    titleSuffixName: '',
-    // 随机标题标签
-    titleRandomName: '',
-    // 是否自动内链
-    autoInternalChain: '0',
-    // 选中的内链分组名
-    internalChainName: '',
-    // 是否关键词加粗
-    autoKeywordsBold: '0',
-    // 下载方式
-    downloadType: '1',
-    // 标题列表关键词显示隐藏
-    titleVisible: false,
-    // 标题列表关键词
-    showKeyword: []
-  }),
+      editingKey: '',
+      cacheData: [],
+      // 选中项 文章
+      selectedItem: []
+    }
+  },
   computed: {
-    // 标题列表 单选
     rowSelection () {
       return {
         type: 'radio',
         onChange: (selectedRowKeys, selectedRows) => {
-          // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
-          console.log(selectedRows[0])
-          if (selectedRows[0].type === 1) {
-            // 当前选择了前缀
-            this.titlePrefixName = selectedRows[0].gn
-          } else if (selectedRows[0].type === 2) {
-            // 当前选择了后缀
-            this.titleSuffixName = selectedRows[0].gn
-          } else if (selectedRows[0].type === 3) {
-            // 当前选择了随机
-            this.titleRandomName = selectedRows[0].gn
-          }
+          this.downloadArticle.il_gn = selectedRows[0].gn
         }
       }
     },
-    // 内链列表 单选
-    internalChainSelect () {
+    articleListRowSelection () {
       return {
-        type: 'radio',
+        // 选中项发生变化时的回调
         onChange: (selectedRowKeys, selectedRows) => {
           // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
-          this.internalChainName = selectedRows[0].gn
+          this.selectedItem = selectedRows
+        },
+        // 用户手动选择/取消选择某列的回调
+        onSelect: (record, selected, selectedRows) => {
+          // console.log(record, selected, selectedRows)
+        },
+        // 用户手动选择/取消选择所有列的回调
+        onSelectAll: (selected, selectedRows, changeRows) => {
+          // console.log(selected, selectedRows, changeRows)
         }
       }
     }
   },
   methods: {
-    // 获取标题列表
-    async getTitleList () {
-      const { data: res } = await this.$http.get('ttls')
-      if (res.status !== 0) return this.$message.error(res.reason)
-      res.list = res.list.map(v => {
-        return { ...v, key: v.id }
-      })
-      this.data = res.list
-    },
-    // 创建标题分组
-    async createHeaderGroups () {
-      if (this.typeSelectValue === '前缀') {
-        this.formcreateHeaderGroups.type = 1
-      } else if (this.typeSelectValue === '后缀') {
-        this.formcreateHeaderGroups.type = 2
-      } else if (this.typeSelectValue === '随机标题') {
-        this.formcreateHeaderGroups.type = 3
+    next () {
+      if (this.current === 1) {
+        this.downloadArticleEvent()
       }
-      const { data: res } = await this.$http.post('ctt', this.formcreateHeaderGroups)
+      this.current++
+    },
+    prev () {
+      this.current--
+    },
+    // 下载
+    downloadArticleBtn () {
+      console.log(this.selectedItem)
+    },
+    // 下载文章事件
+    async downloadArticleEvent () {
+      this.compoundMode()
+      const { data: res } = await this.$http.post('dlpost', this.downloadArticle)
       if (res.status !== 0) return this.$message.error(res.reason)
-      this.getTitleList()
-      this.$message.success('创建成功')
+      let i = 0
+      this.articleListData = res.posts.map(v => {
+        i++
+        return { ...v, key: i }
+      })
+      // if (this.downloadArticle.dl_opt === 2) {
+      //   return window.open(`http://api.91nlp.cn/dlzip?fn=${res.fn}`)
+      // } else {
+      //   const { data: response } = await this.$http.get(`http://api.91nlp.cn/dlzip?fn=${res.fn}`, {
+      //     responseType: 'blob'
+      //   })
+      //   const blob = new Blob([response])
+      //   const link = document.createElement('a')
+      //   link.href = URL.createObjectURL(blob)
+      //   link.download = this.downloadArticle.gn
+      //   link.click()
+      //   URL.revokeObjectURL(link.href)
+      // }
     },
     // 获取内链列表
-    async getInternalChainList () {
+    async getIlls () {
       const { data: res } = await this.$http.get('ills')
       if (res.status !== 0) return this.$message.error(res.reason)
-      res.list = res.list.map(v => {
-        return { ...v, key: v.id }
-      })
-      this.internalChainData = res.list
+      this.data = res.list
+      this.cacheData = res.list
     },
-    // 创建内链分组
-    async createInternalChainGroups () {
-      const { data: res } = await this.$http.post('cil', this.formCreateInternalChainGroups)
+    // 新增内链 显示/隐藏
+    showModal () {
+      this.visible = true
+    },
+    // 新增内链 对话框 确定按钮
+    handleOk () {
+      this.getCil(this.newAddInternalChain)
+    },
+    // 新增内链 接口
+    async getCil (obj) {
+      const { data: res } = await this.$http.post('cil', obj)
       if (res.status !== 0) return this.$message.error(res.reason)
-      this.getInternalChainList()
-      this.$message.success('创建成功')
-    },
-    // 下载文章
-    async downloadArticle () {
-      // 如果关键词加粗 或者 自动内链 有一个选了是 内链列表就是必选
-      if (this.autoInternalChain === '1' || this.autoKeywordsBold === '1') {
-        if (!this.internalChainName) return this.$message.error('请选择一个内链分组')
-      }
-      const downloadArgument = {
-        gn: this.itemName,
-        tt_pm: this.headingProcessingVal,
-        tt_pf_gn: this.titlePrefixName,
-        tt_tl_gn: this.titleSuffixName,
-        tt_rd_gn: this.titleRandomName,
-        inner_link: Number(this.autoInternalChain),
-        inner_link_gn: this.internalChainName,
-        kw_bold: Number(this.autoKeywordsBold),
-        dl_opt: Number(this.downloadType)
-      }
-      const { data: res } = await this.$http.post('dlpost', downloadArgument)
-      if (Number(this.downloadType) === 1) {
-        this.exportRaw(`${this.itemName}.txt`, res)
-      } else if (Number(this.downloadType) === 2) {
-        // 下载 zip 压缩包
-        if (res.status !== 0) return this.$message.error(res.reason)
-        window.open(`http://api.91nlp.cn/dlzip?fn=${res.fn}`)
-      }
-    },
-    // 判断是否是直接进入页面
-    meansJudgement () {
-      if (!this.itemName) return this.$router.push('/list')
-    },
-    // 字符串转 txt
-    fakeClick (obj) {
-      var ev = document.createEvent('MouseEvents')
-      ev.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
-      obj.dispatchEvent(ev)
-    },
-    exportRaw (name, data) {
-      var urlObject = window.URL || window.webkitURL || window
-      var exportBlob = new Blob([data])
-      var saveLink = document.createElementNS('http://www.w3.org/1999/xhtml', 'a')
-      saveLink.href = urlObject.createObjectURL(exportBlob)
-      saveLink.download = name
-      this.fakeClick(saveLink)
-    },
-    // 标题列表 查看关键词
-    async titleKeywords () {
-      const itemName = event.currentTarget.parentElement.parentElement.children[3].innerText
-      const { data: res } = await this.$http.get(`pg/kw?gn=${itemName}`)
-      if (res.status !== 0) return this.$message.error(res.reason)
-      this.showKeyword = res.kw.split(',')
-      this.titleVisible = true
+      this.getIlls()
+      this.visible = false
     },
     // 删除内链
-    async onDelete (key) {
-      const { data: res } = await this.$http.get(`rmil?ilid=${key}`)
+    async onDelete (val) {
+      const { data: res } = await this.$http.get(`rmil?ilid=${val}`)
       if (res.status !== 0) return this.$message.error(res.reason)
-      const internalChainData = [...this.internalChainData]
-      this.internalChainData = internalChainData.filter(item => item.key !== key)
+      const dataSource = [...this.data]
+      this.data = dataSource.filter(item => item.id !== val)
     },
-    // 删除标题
-    async onDeleteTitle (key) {
-      const { data: res } = await this.$http.get(`rmtt?ttid=${key}`)
+    // 判断是否携带 项目名 参数
+    meansJudgement () {
+      if (!this.downloadArticle.gn) return this.$router.push('/list')
+    },
+    // 组合方式
+    compoundMode () {
+      this.downloadArticle.tt = []
+      switch (this.value) {
+        case 0:
+          this.downloadArticle.tt.push({
+            type: 'mk',
+            strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+          })
+          // this.downloadArticle.tt = [
+          //   {
+          //     type: 'mk',
+          //     strs: []
+          //   }
+          // ]
+          break
+        case 1:
+          this.downloadArticle.tt.push({
+            type: 'area',
+            strs: this.area.trim() ? this.area.trim().split('\n') : []
+          })
+          this.downloadArticle.tt.push({
+            type: 'mk',
+            strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+          })
+          // this.downloadArticle.tt = [
+          //   {
+          //     type: 'area',
+          //     strs: []
+          //   },
+          //   {
+          //     type: 'mk',
+          //     strs: []
+          //   }
+          // ]
+          break
+        case 2:
+          this.downloadArticle.tt.push({
+            type: 'prefix',
+            strs: this.prefix.trim() ? this.prefix.trim().split('\n') : []
+          })
+          this.downloadArticle.tt.push({
+            type: 'mk',
+            strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+          })
+          // this.downloadArticle.tt = [
+          //   {
+          //     type: 'prefix',
+          //     strs: []
+          //   },
+          //   {
+          //     type: 'mk',
+          //     strs: []
+          //   }
+          // ]
+          break
+        case 3:
+          this.downloadArticle.tt.push({
+            type: 'mk',
+            strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+          })
+          this.downloadArticle.tt.push({
+            type: 'tail',
+            strs: this.tail.trim() ? this.tail.trim().split('\n') : []
+          })
+          // this.downloadArticle.tt = [
+          //   {
+          //     type: 'mk',
+          //     strs: []
+          //   },
+          //   {
+          //     type: 'tail',
+          //     strs: []
+          //   }
+          // ]
+          break
+        case 4:
+          this.downloadArticle.tt.push({
+            type: 'area',
+            strs: this.area.trim() ? this.area.trim().split('\n') : []
+          })
+          this.downloadArticle.tt.push({
+            type: 'prefix',
+            strs: this.prefix.trim() ? this.prefix.trim().split('\n') : []
+          })
+          this.downloadArticle.tt.push({
+            type: 'mk',
+            strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+          })
+          // this.downloadArticle.tt = [
+          //   {
+          //     type: 'area',
+          //     strs: []
+          //   },
+          //   {
+          //     type: 'prefix',
+          //     strs: []
+          //   },
+          //   {
+          //     type: 'mk',
+          //     strs: []
+          //   }
+          // ]
+          break
+        case 5:
+          this.downloadArticle.tt.push({
+            type: 'prefix',
+            strs: this.prefix.trim() ? this.prefix.trim().split('\n') : []
+          })
+          this.downloadArticle.tt.push({
+            type: 'mk',
+            strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+          })
+          this.downloadArticle.tt.push({
+            type: 'tail',
+            strs: this.tail.trim() ? this.tail.trim().split('\n') : []
+          })
+          // this.downloadArticle.tt = [
+          //   {
+          //     type: 'prefix',
+          //     strs: []
+          //   },
+          //   {
+          //     type: 'mk',
+          //     strs: []
+          //   },
+          //   {
+          //     type: 'tail',
+          //     strs: []
+          //   }
+          // ]
+          break
+        case 6:
+          this.downloadArticle.tt.push({
+            type: 'area',
+            strs: this.area.trim() ? this.area.trim().split('\n') : []
+          })
+          this.downloadArticle.tt.push({
+            type: 'mk',
+            strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+          })
+          this.downloadArticle.tt.push({
+            type: 'tail',
+            strs: this.tail.trim() ? this.tail.trim().split('\n') : []
+          })
+          // this.downloadArticle.tt = [
+          //   {
+          //     type: 'area',
+          //     strs: []
+          //   },
+          //   {
+          //     type: 'mk',
+          //     strs: []
+          //   },
+          //   {
+          //     type: 'tail',
+          //     strs: []
+          //   }
+          // ]
+          break
+        case 7:
+          this.downloadArticle.tt.push({
+            type: 'area',
+            strs: this.area.trim() ? this.area.trim().split('\n') : []
+          })
+          this.downloadArticle.tt.push({
+            type: 'prefix',
+            strs: this.prefix.trim() ? this.prefix.trim().split('\n') : []
+          })
+          this.downloadArticle.tt.push({
+            type: 'mk',
+            strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+          })
+          this.downloadArticle.tt.push({
+            type: 'tail',
+            strs: this.tail.trim() ? this.tail.trim().split('\n') : []
+          })
+          // this.downloadArticle.tt = [
+          //   {
+          //     type: 'area',
+          //     strs: []
+          //   },
+          //   {
+          //     type: 'prefix',
+          //     strs: []
+          //   },
+          //   {
+          //     type: 'mk',
+          //     strs: []
+          //   },
+          //   {
+          //     type: 'tail',
+          //     strs: []
+          //   }
+          // ]
+          break
+      }
+    },
+    // 主词默认值
+    getMkDefaultVal () {
+      this.downloadArticle.tt[0].strs = this.mk.split('\n')
+    },
+    // 编辑按钮
+    edit (key) {
+      const newData = [...this.data]
+      const target = newData.filter(item => key === item.id)[0]
+      this.editingKey = key
+      if (target) {
+        target.editable = true
+        this.data = newData
+      }
+    },
+    // 取消编辑按钮
+    cancel (key) {
+      const newData = [...this.data]
+      const target = newData.filter(item => key === item.id)[0]
+      this.editingKey = ''
+      if (target) {
+        Object.assign(target, this.cacheData.filter(item => key === item.id)[0])
+        delete target.editable
+        this.data = newData
+      }
+    },
+    // 值改变了
+    handleChange (value, key, column) {
+      const newData = [...this.data]
+      const target = newData.filter(item => key === item.id)[0]
+      if (target) {
+        target[column] = value
+        this.data = newData
+      }
+    },
+    // 保存按钮
+    save (key) {
+      const newData = [...this.data]
+      const newCacheData = [...this.cacheData]
+      const target = newData.filter(item => key === item.id)[0]
+      const targetCache = newCacheData.filter(item => key === item.id)[0]
+      if (target && targetCache) {
+        delete target.editable
+        this.data = newData
+        Object.assign(targetCache, target)
+        this.cacheData = newCacheData
+      }
+      this.editingKey = ''
+      this.updataInternalChainGroup(target)
+    },
+    // 更新内链组
+    async updataInternalChainGroup (val) {
+      const { data: res } = await this.$http.post('upil', val)
       if (res.status !== 0) return this.$message.error(res.reason)
-      const data = [...this.data]
-      this.data = data.filter(item => item.key !== key)
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-.gpt-article-generate,
-.gpt-order-info {
+.gpt-article-generate {
+  line-height: normal;
   background-color: #fff;
   border-radius: 20px;
-  .gpt-article-generate-title,
-  .gpt-order-info-title {
+  h3 {
     background-color: #FAFAFA;
+    text-align: left;
     border-radius: 20px 20px 0 0;
+    padding: 12px 40px;
     font-weight: bold;
+    font-size: 16px;
   }
+}
+.steps-content {
+  margin-top: 16px;
+  border: 1px dashed #e9e9e9;
+  border-radius: 6px;
+  background-color: #fafafa;
+  min-height: 200px;
+  text-align: center;
+  padding: 20px;
+}
+
+.steps-action {
+  margin-top: 24px;
+}
+.editable-row-operations a {
+  margin-right: 8px;
 }
 </style>
