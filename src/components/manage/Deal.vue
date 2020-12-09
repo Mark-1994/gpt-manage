@@ -12,58 +12,88 @@
               <div class="content-box" v-if="current === 0">
                 <a-row :gutter="[16, 16]">
                   <a-col :span="12">
-                    <a-textarea placeholder="地区 关键词格式：每行一个" :rows="10" v-model="area" />
-                    <a-button type="primary" block style="margin-top: 8px;">
+                    <a-button type="primary" block style="border-radius: 4px 4px 0 0;">
+                      地域词
+                    </a-button>
+                    <a-textarea placeholder="地区 关键词格式：每行一个" :rows="10" v-model="area" style="border-radius: 0 0 4px 4px;" />
+                    <a-button type="dashed" block style="margin-top: 8px;">
                       小助手
                     </a-button>
                   </a-col>
                   <a-col :span="12">
-                    <a-textarea placeholder="词头 关键词格式：每行一个" :rows="10" v-model="prefix" />
-                    <a-button type="primary" block style="margin-top: 8px;">
+                    <a-button type="primary" block style="border-radius: 4px 4px 0 0;">
+                      词头
+                    </a-button>
+                    <a-textarea placeholder="词头 关键词格式：每行一个" :rows="10" v-model="prefix" style="border-radius: 0 0 4px 4px;" />
+                    <a-button type="dashed" block style="margin-top: 8px;">
                       小助手
                     </a-button>
                   </a-col>
                   <a-col :span="12">
-                    <a-textarea placeholder="主词 关键词格式：每行一个" :rows="10" v-model="mk" />
-                    <a-button type="primary" block style="margin-top: 8px;">
+                    <a-button type="primary" block style="border-radius: 4px 4px 0 0;">
+                      主词
+                    </a-button>
+                    <a-textarea placeholder="主词 关键词格式：每行一个" :rows="10" v-model="mk" disabled style="border-radius: 0 0 4px 4px;" />
+                    <a-button type="dashed" block style="margin-top: 8px;">
                       小助手
                     </a-button>
                   </a-col>
                   <a-col :span="12">
-                    <a-textarea placeholder="词尾 关键词格式：每行一个" :rows="10" v-model="tail" />
-                    <a-button type="primary" block style="margin-top: 8px;">
+                    <a-button type="primary" block style="border-radius: 4px 4px 0 0;">
+                      词尾
+                    </a-button>
+                    <a-textarea placeholder="词尾 关键词格式：每行一个" :rows="10" v-model="tail" style="border-radius: 0 0 4px 4px;" />
+                    <a-button type="dashed" block style="margin-top: 8px;">
                       小助手
                     </a-button>
                   </a-col>
                 </a-row>
                 <a-row style="text-align: left;">
                   <a-col>
-                    <a-radio-group v-model="value" @change="compoundMode">
-                      <a-radio :value="0" style="width: 252px;">
-                        【主词】
-                      </a-radio>
-                      <a-radio :value="1" style="width: 252px;">
-                        【地区】【主词】
-                      </a-radio>
-                      <a-radio :value="2" style="width: 252px;">
-                        【词头】【主词】
-                      </a-radio>
-                      <a-radio :value="3" style="width: 252px;">
-                        【主词】【词尾】
-                      </a-radio>
-                      <a-radio :value="4" style="width: 252px;">
-                        【地区】【词头】【主词】
-                      </a-radio>
-                      <a-radio :value="5" style="width: 252px;">
-                        【词头】【主词】【词尾】
-                      </a-radio>
-                      <a-radio :value="6" style="width: 252px;">
-                        【地区】【主词】【词尾】
-                      </a-radio>
-                      <a-radio :value="7" style="width: 252px;">
-                        【地区】【词头】【主词】【词尾】
-                      </a-radio>
-                    </a-radio-group>
+                    <a-checkbox-group v-model="value" @change="compoundMode">
+                      <a-row>
+                        <a-col :span="8">
+                          <a-checkbox :value="0">
+                            【主词】
+                          </a-checkbox>
+                        </a-col>
+                        <a-col :span="8">
+                          <a-checkbox :value="1">
+                            【地区】【主词】
+                          </a-checkbox>
+                        </a-col>
+                        <a-col :span="8">
+                          <a-checkbox :value="2">
+                            【词头】【主词】
+                          </a-checkbox>
+                        </a-col>
+                        <a-col :span="8">
+                          <a-checkbox :value="3">
+                            【主词】【词尾】
+                          </a-checkbox>
+                        </a-col>
+                        <a-col :span="8">
+                          <a-checkbox :value="4">
+                            【地区】【词头】【主词】
+                          </a-checkbox>
+                        </a-col>
+                        <a-col :span="8">
+                          <a-checkbox :value="5">
+                            【词头】【主词】【词尾】
+                          </a-checkbox>
+                        </a-col>
+                        <a-col :span="8">
+                          <a-checkbox :value="6">
+                            【地区】【主词】【词尾】
+                          </a-checkbox>
+                        </a-col>
+                        <a-col :span="8">
+                          <a-checkbox :value="7">
+                            【地区】【词头】【主词】【词尾】
+                          </a-checkbox>
+                        </a-col>
+                      </a-row>
+                    </a-checkbox-group>
                   </a-col>
                 </a-row>
               </div>
@@ -75,7 +105,7 @@
                   <a-form-item label="插入段首">
                     <a-input v-model="downloadArticle.post_prefix" />
                   </a-form-item>
-                  <a-form-item label="插入断尾">
+                  <a-form-item label="插入段尾">
                     <a-input v-model="downloadArticle.post_suffix" />
                   </a-form-item>
                   <a-form-item label="小标题" extra="将标题以H2形式插入到文章内容中。只插入一次。" style="text-align: left;">
@@ -168,7 +198,7 @@
                       </a-radio>
                     </a-radio-group>
                   </a-form-item>
-                  <a-form-item label="下载方式" style="text-align: left;">
+                  <!-- <a-form-item label="下载方式" style="text-align: left;">
                     <a-radio-group v-model="downloadArticle.dl_opt">
                       <a-radio :value="1">
                         所有文章装进一个 txt 中
@@ -177,13 +207,15 @@
                         每个文章一个 txt,装进压缩包
                       </a-radio>
                     </a-radio-group>
-                  </a-form-item>
+                  </a-form-item> -->
                 </a-form>
               </div>
               <div class="content-box" v-else-if="current === 2">
                 <a-table :columns="articleListColumns" :data-source="articleListData" bordered :row-selection="articleListRowSelection">
-                  <template slot="name" slot-scope="text">
-                    <a>{{ text }}</a>
+                  <template slot="txt" slot-scope="text, record">
+                    <a href="javascript:;" :title="text" @click="contentEditShowModal(record)">
+                      {{ text }}
+                    </a>
                   </template>
                 </a-table>
               </div>
@@ -223,10 +255,17 @@
       </a-form>
     </a-modal>
 
+    <!-- 内容编辑器 对话框 -->
+    <a-modal v-model="contentEditVisible" :title="contentEditCacheRecord.tt" :footer="null" width="80%">
+      <quill-editor v-model="contentEditCacheRecord.txt"></quill-editor>
+    </a-modal>
+
   </div>
 </template>
 
 <script>
+import JSZip from 'jszip'
+import FileSaver from 'file-saver'
 const columns = [
   {
     title: 'Id',
@@ -284,6 +323,7 @@ export default {
     this.getIlls()
     this.meansJudgement()
     this.getMkDefaultVal()
+    this.getAllSubject(this.downloadArticle.gn)
   },
   data () {
     return {
@@ -307,7 +347,7 @@ export default {
         }
       ],
       // 组合方式
-      value: 0,
+      value: [0],
       // 新增内链对话框 显示/隐藏
       visible: false,
       // 新增内链 参数
@@ -352,7 +392,13 @@ export default {
       editingKey: '',
       cacheData: [],
       // 选中项 文章
-      selectedItem: []
+      selectedItem: [],
+      // 内容编辑对话框 显示/隐藏
+      contentEditVisible: false,
+      // 内容编辑对话框 数据
+      contentEditRecord: {},
+      // 缓存 内容编辑对话框 数据
+      contentEditCacheRecord: {}
     }
   },
   computed: {
@@ -394,7 +440,8 @@ export default {
     },
     // 下载
     downloadArticleBtn () {
-      console.log(this.selectedItem)
+      if (!this.selectedItem.length) return false
+      this.getArticleTxt(this.selectedItem)
     },
     // 下载文章事件
     async downloadArticleEvent () {
@@ -455,200 +502,206 @@ export default {
     },
     // 组合方式
     compoundMode () {
+      // this.downloadArticle.tt = [[{ type: 'mk', strs: ['gpt', 'seo优化'] }]]
       this.downloadArticle.tt = []
-      switch (this.value) {
-        case 0:
-          this.downloadArticle.tt.push({
-            type: 'mk',
-            strs: this.mk.trim() ? this.mk.trim().split('\n') : []
-          })
-          // this.downloadArticle.tt = [
-          //   {
-          //     type: 'mk',
-          //     strs: []
-          //   }
-          // ]
-          break
-        case 1:
-          this.downloadArticle.tt.push({
-            type: 'area',
-            strs: this.area.trim() ? this.area.trim().split('\n') : []
-          })
-          this.downloadArticle.tt.push({
-            type: 'mk',
-            strs: this.mk.trim() ? this.mk.trim().split('\n') : []
-          })
-          // this.downloadArticle.tt = [
-          //   {
-          //     type: 'area',
-          //     strs: []
-          //   },
-          //   {
-          //     type: 'mk',
-          //     strs: []
-          //   }
-          // ]
-          break
-        case 2:
-          this.downloadArticle.tt.push({
-            type: 'prefix',
-            strs: this.prefix.trim() ? this.prefix.trim().split('\n') : []
-          })
-          this.downloadArticle.tt.push({
-            type: 'mk',
-            strs: this.mk.trim() ? this.mk.trim().split('\n') : []
-          })
-          // this.downloadArticle.tt = [
-          //   {
-          //     type: 'prefix',
-          //     strs: []
-          //   },
-          //   {
-          //     type: 'mk',
-          //     strs: []
-          //   }
-          // ]
-          break
-        case 3:
-          this.downloadArticle.tt.push({
-            type: 'mk',
-            strs: this.mk.trim() ? this.mk.trim().split('\n') : []
-          })
-          this.downloadArticle.tt.push({
-            type: 'tail',
-            strs: this.tail.trim() ? this.tail.trim().split('\n') : []
-          })
-          // this.downloadArticle.tt = [
-          //   {
-          //     type: 'mk',
-          //     strs: []
-          //   },
-          //   {
-          //     type: 'tail',
-          //     strs: []
-          //   }
-          // ]
-          break
-        case 4:
-          this.downloadArticle.tt.push({
-            type: 'area',
-            strs: this.area.trim() ? this.area.trim().split('\n') : []
-          })
-          this.downloadArticle.tt.push({
-            type: 'prefix',
-            strs: this.prefix.trim() ? this.prefix.trim().split('\n') : []
-          })
-          this.downloadArticle.tt.push({
-            type: 'mk',
-            strs: this.mk.trim() ? this.mk.trim().split('\n') : []
-          })
-          // this.downloadArticle.tt = [
-          //   {
-          //     type: 'area',
-          //     strs: []
-          //   },
-          //   {
-          //     type: 'prefix',
-          //     strs: []
-          //   },
-          //   {
-          //     type: 'mk',
-          //     strs: []
-          //   }
-          // ]
-          break
-        case 5:
-          this.downloadArticle.tt.push({
-            type: 'prefix',
-            strs: this.prefix.trim() ? this.prefix.trim().split('\n') : []
-          })
-          this.downloadArticle.tt.push({
-            type: 'mk',
-            strs: this.mk.trim() ? this.mk.trim().split('\n') : []
-          })
-          this.downloadArticle.tt.push({
-            type: 'tail',
-            strs: this.tail.trim() ? this.tail.trim().split('\n') : []
-          })
-          // this.downloadArticle.tt = [
-          //   {
-          //     type: 'prefix',
-          //     strs: []
-          //   },
-          //   {
-          //     type: 'mk',
-          //     strs: []
-          //   },
-          //   {
-          //     type: 'tail',
-          //     strs: []
-          //   }
-          // ]
-          break
-        case 6:
-          this.downloadArticle.tt.push({
-            type: 'area',
-            strs: this.area.trim() ? this.area.trim().split('\n') : []
-          })
-          this.downloadArticle.tt.push({
-            type: 'mk',
-            strs: this.mk.trim() ? this.mk.trim().split('\n') : []
-          })
-          this.downloadArticle.tt.push({
-            type: 'tail',
-            strs: this.tail.trim() ? this.tail.trim().split('\n') : []
-          })
-          // this.downloadArticle.tt = [
-          //   {
-          //     type: 'area',
-          //     strs: []
-          //   },
-          //   {
-          //     type: 'mk',
-          //     strs: []
-          //   },
-          //   {
-          //     type: 'tail',
-          //     strs: []
-          //   }
-          // ]
-          break
-        case 7:
-          this.downloadArticle.tt.push({
-            type: 'area',
-            strs: this.area.trim() ? this.area.trim().split('\n') : []
-          })
-          this.downloadArticle.tt.push({
-            type: 'prefix',
-            strs: this.prefix.trim() ? this.prefix.trim().split('\n') : []
-          })
-          this.downloadArticle.tt.push({
-            type: 'mk',
-            strs: this.mk.trim() ? this.mk.trim().split('\n') : []
-          })
-          this.downloadArticle.tt.push({
-            type: 'tail',
-            strs: this.tail.trim() ? this.tail.trim().split('\n') : []
-          })
-          // this.downloadArticle.tt = [
-          //   {
-          //     type: 'area',
-          //     strs: []
-          //   },
-          //   {
-          //     type: 'prefix',
-          //     strs: []
-          //   },
-          //   {
-          //     type: 'mk',
-          //     strs: []
-          //   },
-          //   {
-          //     type: 'tail',
-          //     strs: []
-          //   }
-          // ]
-          break
+      for (let i = 0; i < this.value.length; i++) {
+        const cacheData = []
+        switch (this.value[i]) {
+          case 0:
+            cacheData.push({
+              type: 'mk',
+              strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+            })
+            // this.downloadArticle.tt = [
+            //   {
+            //     type: 'mk',
+            //     strs: []
+            //   }
+            // ]
+            break
+          case 1:
+            cacheData.push({
+              type: 'area',
+              strs: this.area.trim() ? this.area.trim().split('\n') : []
+            })
+            cacheData.push({
+              type: 'mk',
+              strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+            })
+            // this.downloadArticle.tt = [
+            //   {
+            //     type: 'area',
+            //     strs: []
+            //   },
+            //   {
+            //     type: 'mk',
+            //     strs: []
+            //   }
+            // ]
+            break
+          case 2:
+            cacheData.push({
+              type: 'prefix',
+              strs: this.prefix.trim() ? this.prefix.trim().split('\n') : []
+            })
+            cacheData.push({
+              type: 'mk',
+              strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+            })
+            // this.downloadArticle.tt = [
+            //   {
+            //     type: 'prefix',
+            //     strs: []
+            //   },
+            //   {
+            //     type: 'mk',
+            //     strs: []
+            //   }
+            // ]
+            break
+          case 3:
+            cacheData.push({
+              type: 'mk',
+              strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+            })
+            cacheData.push({
+              type: 'tail',
+              strs: this.tail.trim() ? this.tail.trim().split('\n') : []
+            })
+            // this.downloadArticle.tt = [
+            //   {
+            //     type: 'mk',
+            //     strs: []
+            //   },
+            //   {
+            //     type: 'tail',
+            //     strs: []
+            //   }
+            // ]
+            break
+          case 4:
+            cacheData.push({
+              type: 'area',
+              strs: this.area.trim() ? this.area.trim().split('\n') : []
+            })
+            cacheData.push({
+              type: 'prefix',
+              strs: this.prefix.trim() ? this.prefix.trim().split('\n') : []
+            })
+            cacheData.push({
+              type: 'mk',
+              strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+            })
+            // this.downloadArticle.tt = [
+            //   {
+            //     type: 'area',
+            //     strs: []
+            //   },
+            //   {
+            //     type: 'prefix',
+            //     strs: []
+            //   },
+            //   {
+            //     type: 'mk',
+            //     strs: []
+            //   }
+            // ]
+            break
+          case 5:
+            cacheData.push({
+              type: 'prefix',
+              strs: this.prefix.trim() ? this.prefix.trim().split('\n') : []
+            })
+            cacheData.push({
+              type: 'mk',
+              strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+            })
+            cacheData.push({
+              type: 'tail',
+              strs: this.tail.trim() ? this.tail.trim().split('\n') : []
+            })
+            // this.downloadArticle.tt = [
+            //   {
+            //     type: 'prefix',
+            //     strs: []
+            //   },
+            //   {
+            //     type: 'mk',
+            //     strs: []
+            //   },
+            //   {
+            //     type: 'tail',
+            //     strs: []
+            //   }
+            // ]
+            break
+          case 6:
+            cacheData.push({
+              type: 'area',
+              strs: this.area.trim() ? this.area.trim().split('\n') : []
+            })
+            cacheData.push({
+              type: 'mk',
+              strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+            })
+            cacheData.push({
+              type: 'tail',
+              strs: this.tail.trim() ? this.tail.trim().split('\n') : []
+            })
+            // this.downloadArticle.tt = [
+            //   {
+            //     type: 'area',
+            //     strs: []
+            //   },
+            //   {
+            //     type: 'mk',
+            //     strs: []
+            //   },
+            //   {
+            //     type: 'tail',
+            //     strs: []
+            //   }
+            // ]
+            break
+          case 7:
+            cacheData.push({
+              type: 'area',
+              strs: this.area.trim() ? this.area.trim().split('\n') : []
+            })
+            cacheData.push({
+              type: 'prefix',
+              strs: this.prefix.trim() ? this.prefix.trim().split('\n') : []
+            })
+            cacheData.push({
+              type: 'mk',
+              strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+            })
+            cacheData.push({
+              type: 'tail',
+              strs: this.tail.trim() ? this.tail.trim().split('\n') : []
+            })
+            // this.downloadArticle.tt = [
+            //   {
+            //     type: 'area',
+            //     strs: []
+            //   },
+            //   {
+            //     type: 'prefix',
+            //     strs: []
+            //   },
+            //   {
+            //     type: 'mk',
+            //     strs: []
+            //   },
+            //   {
+            //     type: 'tail',
+            //     strs: []
+            //   }
+            // ]
+            break
+        }
+        // console.log(cacheData)
+        this.downloadArticle.tt.push(cacheData)
       }
     },
     // 主词默认值
@@ -704,6 +757,29 @@ export default {
     async updataInternalChainGroup (val) {
       const { data: res } = await this.$http.post('upil', val)
       if (res.status !== 0) return this.$message.error(res.reason)
+    },
+    // 下载 文章 .txt
+    getArticleTxt (val) {
+      const zip = new JSZip()
+      for (let i = 0; i < val.length; i++) {
+        zip.file(val[i].tt + '-' + i + '.txt', val[i].txt)
+      }
+      zip.generateAsync({ type: 'blob' })
+        .then(content => {
+          FileSaver.saveAs(content, this.downloadArticle.gn + '.zip')
+        })
+    },
+    // 内容编辑对话框 显示/隐藏 事件
+    contentEditShowModal (val) {
+      this.contentEditRecord = val
+      this.contentEditCacheRecord = { ...this.contentEditRecord }
+      this.contentEditVisible = true
+    },
+    // 获取任务所有主词
+    async getAllSubject (val) {
+      const { data: res } = await this.$http.get(`qpf?gn=${val}`)
+      if (res.status !== 0) return this.$message.error(res.reason)
+      this.mk = res.mks.join('\n')
     }
   }
 }

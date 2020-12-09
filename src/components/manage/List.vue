@@ -10,18 +10,18 @@
         {{ text | dateFormat }}
       </template>
       <template slot="deal" slot-scope="record">
-        <!-- <router-link to="/deal">
-          操作
-        </router-link> -->
-        <a href="javascript:;" @click="handle($event)">处理&nbsp;</a>
-        &nbsp;
+        <a href="javascript:;" @click="handle($event)">处理</a>
+        <a-divider type="vertical" />
         <a-popconfirm
           v-if="allTask.length"
           title="确定删除?"
           @confirm="() => onDelete(record.gn)"
         >
-          <a href="javascript:;">&nbsp;删除</a>
+          <a href="javascript:;">删除</a>
         </a-popconfirm>
+      </template>
+      <template slot="state" slot-scope="text">
+        <span :style="text === '完成' ? 'color: green;' : ''">{{ text }}</span>
       </template>
     </a-table>
 
@@ -94,7 +94,8 @@ export default {
             }
           ],
           filterMultiple: false,
-          onFilter: (value, record) => record.state.indexOf(value) === 0
+          onFilter: (value, record) => record.state.indexOf(value) === 0,
+          scopedSlots: { customRender: 'state' }
         },
         {
           title: '操作',
