@@ -5,7 +5,7 @@
         <a-row type="flex" justify="space-between" class="gpt-header">
           <a-col :span="4" class="header-left">
             <router-link to="/home">
-              <img src="../assets/gpt-white.png" alt="" />
+              <img src="../assets/gpt-logo.svg" alt="" />
             </router-link>
           </a-col>
           <a-col :span="4" class="header-right">
@@ -201,8 +201,12 @@ export default {
 #components-layout-demo-basic > .ant-layout:last-child {
   margin: 0;
 }
+.header-left {
+  text-align: left;
+}
 .header-left img {
-  width: 100%;
+  // width: 100%;
+  width: auto;
 }
 .header-right {
   text-align: right;

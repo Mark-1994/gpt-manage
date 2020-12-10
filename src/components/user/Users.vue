@@ -1,6 +1,6 @@
 <template>
   <div class="users_container">
-    <a-row type="flex" justify="space-between" align="top" class="gpt-header">
+    <a-row type="flex" justify="space-between" align="middle" class="gpt-header">
       <a-col :span="6">
         <a-row class="gpt-header-left" :gutter="[0, 15]">
           <a-col>
@@ -18,13 +18,49 @@
           </a-col>
           <a-col class="gpt-name">{{indexInfo.nick_name}}</a-col>
           <a-col>
-            <a-button type="primary" shape="round" size="large" @click="recharge">
+            <a-button type="primary" shape="round" size="large" @click="recharge" :style="{ backgroundColor: '#0039FD', borderColor: '#0039FD' }">
               充值积分
             </a-button>
           </a-col>
         </a-row>
       </a-col>
-      <a-col :span="9">
+      <a-col :span="10">
+        <a-row class="gpt-header-center" :gutter="[0, 25]">
+          <a-col>
+            您是<span v-if="indexInfo.member === 0">普通会员</span><span v-else-if="indexInfo.member === 1">黄金会员</span><span v-else-if="indexInfo.member === 2">铂金会员</span><span v-else-if="indexInfo.member === 3">钻石会员</span>，享受 <span :style="{ color: '#015BF8' }">30</span> 积分/篇，签到赠送 <span :style="{ color: '#015BF8' }">{{ indexInfo.qd_coin * indexInfo.qd_sc.split('/')[1] }}</span> 积分
+          </a-col>
+          <a-col>
+            <span v-if="!indexInfo.mexp">你还不是会员，开通福利多多</span>
+            <span v-else><i :style="{ color: '#015BF8', fontStyle: 'normal' }">{{ indexInfo.mexp | dateFormat }}</i> 到期</span>&nbsp;
+            <a-button type="primary" :style="{ backgroundColor: '#FFC663', color: '#B86900', borderColor: '#FFC663', borderRadius: '12px', height: '24px' }" v-if="!indexInfo.mexp">
+              会员续费
+            </a-button>
+          </a-col>
+          <a-col>
+            <a-row>
+              <a-col :span="8">
+                <div>
+                  <span :style="{ color: '#FDA700', display: 'block' }">黄金会员</span>
+                  <span :style="{ color: '#A2A2A2', display: 'block' }">20积分/篇</span>
+                </div>
+              </a-col>
+              <a-col :span="8">
+                <div>
+                  <span :style="{ color: '#9D9EC3', display: 'block' }">铂金会员</span>
+                  <span :style="{ color: '#A2A2A2', display: 'block' }">15积分/篇</span>
+                </div>
+              </a-col>
+              <a-col :span="8">
+                <div>
+                  <span :style="{ color: '#343434', display: 'block' }">钻石会员</span>
+                  <span :style="{ color: '#A2A2A2', display: 'block' }">10积分/篇</span>
+                </div>
+              </a-col>
+            </a-row>
+          </a-col>
+        </a-row>
+      </a-col>
+      <a-col :span="8">
         <a-row class="gpt-header-right" :gutter="[0, 15]">
           <a-col>
             <a-progress type="circle" :percent="getFlagNum" :width="184" :strokeWidth="10" strokeColor="#FFB41D">
@@ -54,7 +90,7 @@
             <a-col class="gpt-content-points">我的积分</a-col>
             <a-col class="gpt-content-num">{{indexInfo.balance}}</a-col>
             <a-col>
-              <a-button type="primary" shape="round" size="large" @click="articleProduce">
+              <a-button type="primary" shape="round" size="large" @click="articleProduce" :style="{ backgroundColor: '#0039FD', borderColor: '#0039FD' }">
                 文章生成
               </a-button>
             </a-col>
@@ -68,7 +104,7 @@
             <a-col class="gpt-content-points">我的模型</a-col>
             <a-col class="gpt-content-num">{{indexInfo.pri_model_num}}</a-col>
             <a-col>
-              <a-button type="primary" shape="round" size="large" @click="createArticleModel">
+              <a-button type="primary" shape="round" size="large" @click="createArticleModel" :style="{ backgroundColor: '#0039FD', borderColor: '#0039FD' }">
                 文章模型
               </a-button>
             </a-col>
@@ -82,7 +118,7 @@
             <a-col class="gpt-content-points">API次数</a-col>
             <a-col class="gpt-content-num">{{indexInfo.api_use_times}}</a-col>
             <a-col>
-              <a-button type="primary" shape="round" size="large" @click="setApiParam">
+              <a-button type="primary" shape="round" size="large" @click="setApiParam" :style="{ backgroundColor: '#0039FD', borderColor: '#0039FD' }">
                 设置API参数
               </a-button>
             </a-col>
@@ -96,7 +132,7 @@
             <a-col class="gpt-content-points">生成数量</a-col>
             <a-col class="gpt-content-num">{{indexInfo.post_num}}</a-col>
             <a-col>
-              <a-button type="primary" shape="round" size="large" @click="rabbitmqctlListQueues">
+              <a-button type="primary" shape="round" size="large" @click="rabbitmqctlListQueues" :style="{ backgroundColor: '#0039FD', borderColor: '#0039FD' }">
                 查看队列
               </a-button>
             </a-col>
@@ -481,6 +517,14 @@ export default {
           window.location.href = 'http://a.91nlp.cn/'
         })
       }
+    },
+    // 查询文章生成单篇价格
+    async getArticlePrice (mid, ml) {
+      const { data: res } = await this.$http.post('pcost', {
+        mid: mid,
+        ml: ml
+      })
+      if (res.status !== 0) return this.$message.error(res.reason)
     }
   }
 }
@@ -534,6 +578,11 @@ export default {
 .gpt-header-right {
   line-height: normal;
   padding: 30px 0 20px 0;
+}
+.gpt-header-center {
+  line-height: normal;
+  color: #000;
+  font-size: 16px;
 }
 .gpt-name {
   color: #040404;

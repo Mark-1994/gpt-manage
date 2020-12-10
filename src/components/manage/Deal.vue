@@ -16,7 +16,7 @@
                       地域词
                     </a-button>
                     <a-textarea placeholder="地区 关键词格式：每行一个" :rows="10" v-model="area" style="border-radius: 0 0 4px 4px;" />
-                    <a-button type="dashed" block style="margin-top: 8px;">
+                    <a-button type="dashed" block style="margin-top: 8px;" @click="assistantShowModal(0)">
                       小助手
                     </a-button>
                   </a-col>
@@ -25,7 +25,7 @@
                       词头
                     </a-button>
                     <a-textarea placeholder="词头 关键词格式：每行一个" :rows="10" v-model="prefix" style="border-radius: 0 0 4px 4px;" />
-                    <a-button type="dashed" block style="margin-top: 8px;">
+                    <a-button type="dashed" block style="margin-top: 8px;" @click="assistantShowModal(1)">
                       小助手
                     </a-button>
                   </a-col>
@@ -34,7 +34,7 @@
                       主词
                     </a-button>
                     <a-textarea placeholder="主词 关键词格式：每行一个" :rows="10" v-model="mk" disabled style="border-radius: 0 0 4px 4px;" />
-                    <a-button type="dashed" block style="margin-top: 8px;">
+                    <a-button type="dashed" block style="margin-top: 8px;" @click="assistantShowModal(2)" disabled>
                       小助手
                     </a-button>
                   </a-col>
@@ -43,7 +43,7 @@
                       词尾
                     </a-button>
                     <a-textarea placeholder="词尾 关键词格式：每行一个" :rows="10" v-model="tail" style="border-radius: 0 0 4px 4px;" />
-                    <a-button type="dashed" block style="margin-top: 8px;">
+                    <a-button type="dashed" block style="margin-top: 8px;" @click="assistantShowModal(3)">
                       小助手
                     </a-button>
                   </a-col>
@@ -188,16 +188,6 @@
                       </template>
                     </a-table>
                   </a-form-item>
-                  <a-form-item label="文本格式" style="text-align: left;">
-                    <a-radio-group v-model="downloadArticle.ptag">
-                      <a-radio :value="0">
-                        纯文本格式
-                      </a-radio>
-                      <a-radio :value="1">
-                        富文本格式
-                      </a-radio>
-                    </a-radio-group>
-                  </a-form-item>
                   <!-- <a-form-item label="下载方式" style="text-align: left;">
                     <a-radio-group v-model="downloadArticle.dl_opt">
                       <a-radio :value="1">
@@ -211,13 +201,27 @@
                 </a-form>
               </div>
               <div class="content-box" v-else-if="current === 2">
-                <a-table :columns="articleListColumns" :data-source="articleListData" bordered :row-selection="articleListRowSelection">
-                  <template slot="txt" slot-scope="text, record">
-                    <a href="javascript:;" :title="text" @click="contentEditShowModal(record)">
-                      {{ text }}
-                    </a>
-                  </template>
-                </a-table>
+                <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
+                  <a-form-item label="文章列表" style="text-align: left;">
+                    <a-table :columns="articleListColumns" :data-source="articleListData" bordered size="small" :row-selection="articleListRowSelection">
+                      <template slot="txt" slot-scope="text, record">
+                        <a href="javascript:;" :title="text" @click="contentEditShowModal(record)">
+                          {{ text }}
+                        </a>
+                      </template>
+                    </a-table>
+                  </a-form-item>
+                  <a-form-item label="文本格式" style="text-align: left;">
+                    <a-radio-group v-model="downloadArticle.ptag">
+                      <a-radio :value="0">
+                        纯文本格式
+                      </a-radio>
+                      <a-radio :value="1">
+                        富文本格式
+                      </a-radio>
+                    </a-radio-group>
+                  </a-form-item>
+                </a-form>
               </div>
             </div>
             <div class="steps-action">
@@ -260,12 +264,90 @@
       <quill-editor v-model="contentEditCacheRecord.txt"></quill-editor>
     </a-modal>
 
+    <!-- 地域词 小助手 -->
+    <a-modal v-model="areaVisible" title="地域词" @ok="areaHandleOk">
+      <div :style="{ borderBottom: '1px solid #E9E9E9' }">
+        <a-checkbox :indeterminate="NCIndeterminate" :checked="NCCheckAll" @change="NCOnCheckAllChange">
+          华北地区
+        </a-checkbox>
+      </div>
+      <br />
+      <a-checkbox-group v-model="NCCheckedList" :options="NCPlainOptions" @change="NCOnChange" />
+
+      <div :style="{ borderBottom: '1px solid #E9E9E9', marginTop: '10px' }">
+        <a-checkbox :indeterminate="NEIndeterminate" :checked="NECheckAll" @change="NEOnCheckAllChange">
+          东北地区
+        </a-checkbox>
+      </div>
+      <br />
+      <a-checkbox-group v-model="NECheckedList" :options="NEPlainOptions" @change="NEOnChange" />
+
+      <div :style="{ borderBottom: '1px solid #E9E9E9', marginTop: '10px' }">
+        <a-checkbox :indeterminate="ECIndeterminate" :checked="ECCheckAll" @change="ECOnCheckAllChange">
+          华东地区
+        </a-checkbox>
+      </div>
+      <br />
+      <a-checkbox-group v-model="ECCheckedList" :options="ECPlainOptions" @change="ECOnChange" />
+
+      <div :style="{ borderBottom: '1px solid #E9E9E9', marginTop: '10px' }">
+        <a-checkbox :indeterminate="CCIndeterminate" :checked="CCCheckAll" @change="CCOnCheckAllChange">
+          华中地区
+        </a-checkbox>
+      </div>
+      <br />
+      <a-checkbox-group v-model="CCCheckedList" :options="CCPlainOptions" @change="CCOnChange" />
+
+      <div :style="{ borderBottom: '1px solid #E9E9E9', marginTop: '10px' }">
+        <a-checkbox :indeterminate="SCIndeterminate" :checked="SCCheckAll" @change="SCOnCheckAllChange">
+          华南地区
+        </a-checkbox>
+      </div>
+      <br />
+      <a-checkbox-group v-model="SCCheckedList" :options="SCPlainOptions" @change="SCOnChange" />
+
+      <div :style="{ borderBottom: '1px solid #E9E9E9', marginTop: '10px' }">
+        <a-checkbox :indeterminate="SWIndeterminate" :checked="SWCheckAll" @change="SWOnCheckAllChange">
+          西南地区
+        </a-checkbox>
+      </div>
+      <br />
+      <a-checkbox-group v-model="SWCheckedList" :options="SWPlainOptions" @change="SWOnChange" />
+
+      <div :style="{ borderBottom: '1px solid #E9E9E9', marginTop: '10px' }">
+        <a-checkbox :indeterminate="NWIndeterminate" :checked="NWCheckAll" @change="NWOnCheckAllChange">
+          西北地区
+        </a-checkbox>
+      </div>
+      <br />
+      <a-checkbox-group v-model="NWCheckedList" :options="NWPlainOptions" @change="NWOnChange" />
+    </a-modal>
+
+    <!-- 词头 小助手 -->
+    <a-modal v-model="prefixVisible" title="词头" @ok="prefixHandleOk">
+      <a-list size="small" bordered :data-source="prefixData" :style="{ maxHeight: '300px', overflow: 'auto' }">
+        <a-list-item slot="renderItem" slot-scope="item">
+          {{ item }}
+        </a-list-item>
+      </a-list>
+    </a-modal>
+
+    <!-- 词尾 小助手 -->
+    <a-modal v-model="suffixVisible" title="词尾" @ok="suffixHandleOk">
+      <a-list size="small" bordered :data-source="suffixData" :style="{ maxHeight: '300px', overflow: 'auto' }">
+        <a-list-item slot="renderItem" slot-scope="item">
+          {{ item }}
+        </a-list-item>
+      </a-list>
+    </a-modal>
+
   </div>
 </template>
 
 <script>
 import JSZip from 'jszip'
 import FileSaver from 'file-saver'
+import { NCCheckedList, NCPlainOptions, NECheckedList, NEPlainOptions, ECCheckedList, ECPlainOptions, CCCheckedList, CCPlainOptions, SCCheckedList, SCPlainOptions, SWCheckedList, SWPlainOptions, NWCheckedList, NWPlainOptions, prefixData, suffixData } from './worddata.js'
 const columns = [
   {
     title: 'Id',
@@ -398,7 +480,52 @@ export default {
       // 内容编辑对话框 数据
       contentEditRecord: {},
       // 缓存 内容编辑对话框 数据
-      contentEditCacheRecord: {}
+      contentEditCacheRecord: {},
+      // 地域词 对话框 显示/隐藏
+      areaVisible: false,
+      // 华北
+      NCCheckedList,
+      NCPlainOptions,
+      NCCheckAll: true,
+      NCIndeterminate: false,
+      // 东北
+      NECheckedList,
+      NEPlainOptions,
+      NECheckAll: true,
+      NEIndeterminate: false,
+      // 华东
+      ECCheckedList,
+      ECPlainOptions,
+      ECCheckAll: true,
+      ECIndeterminate: false,
+      // 华中
+      CCCheckedList,
+      CCPlainOptions,
+      CCCheckAll: true,
+      CCIndeterminate: false,
+      // 华南
+      SCCheckedList,
+      SCPlainOptions,
+      SCCheckAll: true,
+      SCIndeterminate: false,
+      // 西南
+      SWCheckedList,
+      SWPlainOptions,
+      SWCheckAll: true,
+      SWIndeterminate: false,
+      // 西北
+      NWCheckedList,
+      NWPlainOptions,
+      NWCheckAll: true,
+      NWIndeterminate: false,
+      // 词头 对话框 显示/隐藏
+      prefixVisible: false,
+      // 词头 对话框 数据
+      prefixData,
+      // 词尾 对话框 显示/隐藏
+      suffixVisible: false,
+      // 词尾 对话框 数据
+      suffixData
     }
   },
   computed: {
@@ -762,7 +889,11 @@ export default {
     getArticleTxt (val) {
       const zip = new JSZip()
       for (let i = 0; i < val.length; i++) {
-        zip.file(val[i].tt + '-' + i + '.txt', val[i].txt)
+        if (!this.downloadArticle.ptag) {
+          zip.file(val[i].tt + '-' + i + '.txt', val[i].txt.replace(/<.*?>/ig, ''))
+        } else {
+          zip.file(val[i].tt + '-' + i + '.txt', val[i].txt)
+        }
       }
       zip.generateAsync({ type: 'blob' })
         .then(content => {
@@ -772,7 +903,8 @@ export default {
     // 内容编辑对话框 显示/隐藏 事件
     contentEditShowModal (val) {
       this.contentEditRecord = val
-      this.contentEditCacheRecord = { ...this.contentEditRecord }
+      // this.contentEditCacheRecord = { ...this.contentEditRecord }
+      this.contentEditCacheRecord = this.contentEditRecord
       this.contentEditVisible = true
     },
     // 获取任务所有主词
@@ -780,6 +912,126 @@ export default {
       const { data: res } = await this.$http.get(`qpf?gn=${val}`)
       if (res.status !== 0) return this.$message.error(res.reason)
       this.mk = res.mks.join('\n')
+    },
+    // 小助手按钮点击事件
+    assistantShowModal (val) {
+      switch (val) {
+        case 0 :
+          this.areaVisible = true
+          break
+        case 1 :
+          this.prefixVisible = true
+          break
+        case 3 :
+          this.suffixVisible = true
+          break
+      }
+    },
+    // 地域词 对话框 确定事件
+    areaHandleOk () {
+      const NCCheckedList = this.NCCheckedList.length ? this.NCCheckedList.join('\n') + '\n' : ''
+      const NECheckedList = this.NECheckedList.length ? this.NECheckedList.join('\n') + '\n' : ''
+      const ECCheckedList = this.ECCheckedList.length ? this.ECCheckedList.join('\n') + '\n' : ''
+      const CCCheckedList = this.CCCheckedList.length ? this.CCCheckedList.join('\n') + '\n' : ''
+      const SCCheckedList = this.SCCheckedList.length ? this.SCCheckedList.join('\n') + '\n' : ''
+      const SWCheckedList = this.SWCheckedList.length ? this.SWCheckedList.join('\n') + '\n' : ''
+      const NWCheckedList = this.NWCheckedList.length ? this.NWCheckedList.join('\n') : ''
+      this.area = NCCheckedList + NECheckedList + ECCheckedList + CCCheckedList + SCCheckedList + SWCheckedList + NWCheckedList
+      this.areaVisible = false
+    },
+    // 华北
+    NCOnChange (NCCheckedList) {
+      this.NCIndeterminate = !!NCCheckedList.length && NCCheckedList.length < NCPlainOptions.length
+      this.NCCheckAll = NCCheckedList.length === NCPlainOptions.length
+    },
+    NCOnCheckAllChange (e) {
+      Object.assign(this, {
+        NCCheckedList: e.target.checked ? NCPlainOptions : [],
+        NCIndeterminate: false,
+        NCCheckAll: e.target.checked
+      })
+    },
+    // 东北
+    NEOnChange (NECheckedList) {
+      this.NEIndeterminate = !!NECheckedList.length && NECheckedList.length < NEPlainOptions.length
+      this.NECheckAll = NECheckedList.length === NEPlainOptions.length
+    },
+    NEOnCheckAllChange (e) {
+      Object.assign(this, {
+        NECheckedList: e.target.checked ? NEPlainOptions : [],
+        NEIndeterminate: false,
+        NECheckAll: e.target.checked
+      })
+    },
+    // 华东
+    ECOnChange (ECCheckedList) {
+      this.ECIndeterminate = !!ECCheckedList.length && ECCheckedList.length < ECPlainOptions.length
+      this.ECCheckAll = ECCheckedList.length === ECPlainOptions.length
+    },
+    ECOnCheckAllChange (e) {
+      Object.assign(this, {
+        ECCheckedList: e.target.checked ? ECPlainOptions : [],
+        ECIndeterminate: false,
+        ECCheckAll: e.target.checked
+      })
+    },
+    // 华中
+    CCOnChange (CCCheckedList) {
+      this.CCIndeterminate = !!CCCheckedList.length && CCCheckedList.length < CCPlainOptions.length
+      this.CCCheckAll = CCCheckedList.length === CCPlainOptions.length
+    },
+    CCOnCheckAllChange (e) {
+      Object.assign(this, {
+        CCCheckedList: e.target.checked ? CCPlainOptions : [],
+        CCIndeterminate: false,
+        CCCheckAll: e.target.checked
+      })
+    },
+    // 华南
+    SCOnChange (SCCheckedList) {
+      this.SCIndeterminate = !!SCCheckedList.length && SCCheckedList.length < SCPlainOptions.length
+      this.SCCheckAll = SCCheckedList.length === SCPlainOptions.length
+    },
+    SCOnCheckAllChange (e) {
+      Object.assign(this, {
+        SCCheckedList: e.target.checked ? SCPlainOptions : [],
+        SCIndeterminate: false,
+        SCCheckAll: e.target.checked
+      })
+    },
+    // 西南
+    SWOnChange (SWCheckedList) {
+      this.SWIndeterminate = !!SWCheckedList.length && SWCheckedList.length < SWPlainOptions.length
+      this.SWCheckAll = SWCheckedList.length === SWPlainOptions.length
+    },
+    SWOnCheckAllChange (e) {
+      Object.assign(this, {
+        SWCheckedList: e.target.checked ? SWPlainOptions : [],
+        SWIndeterminate: false,
+        SWCheckAll: e.target.checked
+      })
+    },
+    // 西北
+    NWOnChange (NWCheckedList) {
+      this.NWIndeterminate = !!NWCheckedList.length && NWCheckedList.length < NWPlainOptions.length
+      this.NWCheckAll = NWCheckedList.length === NWPlainOptions.length
+    },
+    NWOnCheckAllChange (e) {
+      Object.assign(this, {
+        NWCheckedList: e.target.checked ? NWPlainOptions : [],
+        NWIndeterminate: false,
+        NWCheckAll: e.target.checked
+      })
+    },
+    // 词头 对话框 确定事件
+    prefixHandleOk () {
+      this.prefix = this.prefixData.join('\n')
+      this.prefixVisible = false
+    },
+    // 词尾 对话框 确定事件
+    suffixHandleOk () {
+      this.tail = this.suffixData.join('\n')
+      this.suffixVisible = false
     }
   }
 }
