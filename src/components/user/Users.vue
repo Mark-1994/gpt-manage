@@ -3,7 +3,7 @@
     <a-row type="flex" justify="space-between" align="middle" class="gpt-header">
       <a-col :span="6">
         <a-row class="gpt-header-left" :gutter="[0, 15]">
-          <a-col>
+          <a-col v-if="false">
 
             <div class="add-glow-effect">
               <img v-if="!indexInfo.member" src="../../assets/gpt-member00.png" alt="" />
@@ -24,10 +24,10 @@
           </a-col>
         </a-row>
       </a-col>
-      <a-col :span="10">
+      <a-col :span="10" v-if="false">
         <a-row class="gpt-header-center" :gutter="[0, 25]">
           <a-col>
-            您是<span v-if="indexInfo.member === 0">普通会员</span><span v-else-if="indexInfo.member === 1">黄金会员</span><span v-else-if="indexInfo.member === 2">铂金会员</span><span v-else-if="indexInfo.member === 3">钻石会员</span>，享受 <span :style="{ color: '#015BF8' }">30</span> 积分/篇，签到赠送 <span :style="{ color: '#015BF8' }">{{ indexInfo.qd_coin * indexInfo.qd_sc.split('/')[1] }}</span> 积分
+            您是<span v-if="indexInfo.member === 0">普通会员</span><span v-else-if="indexInfo.member === 1">黄金会员</span><span v-else-if="indexInfo.member === 2">铂金会员</span><span v-else-if="indexInfo.member === 3">钻石会员</span>，享受 <span :style="{ color: '#015BF8' }">{{ userPrice }}</span> 积分/篇，签到赠送 <span :style="{ color: '#015BF8' }">{{ (indexInfo.qd_coin ? indexInfo.qd_coin : 0) * (indexInfo.qd_sc ? indexInfo.qd_sc.split('/')[1] : 0) }}</span> 积分
           </a-col>
           <a-col>
             <span v-if="!indexInfo.mexp">你还不是会员，开通福利多多</span>
@@ -41,19 +41,19 @@
               <a-col :span="8">
                 <div>
                   <span :style="{ color: '#FDA700', display: 'block' }">黄金会员</span>
-                  <span :style="{ color: '#A2A2A2', display: 'block' }">20积分/篇</span>
+                  <span :style="{ color: '#A2A2A2', display: 'block' }">{{ goldPrice }}积分/篇</span>
                 </div>
               </a-col>
               <a-col :span="8">
                 <div>
                   <span :style="{ color: '#9D9EC3', display: 'block' }">铂金会员</span>
-                  <span :style="{ color: '#A2A2A2', display: 'block' }">15积分/篇</span>
+                  <span :style="{ color: '#A2A2A2', display: 'block' }">{{ platinumPrice }}积分/篇</span>
                 </div>
               </a-col>
               <a-col :span="8">
                 <div>
                   <span :style="{ color: '#343434', display: 'block' }">钻石会员</span>
-                  <span :style="{ color: '#A2A2A2', display: 'block' }">10积分/篇</span>
+                  <span :style="{ color: '#A2A2A2', display: 'block' }">{{ diamondsPrice }}积分/篇</span>
                 </div>
               </a-col>
             </a-row>
@@ -161,7 +161,8 @@
           <a-radio-button value="0">
             充值积分
           </a-radio-button>
-          <a-radio-button value="1" :disabled="Boolean(indexInfo.member)">
+          <!-- <a-radio-button value="1" :disabled="Boolean(indexInfo.member)"> -->
+          <a-radio-button value="1" disabled>
             开通会员
           </a-radio-button>
         </a-radio-group>
@@ -193,6 +194,10 @@ export default {
   created () {
     this.getUserInfo()
     // this.judgeDomain()
+    // this.getArticlePrice(1, -1)
+    // this.getArticlePrice(1, 1)
+    // this.getArticlePrice(1, 2)
+    // this.getArticlePrice(1, 3)
   },
   data () {
     return {
@@ -320,7 +325,15 @@ export default {
       // 开通会员购买月数
       memberMonthNum: '',
       // 开通会员级别
-      memberLevel: ''
+      memberLevel: '',
+      // 当前 查询文章生成单篇价格
+      userPrice: '',
+      // 黄金会员 查询文章生成单篇价格
+      goldPrice: '',
+      // 铂金会员 查询文章生成单篇价格
+      platinumPrice: '',
+      // 钻石会员 查询文章生成单篇价格
+      diamondsPrice: ''
     }
   },
   computed: {
@@ -519,12 +532,21 @@ export default {
       }
     },
     // 查询文章生成单篇价格
-    async getArticlePrice (mid, ml) {
+    async getArticlePrice (mt, ml) {
       const { data: res } = await this.$http.post('pcost', {
-        mid: mid,
+        mt: mt,
         ml: ml
       })
       if (res.status !== 0) return this.$message.error(res.reason)
+      if (ml === -1) {
+        this.userPrice = res.cost
+      } else if (ml === 1) {
+        this.goldPrice = res.cost
+      } else if (ml === 2) {
+        this.platinumPrice = res.cost
+      } else if (ml === 3) {
+        this.diamondsPrice = res.cost
+      }
     }
   }
 }

@@ -58,7 +58,7 @@
                 placeholder="请选择"
                 @change="mid"
               >
-                <a-select-option :value="item.id" v-for="item in articleType" :key="item.id">
+                <a-select-option :value="`${item.type}-${item.id}`" v-for="item in articleType" :key="item.id">
                   {{item.type === 1 ? '公用模型' : '私有模型'}} - {{item.name}}
                 </a-select-option>
                 <!-- <a-select-option value="lanqiu">
@@ -221,6 +221,7 @@ export default {
         if (!err) {
           values.prefix = this.kwValue.split('\n')
           values.post_num = this.articleNum
+          values.model_id = Number(values.model_id.split('-')[1])
           this.getArticleGenerate(values)
         }
       })
@@ -274,8 +275,8 @@ export default {
     },
     // 当前选中的文章模型
     mid (val) {
-      this.getArticlePrice({ mid: val, ml: -1 })
-      this.getArticlePrice({ mid: val, ml: 0 })
+      this.getArticlePrice({ mt: Number(val.split('-')[0]), ml: -1 })
+      this.getArticlePrice({ mt: Number(val.split('-')[0]), ml: 0 })
     },
     // 计算订单费用 && 差价
     orderCost () {

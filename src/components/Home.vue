@@ -102,12 +102,12 @@
             <a-col :span="6">
               <a-layout-sider class="gpt-content-right" width="100%">
                 <h3><a-icon type="question-circle" :style="{ fontSize: '28px', color: '#0039FD' }" /> 媒体学院</h3>
-                <a-list item-layout="horizontal" :data-source="articleTitle" :split="false">
+                <a-list item-layout="horizontal" :data-source="articleList" :split="false">
                   <a-list-item slot="renderItem" slot-scope="item">
                     <a-list-item-meta
-                      description="2020-10-20 17:00"
+                      :description="Number(`${item.log_PostTime}000`) | dateFormat"
                     >
-                      <a slot="title" href="javascript:;">{{ item.title }}</a>
+                      <a slot="title" :href="`https://www.91nlp.cn/post/${item.log_ID}.html`" target="_blank">{{ item.log_Title }}</a>
                     </a-list-item-meta>
                   </a-list-item>
                 </a-list>
@@ -126,36 +126,14 @@
 <script>
 export default {
   created () {
-
+    this.getArticleInfo(2, 10)
   },
   data () {
     return {
-      // 右侧文章标题
-      articleTitle: [
-        {
-          title: '产品矩阵，品牌必修课（三）'
-        }, {
-          title: '产品矩阵，品牌必修课（三）'
-        }, {
-          title: '产品矩阵，品牌必修课（三）'
-        }, {
-          title: '产品矩阵，品牌必修课（三）'
-        }, {
-          title: '产品矩阵，品牌必修课（三）'
-        }, {
-          title: '产品矩阵，品牌必修课（三）'
-        }, {
-          title: '产品矩阵，品牌必修课（三）'
-        }, {
-          title: '产品矩阵，品牌必修课（三）'
-        }, {
-          title: '产品矩阵，品牌必修课（三）'
-        }, {
-          title: '产品矩阵，品牌必修课（三）'
-        }
-      ],
       // 用户昵称
-      nick_name: window.localStorage.getItem('nick_name') ? window.localStorage.getItem('nick_name') : ''
+      nick_name: window.localStorage.getItem('nick_name') ? window.localStorage.getItem('nick_name') : '',
+      // 文章列表
+      articleList: []
     }
   },
   methods: {
@@ -167,6 +145,12 @@ export default {
     // 接收子组件传过来的 昵称
     showNickName (value) {
       this.nick_name = value
+    },
+    // 获取 91nlp 文章列表
+    async getArticleInfo (cateid, limit) {
+      const { data: res } = await this.$http.get(`http://39.106.98.188:7001/getArticleInfo?cateid=${cateid}&limit=${limit}`)
+      // if (res.status !== 0) return this.$message.error(res.reason)
+      this.articleList = res
     }
   }
 }

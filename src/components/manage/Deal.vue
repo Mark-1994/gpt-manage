@@ -10,7 +10,32 @@
             </a-steps>
             <div class="steps-content">
               <div class="content-box" v-if="current === 0">
-                <a-row :gutter="[16, 16]">
+
+                <a-row>
+                  <a-col>
+                    <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
+                      <a-form-item label="处理方式">
+                        <a-select
+                          placeholder=""
+                          @change="dealModehandleSelectChange"
+                          v-model="dealModeVal"
+                        >
+                          <a-select-option value="0">
+                            提取生成文章的第一句话作为标题（含提交关键词）
+                          </a-select-option>
+                          <a-select-option value="1">
+                            不处理标题（默认使用提交关键词作为标题）
+                          </a-select-option>
+                          <a-select-option value="2">
+                            关键词添加头尾词生成标题
+                          </a-select-option>
+                        </a-select>
+                      </a-form-item>
+                    </a-form>
+                  </a-col>
+                </a-row>
+
+                <a-row :gutter="[16, 16]" v-if="dealModeVal === '2'">
                   <a-col :span="12">
                     <a-button type="primary" block style="border-radius: 4px 4px 0 0;">
                       地域词
@@ -48,7 +73,7 @@
                     </a-button>
                   </a-col>
                 </a-row>
-                <a-row style="text-align: left;">
+                <a-row style="text-align: left;" v-if="dealModeVal === '2'">
                   <a-col>
                     <a-checkbox-group v-model="value" @change="compoundMode">
                       <a-row>
@@ -143,6 +168,9 @@
                       新增内链
                     </a-button>
                     <a-table :columns="columns" :data-source="data" bordered size="small" rowKey="id" :row-selection="rowSelection" :pagination="pagination">
+                      <template slot="index" slot-scope="text, record, index">
+                        {{ index }}
+                      </template>
                       <template slot="create_at" slot-scope="text">
                         {{ text | dateFormat }}
                       </template>
@@ -208,6 +236,9 @@
                         <a href="javascript:;" :title="text" @click="contentEditShowModal(record)">
                           {{ text }}
                         </a>
+                      </template>
+                      <template slot="dealWith" slot-scope="text, record">
+                        <a href="javascript:;" @click="contentEditShowModal(record)">编辑</a>
                       </template>
                     </a-table>
                   </a-form-item>
@@ -350,7 +381,7 @@ import FileSaver from 'file-saver'
 import { NCCheckedList, NCPlainOptions, NECheckedList, NEPlainOptions, ECCheckedList, ECPlainOptions, CCCheckedList, CCPlainOptions, SCCheckedList, SCPlainOptions, SWCheckedList, SWPlainOptions, NWCheckedList, NWPlainOptions, prefixData, suffixData } from './worddata.js'
 const columns = [
   {
-    title: 'Id',
+    title: '序号',
     dataIndex: 'id',
     scopedSlots: { customRender: 'id' }
   },
@@ -390,13 +421,18 @@ const articleListColumns = [
   {
     title: '标题',
     dataIndex: 'tt',
-    scopedSlots: { customRender: 'tt' }
+    scopedSlots: { customRender: 'tt' },
+    ellipsis: true
   },
   {
     title: '内容',
     dataIndex: 'txt',
     scopedSlots: { customRender: 'txt' },
     ellipsis: true
+  },
+  {
+    title: '操作',
+    scopedSlots: { customRender: 'dealWith' }
   }
 ]
 
@@ -453,7 +489,7 @@ export default {
         enable_subtt: 0,
         kw_bold: 0,
         il_bold: 0,
-        il_gn: '',
+        il_gn: [],
         ptag: 0,
         // -------------------------
         gn: window.sessionStorage.getItem('itemName'),
@@ -525,15 +561,20 @@ export default {
       // 词尾 对话框 显示/隐藏
       suffixVisible: false,
       // 词尾 对话框 数据
-      suffixData
+      suffixData,
+      // 处理方式 0 提取第一句话 1 不处理 2 关键词添加头尾词
+      dealModeVal: '1'
     }
   },
   computed: {
     rowSelection () {
       return {
-        type: 'radio',
+        type: 'checkbox',
         onChange: (selectedRowKeys, selectedRows) => {
-          this.downloadArticle.il_gn = selectedRows[0].gn
+          this.downloadArticle.il_gn = []
+          selectedRows.forEach(v => {
+            this.downloadArticle.il_gn.push(v.gn)
+          })
         }
       }
     },
@@ -551,7 +592,17 @@ export default {
         // 用户手动选择/取消选择所有列的回调
         onSelectAll: (selected, selectedRows, changeRows) => {
           // console.log(selected, selectedRows, changeRows)
-        }
+        },
+        hideDefaultSelections: true,
+        selections: [
+          {
+            key: 'all-data',
+            text: '选择所有数据',
+            onSelect: () => {
+              // this.selectedItem = this.articleListData
+            }
+          }
+        ]
       }
     }
   },
@@ -631,6 +682,9 @@ export default {
     compoundMode () {
       // this.downloadArticle.tt = [[{ type: 'mk', strs: ['gpt', 'seo优化'] }]]
       this.downloadArticle.tt = []
+      if (this.dealModeVal === '0') {
+        this.downloadArticle.tt.push([{ type: 'ffs', strs: [] }])
+      }
       for (let i = 0; i < this.value.length; i++) {
         const cacheData = []
         switch (this.value[i]) {
@@ -1032,6 +1086,11 @@ export default {
     suffixHandleOk () {
       this.tail = this.suffixData.join('\n')
       this.suffixVisible = false
+    },
+    // 处理方式
+    dealModehandleSelectChange (val) {
+      // console.log(val)
+      // console.log(this.dealModeVal)
     }
   }
 }
