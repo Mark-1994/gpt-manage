@@ -563,7 +563,8 @@ export default {
       // 词尾 对话框 数据
       suffixData,
       // 处理方式 0 提取第一句话 1 不处理 2 关键词添加头尾词
-      dealModeVal: '1'
+      dealModeVal: '1',
+      selectedTableRow: []
     }
   },
   computed: {
@@ -584,6 +585,7 @@ export default {
         onChange: (selectedRowKeys, selectedRows) => {
           // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
           this.selectedItem = selectedRows
+          this.selectedTableRow = selectedRowKeys
         },
         // 用户手动选择/取消选择某列的回调
         onSelect: (record, selected, selectedRows) => {
@@ -593,13 +595,15 @@ export default {
         onSelectAll: (selected, selectedRows, changeRows) => {
           // console.log(selected, selectedRows, changeRows)
         },
+        selectedRowKeys: this.selectedTableRow,
         hideDefaultSelections: true,
         selections: [
           {
             key: 'all-data',
             text: '选择所有数据',
             onSelect: () => {
-              // this.selectedItem = this.articleListData
+              this.selectedTableRow = [...Array(this.articleListData.length + 1).keys()]
+              this.selectedItem = this.articleListData
             }
           }
         ]
