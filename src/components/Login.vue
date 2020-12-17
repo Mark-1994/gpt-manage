@@ -2,7 +2,7 @@
   <div class="login_container">
     <div class="content_input">
       <div class="title">
-        <p>{{showLogin ? '注册' : '管理员登录'}}</p>
+        <p>{{showLogin ? showLogin === 2 ? '重置密码' : '注册' : '会员登录'}}</p>
       </div>
       <!-- <a-input placeholder="用户名" style="margin-bottom: 25px;" />
       <a-input-password placeholder="input password" style="margin-bottom: 25px;" /> -->
@@ -50,24 +50,24 @@
           >
             记住密码
           </a-checkbox>
-          <a class="login-form-forgot" href="javascript:;" @click="showReset">
+          <a class="login-form-forgot" href="javascript:;" @click="showRegister(2)">
             忘记密码
           </a>
           <a-button type="primary" html-type="submit" class="login-form-button">
             登录
           </a-button>
           Or
-          <a href="javascript:;" @click="showRegister">
+          <a href="javascript:;" @click="showRegister(1)">
             注册!
           </a>
           <span>开启Cookie之后才能登录,如何开启?</span>
+          <p :style="{ margin: '0' }">注册送 1000 积分，受邀注册多送 <span :style="{ color: 'red' }">500</span> 积分！</p>
         </a-form-item>
       </a-form>
 
       <!-- 注册 -->
       <a-form
-        v-else
-        id="components-form-demo-normal-login"
+        v-else-if="showLogin === 1"
         :form="form"
         class="register-form"
         @submit="registerSubmit"
@@ -141,11 +141,69 @@
           </a-row>
         </a-form-item>
         <a-form-item style="margin-bottom: 0;">
-          <a-button type="primary" html-type="submit" class="login-form-button">
+          <a-button type="primary" html-type="submit" class="login-form-button" block>
             注册
           </a-button>
           Or
-          <a href="javascript:;" @click="showRegister">
+          <a href="javascript:;" @click="showRegister(0)">
+            登录!
+          </a>
+        </a-form-item>
+      </a-form>
+
+      <!-- 重置密码 -->
+      <a-form
+        :form="form"
+        v-else-if="showLogin === 2"
+        @submit="resetSubmit">
+        <a-form-item style="margin-bottom: 10px;">
+          <a-input
+            v-decorator="[
+              'resetUserName',
+              { rules: [{ required: true, message: 'Please input your username!' }] },
+            ]"
+            placeholder="手机号"
+            ref="resetmb"
+          >
+            <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)" />
+          </a-input>
+        </a-form-item>
+        <a-form-item style="margin-bottom: 10px;">
+          <a-input
+            v-decorator="[
+              'resetPassword',
+              { rules: [{ required: true, message: 'Please input your Password!' }, { min: 6, max: 18, message: '密码长度 6 - 18 位' }] },
+            ]"
+            type="password"
+            placeholder="密码"
+          >
+            <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
+          </a-input>
+        </a-form-item>
+        <a-form-item style="margin-bottom: 10px;">
+          <a-row :gutter="8">
+            <a-col :span="15">
+              <a-input
+                v-decorator="[
+                  'resetCaptcha',
+                  { rules: [{ required: true, message: 'Please input the captcha you got!' }] },
+                ]"
+                placeholder="验证码"
+              >
+              </a-input>
+            </a-col>
+            <a-col :span="9">
+              <a-button v-if="resetPasswordShowCountDown" @click="getResetPasswordsCaptcha">获取验证码</a-button>
+              <a-button v-else disabled>{{resetPasswordCountNum}} s</a-button>
+            </a-col>
+          </a-row>
+        </a-form-item>
+        <a-form-item style="margin-bottom: 0;">
+          <a-button type="primary" html-type="submit" class="login-form-button" block>
+            重置
+          </a-button>
+          Or
+          <a href="javascript:;" @click="showRegister(0)">
             登录!
           </a>
         </a-form-item>
@@ -161,6 +219,9 @@ export default {
   beforeCreate () {
     this.form = this.$form.createForm(this, { name: 'normal_login' })
   },
+  created () {
+    this.getUrlParam('fid')
+  },
   mounted () {
     document.querySelector('body').style.backgroundColor = 'rgba(223, 223, 223, .3)'
   },
@@ -173,7 +234,15 @@ export default {
       // 60s
       countNum: '',
       // 定时器
-      timer: null
+      timer: null,
+      // 重置密码 显示隐藏 60s 倒计时
+      resetPasswordShowCountDown: true,
+      // 重置密码 60s
+      resetPasswordCountNum: '',
+      // 重置密码 定时器
+      resetPasswordTimer: null,
+      // 从 URL 获取的参数值
+      urlParams: ''
     }
   },
   methods: {
@@ -193,8 +262,14 @@ export default {
       })
     },
     // 点击切换 登录、注册 窗口
-    showRegister () {
-      this.showLogin = !this.showLogin
+    showRegister (flag) {
+      if (flag === 0) {
+        this.showLogin = 0
+      } else if (flag === 1) {
+        this.showLogin = 1
+      } else if (flag === 2) {
+        this.showLogin = 2
+      }
     },
     // 注册按钮
     registerSubmit (e) {
@@ -205,10 +280,27 @@ export default {
             mb: values.registerUserName,
             passwd: values.registerPassword,
             auth_code: values.captcha,
-            ticket: localStorage.getItem('ticket')
+            ticket: localStorage.getItem('ticket'),
+            fid: this.urlParams
           })
           if (res.status !== 0) return this.$message.error(res.reason)
           this.$message.success('注册了')
+          this.showLogin = 0
+        }
+      })
+    },
+    // 重置密码 按钮
+    resetSubmit (e) {
+      e.preventDefault()
+      this.form.validateFields(async (err, values) => {
+        if (!err) {
+          const { data: res } = await this.$http.post('change_passwd', {
+            mb: values.resetUserName,
+            passwd: values.resetPassword,
+            auth_code: values.resetCaptcha
+          })
+          if (res.status !== 0) return this.$message.error(res.reason)
+          this.$message.success('重置了')
           this.showLogin = 0
         }
       })
@@ -238,9 +330,40 @@ export default {
         }, 1000)
       }
     },
-    // 点击忘记密码
-    showReset () {
-      console.log('忘记密码')
+    // 重置密码 获取验证码
+    async getResetPasswordsCaptcha () {
+      const { data: res } = await this.$http.post('get_authcode', {
+        mb: this.$refs.resetmb.value
+      })
+      if (res.status !== 0) return this.$message.error(res.reason)
+      this.$message.success('发送了')
+
+      // 倒计时
+      const resetPasswordsTimeCount = 60
+      if (!this.resetPasswordTimer) {
+        this.resetPasswordCountNum = resetPasswordsTimeCount
+        this.resetPasswordShowCountDown = false
+        this.resetPasswordTimer = setInterval(() => {
+          if (this.resetPasswordCountNum > 0 && this.resetPasswordCountNum <= resetPasswordsTimeCount) {
+            this.resetPasswordCountNum--
+          } else {
+            this.resetPasswordShowCountDown = true
+            clearInterval(this.resetPasswordTimer)
+            this.resetPasswordTimer = null
+          }
+        }, 1000)
+      }
+    },
+    // 获取当前页面 URL 中参数
+    getUrlParam (name) {
+      const url = window.location.href
+      const params = url.substr(url.lastIndexOf('?') + 1).split('&')
+      params.map(v => {
+        const param = v
+        const key = param.split('=')[0]
+        const value = param.split('=')[1]
+        if (key === name) this.urlParams = value
+      })
     }
   }
 }

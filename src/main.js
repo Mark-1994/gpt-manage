@@ -38,7 +38,8 @@ import {
   Drawer,
   Divider,
   Tabs,
-  Steps
+  Steps,
+  Space
 } from 'ant-design-vue'
 Vue.use(Button)
 Vue.use(Layout)
@@ -67,6 +68,7 @@ Vue.use(Drawer)
 Vue.use(Divider)
 Vue.use(Tabs)
 Vue.use(Steps)
+Vue.use(Space)
 
 Vue.use(VueQuillEditor)
 
@@ -84,6 +86,7 @@ axios.defaults.withCredentials = true
 Vue.prototype.$http = axios
 
 Vue.prototype.$message = message
+Vue.prototype.$confirm = Modal.confirm
 Vue.config.productionTip = false
 
 Vue.filter('dateFormat', function (originVal) {

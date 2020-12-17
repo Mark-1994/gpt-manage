@@ -1,28 +1,28 @@
-export const NCCheckedList = ['北京', '天津', '河北', '内蒙古', '山西']
+export const NCCheckedList = []
 
 export const NCPlainOptions = ['北京', '天津', '河北', '内蒙古', '山西']
 
-export const NECheckedList = ['黑龙江', '吉林', '辽宁']
+export const NECheckedList = []
 
 export const NEPlainOptions = ['黑龙江', '吉林', '辽宁']
 
-export const ECCheckedList = ['上海', '福建', '安徽', '江苏', '江西', '山东', '浙江']
+export const ECCheckedList = []
 
 export const ECPlainOptions = ['上海', '福建', '安徽', '江苏', '江西', '山东', '浙江']
 
-export const CCCheckedList = ['河南', '湖北', '湖南']
+export const CCCheckedList = []
 
 export const CCPlainOptions = ['河南', '湖北', '湖南']
 
-export const SCCheckedList = ['广东', '海南', '广西']
+export const SCCheckedList = []
 
 export const SCPlainOptions = ['广东', '海南', '广西']
 
-export const SWCheckedList = ['贵州', '四川', '西藏', '云南', '重庆']
+export const SWCheckedList = []
 
 export const SWPlainOptions = ['贵州', '四川', '西藏', '云南', '重庆']
 
-export const NWCheckedList = ['甘肃', '宁夏', '青海', '陕西', '新疆']
+export const NWCheckedList = []
 
 export const NWPlainOptions = ['甘肃', '宁夏', '青海', '陕西', '新疆']
 

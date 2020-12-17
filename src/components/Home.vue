@@ -2,13 +2,16 @@
   <div class="login_container" id="components-layout-demo-basic">
     <a-layout>
       <a-layout-header>
-        <a-row type="flex" justify="space-between" class="gpt-header">
+        <a-row type="flex" class="gpt-header">
           <a-col :span="4" class="header-left">
             <router-link to="/home">
               <img src="../assets/gpt-logo.svg" alt="" />
             </router-link>
           </a-col>
-          <a-col :span="4" class="header-right">
+          <a-col :span="4" :offset="13">
+            联系客服 QQ：<a href="http://wpa.qq.com/msgrd?v=3&uin=206819887&site=qq&menu=yes" target="_blank" style="color: #fff;">206819887</a>
+          </a-col>
+          <a-col :span="3" class="header-right">
             <a-dropdown :trigger="['click']">
               <a class="ant-dropdown-link" @click="e => e.preventDefault()">
                 {{nick_name}} <a-icon type="down" />
@@ -37,7 +40,7 @@
                 <div class="gpt-menu-title">
                   菜单
                 </div>
-                <a-menu theme="light" :default-selected-keys="['1']" mode="inline" class="gpt-menu-list" @click="gptClickMenu">
+                <a-menu theme="light" :default-selected-keys="['1']" mode="inline" class="gpt-menu-list" @click="gptClickMenu" :default-open-keys="['sub4']">
                   <a-menu-item key="users">
                     <a-icon type="user" :style="{ fontSize: '16px', color: '#0039FD' }" /><span>个人中心</span>
                   </a-menu-item>
@@ -84,10 +87,10 @@
                     <span slot="title">
                       <a-icon type="appstore" :style="{ fontSize: '16px', color: '#0039FD' }" /><span>其他</span>
                     </span>
-                    <!-- <a-menu-item key="10">
-                      其他1
+                    <a-menu-item key="share">
+                      推广返利
                     </a-menu-item>
-                    <a-menu-item key="11">
+                    <!-- <a-menu-item key="11">
                       其他2
                     </a-menu-item> -->
                   </a-sub-menu>
@@ -101,7 +104,11 @@
             </a-col>
             <a-col :span="6">
               <a-layout-sider class="gpt-content-right" width="100%">
-                <h3><a-icon type="question-circle" :style="{ fontSize: '28px', color: '#0039FD' }" /> 媒体学院</h3>
+                <h3>
+                  <!-- <a-icon type="question-circle" :style="{ fontSize: '28px', color: '#0039FD' }" /> -->
+                  <img src="../assets/gpt-baccalaureate.png" alt="" :style="{ verticalAlign: 'text-bottom' }" />
+                  媒体学院
+                </h3>
                 <a-list item-layout="horizontal" :data-source="articleList" :split="false">
                   <a-list-item slot="renderItem" slot-scope="item">
                     <a-list-item-meta
@@ -126,7 +133,7 @@
 <script>
 export default {
   created () {
-    this.getArticleInfo(2, 10)
+    this.getArticleInfo(1, 10)
   },
   data () {
     return {

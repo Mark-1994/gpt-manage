@@ -2,7 +2,7 @@
   <div class="list_container">
     <h3>文章队列</h3>
 
-    <a-table :columns="columns" :data-source="allTask" bordered :pagination="{ position: 'bottom' }" @change="pageTurning">
+    <a-table :columns="columns" :data-source="allTask" bordered :pagination="{ position: 'bottom' }" @change="pageTurning" size="middle">
       <template slot="keywords">
         <a href="javascript:;" @click="showKeywords">查看</a>
       </template>
@@ -10,14 +10,14 @@
         {{ text | dateFormat }}
       </template>
       <template slot="deal" slot-scope="record">
-        <a href="javascript:;" @click="handle($event)">处理</a>
+        <a href="javascript:;" @click="handle($event)" :disabled="record.state === '生产中'">处理</a>
         <a-divider type="vertical" />
         <a-popconfirm
           v-if="allTask.length"
           title="确定删除?"
           @confirm="() => onDelete(record.gn)"
         >
-          <a href="javascript:;">删除</a>
+          <a href="javascript:;" :disabled="record.state === '生产中'">删除</a>
         </a-popconfirm>
       </template>
       <template slot="state" slot-scope="text">
@@ -27,8 +27,9 @@
 
     <div class="gpt-list-footer">
       <p>说明：</p>
-      <p>下载单个txt:单个文章每个文字开头会有关键词每篇文章以----隔开</p>
-      <p>下载压缩包:每篇文章一个txt文件名为关键词，单个关键词多篇文章 关键词后面加数字</p>
+      <p>1.文章生成后可多次处理，但不会保存处理配置。</p>
+      <p>2.删除后文章无法找回，生成中的文章无法处理和删除。</p>
+      <p>3.由于文章是机器自动生成如果文章量大可能需要很长时间处理。</p>
     </div>
 
     <a-modal v-model="visible" :title="projectName" :footer="null">
@@ -58,13 +59,13 @@ export default {
         },
         {
           title: '字数',
-          dataIndex: 'wn',
-          sorter: (a, b) => a.wn - b.wn
+          dataIndex: 'wn'
+          // sorter: (a, b) => a.wn - b.wn
         },
         {
           title: '文章数量',
-          dataIndex: 'post_num',
-          sorter: (a, b) => a.post_num - b.post_num
+          dataIndex: 'post_num'
+          // sorter: (a, b) => a.post_num - b.post_num
         },
         {
           title: '关键词',
@@ -77,29 +78,33 @@ export default {
         {
           title: '创建时间',
           dataIndex: 'create_at',
-          scopedSlots: { customRender: 'create_at' },
-          sorter: (a, b) => a.create_at - b.create_at
+          scopedSlots: { customRender: 'create_at' }
+          // defaultSortOrder: 'descend',
+          // sorter: (a, b) => {
+          //   return a.create_at - b.create_at
+          // }
         },
         {
           title: '状态',
           dataIndex: 'state',
-          filters: [
-            {
-              text: '生产中',
-              value: '生产中'
-            },
-            {
-              text: '完成',
-              value: '完成'
-            }
-          ],
+          // filters: [
+          //   {
+          //     text: '生产中',
+          //     value: '生产中'
+          //   },
+          //   {
+          //     text: '完成',
+          //     value: '完成'
+          //   }
+          // ],
           filterMultiple: false,
           onFilter: (value, record) => record.state.indexOf(value) === 0,
           scopedSlots: { customRender: 'state' }
         },
         {
           title: '操作',
-          scopedSlots: { customRender: 'deal' }
+          scopedSlots: { customRender: 'deal' },
+          width: 110
         }
       ],
       // 所有任务进度
@@ -116,26 +121,17 @@ export default {
     // 获取所有任务进度
     async getAllTask (rn, pn) {
       const { data: res } = await this.$http.get(`pg/task_ls?rn=${rn}&pn=${pn}`)
+      if (res.status === 3) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/#/login' })
       if (res.status !== 0) return this.$message.error(res.reason)
-      // res.list = [
-      //   {
-      //     gn: 'string',
-      //     wn: 'number',
-      //     post_num: 'number',
-      //     prefix: 'string',
-      //     model_name: 'string',
-      //     create_at: 'number',
-      //     state: 1
-      //   }, {
-      //     gn: 'string',
-      //     wn: 'number',
-      //     post_num: 'number',
-      //     prefix: 'string',
-      //     model_name: 'string',
-      //     create_at: 'number',
-      //     state: 2
-      //   }
-      // ]
+
+      res.list.sort(function (a, b) {
+        if (a.create_at === b.create_at) {
+          return b.id - a.id
+        } else {
+          return b.create_at - a.create_at
+        }
+      })
+
       let i = 1
       res.list = res.list.map(v => {
         v.state = v.state === 1 ? '完成' : '生产中'

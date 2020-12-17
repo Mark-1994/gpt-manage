@@ -121,6 +121,7 @@ export default {
     // 私有模型列表
     async getPrivateModelList (rn, pn) {
       const { data: res } = await this.$http.get(`pg/lspm?rn=${rn}&pn=${pn}`)
+      if (res.status === 3) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/#/login' })
       if (res.status !== 0) return this.$message.error(res.reason)
       this.allTask = res.list.map(v => {
         v.state = v.state === 1 ? '待上传' : v.state === 2 ? '训练中' : '训练完成'

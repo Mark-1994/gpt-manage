@@ -40,7 +40,7 @@
                     <a-button type="primary" block style="border-radius: 4px 4px 0 0;">
                       地域词
                     </a-button>
-                    <a-textarea placeholder="地区 关键词格式：每行一个" :rows="10" v-model="area" style="border-radius: 0 0 4px 4px;" />
+                    <a-textarea placeholder="地区 关键词格式：每行一个" :rows="10" v-model="area" style="border-radius: 0 0 4px 4px;" @change="compoundMode" />
                     <a-button type="dashed" block style="margin-top: 8px;" @click="assistantShowModal(0)">
                       小助手
                     </a-button>
@@ -49,7 +49,7 @@
                     <a-button type="primary" block style="border-radius: 4px 4px 0 0;">
                       词头
                     </a-button>
-                    <a-textarea placeholder="词头 关键词格式：每行一个" :rows="10" v-model="prefix" style="border-radius: 0 0 4px 4px;" />
+                    <a-textarea placeholder="词头 关键词格式：每行一个" :rows="10" v-model="prefix" style="border-radius: 0 0 4px 4px;" @change="compoundMode" />
                     <a-button type="dashed" block style="margin-top: 8px;" @click="assistantShowModal(1)">
                       小助手
                     </a-button>
@@ -58,7 +58,7 @@
                     <a-button type="primary" block style="border-radius: 4px 4px 0 0;">
                       主词
                     </a-button>
-                    <a-textarea placeholder="主词 关键词格式：每行一个" :rows="10" v-model="mk" disabled style="border-radius: 0 0 4px 4px;" />
+                    <a-textarea placeholder="主词 关键词格式：每行一个" :rows="10" v-model="mk" disabled style="border-radius: 0 0 4px 4px;" @change="compoundMode" />
                     <a-button type="dashed" block style="margin-top: 8px;" @click="assistantShowModal(2)" disabled>
                       小助手
                     </a-button>
@@ -67,7 +67,7 @@
                     <a-button type="primary" block style="border-radius: 4px 4px 0 0;">
                       词尾
                     </a-button>
-                    <a-textarea placeholder="词尾 关键词格式：每行一个" :rows="10" v-model="tail" style="border-radius: 0 0 4px 4px;" />
+                    <a-textarea placeholder="词尾 关键词格式：每行一个" :rows="10" v-model="tail" style="border-radius: 0 0 4px 4px;" @change="compoundMode" />
                     <a-button type="dashed" block style="margin-top: 8px;" @click="assistantShowModal(3)">
                       小助手
                     </a-button>
@@ -121,6 +121,13 @@
                     </a-checkbox-group>
                   </a-col>
                 </a-row>
+                <a-row style="text-align: right;" v-if="dealModeVal === '2'">
+                  <a-col>可使用标题数量 {{ this.notMoreThanVal }}</a-col>
+                  <a-col>生成标题数量 {{ this.actualVal }}</a-col>
+                  <a-col>
+                    <span :style="{ color: this.actualVal - this.notMoreThanVal > 0 ? 'red' : '' }">超出数量 {{ this.actualVal - this.notMoreThanVal > 0 ? this.actualVal - this.notMoreThanVal : 0 }}</span>
+                  </a-col>
+                </a-row>
               </div>
               <div class="content-box" v-else-if="current === 1">
                 <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
@@ -167,7 +174,7 @@
                     <a-button class="editable-add-btn" @click="showModal">
                       新增内链
                     </a-button>
-                    <a-table :columns="columns" :data-source="data" bordered size="small" rowKey="id" :row-selection="rowSelection" :pagination="pagination">
+                    <a-table :columns="columns" :data-source="data" bordered size="small" rowKey="id" :row-selection="rowSelection" :pagination="pagination" :scroll="{ x: 650 }">
                       <template slot="index" slot-scope="text, record, index">
                         {{ index }}
                       </template>
@@ -202,7 +209,8 @@
                           </a-popconfirm>
                         </span>
                         <span v-else>
-                          <a :disabled="editingKey !== ''" @click="() => edit(record.id)">编辑</a>
+                          <!-- <a :disabled="editingKey !== ''" @click="() => edit(record.id)">编辑</a> -->
+                          <a :disabled="editingKey !== ''" @click="() => edit(record)">编辑</a>
                         </span>
 
                         <a-divider type="vertical" />
@@ -230,7 +238,7 @@
               </div>
               <div class="content-box" v-else-if="current === 2">
                 <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
-                  <a-form-item label="文章列表" style="text-align: left;">
+                  <a-form-item label="文章列表" style="text-align: left;" :wrapper-col="{ span: 24 }">
                     <a-table :columns="articleListColumns" :data-source="articleListData" bordered size="small" :row-selection="articleListRowSelection">
                       <template slot="txt" slot-scope="text, record">
                         <a href="javascript:;" :title="text" @click="contentEditShowModal(record)">
@@ -238,11 +246,14 @@
                         </a>
                       </template>
                       <template slot="dealWith" slot-scope="text, record">
-                        <a href="javascript:;" @click="contentEditShowModal(record)">编辑</a>
+                        <a-button type="primary" size="small" @click="contentEditShowModal(record)">
+                          编辑
+                        </a-button>
+                        <!-- <a href="javascript:;" @click="contentEditShowModal(record)">编辑</a> -->
                       </template>
                     </a-table>
                   </a-form-item>
-                  <a-form-item label="文本格式" style="text-align: left;">
+                  <a-form-item label="文本格式" style="text-align: left;" extra="纯文本格式为不含html标签格式，如果之前曾经处理过内容加粗外链等也将无效。富文本格式为带html标签格式，如果之前曾经处理过内容加粗外链等这种格式可以生效。">
                     <a-radio-group v-model="downloadArticle.ptag">
                       <a-radio :value="0">
                         纯文本格式
@@ -296,7 +307,7 @@
     </a-modal>
 
     <!-- 地域词 小助手 -->
-    <a-modal v-model="areaVisible" title="地域词" @ok="areaHandleOk">
+    <a-modal v-model="areaVisible" :title="`地域词（可用 ${notMoreThanVal} 生成 ${actualVal} 超出 ${this.actualVal - this.notMoreThanVal > 0 ? this.actualVal - this.notMoreThanVal : 0}）`" @ok="areaHandleOk">
       <div :style="{ borderBottom: '1px solid #E9E9E9' }">
         <a-checkbox :indeterminate="NCIndeterminate" :checked="NCCheckAll" @change="NCOnCheckAllChange">
           华北地区
@@ -355,21 +366,70 @@
     </a-modal>
 
     <!-- 词头 小助手 -->
-    <a-modal v-model="prefixVisible" title="词头" @ok="prefixHandleOk">
-      <a-list size="small" bordered :data-source="prefixData" :style="{ maxHeight: '300px', overflow: 'auto' }">
+    <a-modal v-model="prefixVisible" :title="`词头（可用 ${notMoreThanVal} 生成 ${actualVal} 超出 ${this.actualVal - this.notMoreThanVal > 0 ? this.actualVal - this.notMoreThanVal : 0}）`" @ok="prefixHandleOk">
+
+      <div :style="{ borderBottom: '1px solid #E9E9E9' }">
+        <a-checkbox :indeterminate="prefixIndeterminate" :checked="prefixCheckAll" @change="prefixOnCheckAllChange">
+          全选
+        </a-checkbox>
+      </div>
+      <br />
+      <a-checkbox-group v-model="prefixCheckedList" @change="prefixOnChange">
+        <a-row>
+          <a-col :span="8" v-for="(item, index) in prefixData" :key="index">
+            <a-checkbox :value="item">
+              {{ item }}
+            </a-checkbox>
+          </a-col>
+        </a-row>
+      </a-checkbox-group>
+
+      <!-- <a-list size="small" bordered :data-source="prefixData" :style="{ maxHeight: '300px', overflow: 'auto' }">
         <a-list-item slot="renderItem" slot-scope="item">
           {{ item }}
         </a-list-item>
-      </a-list>
+      </a-list> -->
     </a-modal>
 
     <!-- 词尾 小助手 -->
-    <a-modal v-model="suffixVisible" title="词尾" @ok="suffixHandleOk">
-      <a-list size="small" bordered :data-source="suffixData" :style="{ maxHeight: '300px', overflow: 'auto' }">
+    <a-modal v-model="suffixVisible" :title="`词尾（可用 ${notMoreThanVal} 生成 ${actualVal} 超出 ${this.actualVal - this.notMoreThanVal > 0 ? this.actualVal - this.notMoreThanVal : 0}）`" @ok="suffixHandleOk">
+
+      <div :style="{ borderBottom: '1px solid #E9E9E9' }">
+        <a-checkbox :indeterminate="suffixIndeterminate" :checked="suffixCheckAll" @change="suffixOnCheckAllChange">
+          全选
+        </a-checkbox>
+      </div>
+      <br />
+      <a-checkbox-group v-model="suffixCheckedList" @change="suffixOnChange">
+        <a-row>
+          <a-col :span="8" v-for="(item, index) in suffixData" :key="index">
+            <a-checkbox :value="item">
+              {{ item }}
+            </a-checkbox>
+          </a-col>
+        </a-row>
+      </a-checkbox-group>
+
+      <!-- <a-list size="small" bordered :data-source="suffixData" :style="{ maxHeight: '300px', overflow: 'auto' }">
         <a-list-item slot="renderItem" slot-scope="item">
           {{ item }}
         </a-list-item>
-      </a-list>
+      </a-list> -->
+    </a-modal>
+
+    <!-- 编辑 内链组 对话框 -->
+    <a-modal v-model="internalChainVisible" title="编辑" @ok="editInternalChainGroup">
+      <a-form :label-col="{ span: 3 }" :wrapper-col="{ span: 21 }">
+        <a-form-item label="分组名">
+          <a-input v-model="internalChainGroup.gn" />
+        </a-form-item>
+        <a-form-item label="链接">
+          <a-input v-model="internalChainGroup.link" />
+        </a-form-item>
+        <a-form-item label="关键词">
+          <a-input v-model="internalChainGroup.value" />
+        </a-form-item>
+      </a-form>
     </a-modal>
 
   </div>
@@ -382,8 +442,8 @@ import { NCCheckedList, NCPlainOptions, NECheckedList, NEPlainOptions, ECChecked
 const columns = [
   {
     title: '序号',
-    dataIndex: 'id',
-    scopedSlots: { customRender: 'id' }
+    dataIndex: 'key',
+    scopedSlots: { customRender: 'key' }
   },
   {
     title: '分组名',
@@ -408,7 +468,9 @@ const columns = [
   },
   {
     title: '操作',
-    scopedSlots: { customRender: 'handle' }
+    scopedSlots: { customRender: 'handle' },
+    fixed: 'right',
+    width: 100
   }
 ]
 
@@ -442,6 +504,7 @@ export default {
     this.meansJudgement()
     this.getMkDefaultVal()
     this.getAllSubject(this.downloadArticle.gn)
+    this.getTaskKeywordsNum()
   },
   data () {
     return {
@@ -522,37 +585,37 @@ export default {
       // 华北
       NCCheckedList,
       NCPlainOptions,
-      NCCheckAll: true,
+      NCCheckAll: false,
       NCIndeterminate: false,
       // 东北
       NECheckedList,
       NEPlainOptions,
-      NECheckAll: true,
+      NECheckAll: false,
       NEIndeterminate: false,
       // 华东
       ECCheckedList,
       ECPlainOptions,
-      ECCheckAll: true,
+      ECCheckAll: false,
       ECIndeterminate: false,
       // 华中
       CCCheckedList,
       CCPlainOptions,
-      CCCheckAll: true,
+      CCCheckAll: false,
       CCIndeterminate: false,
       // 华南
       SCCheckedList,
       SCPlainOptions,
-      SCCheckAll: true,
+      SCCheckAll: false,
       SCIndeterminate: false,
       // 西南
       SWCheckedList,
       SWPlainOptions,
-      SWCheckAll: true,
+      SWCheckAll: false,
       SWIndeterminate: false,
       // 西北
       NWCheckedList,
       NWPlainOptions,
-      NWCheckAll: true,
+      NWCheckAll: false,
       NWIndeterminate: false,
       // 词头 对话框 显示/隐藏
       prefixVisible: false,
@@ -564,13 +627,36 @@ export default {
       suffixData,
       // 处理方式 0 提取第一句话 1 不处理 2 关键词添加头尾词
       dealModeVal: '1',
-      selectedTableRow: []
+      selectedTableRow: [],
+      // 不能超过的数量
+      notMoreThanVal: 0,
+      // 实际总和数量
+      actualVal: 0,
+      // 当前任务提交的关键词个数
+      keywordsNum: 0,
+      // 词头小助手 全选 样式控制
+      prefixIndeterminate: false,
+      // 词头小助手 全选
+      prefixCheckAll: false,
+      // 词头小助手 默认选中项
+      prefixCheckedList: [],
+      // 词尾小助手 全选 样式控制
+      suffixIndeterminate: false,
+      // 词尾小助手 全选
+      suffixCheckAll: false,
+      // 词尾小助手 默认选中项
+      suffixCheckedList: [],
+      // 编辑 内链组 对话框 显示/隐藏
+      internalChainVisible: false,
+      // 编辑内链组 分组名 链接 关键词
+      internalChainGroup: {}
     }
   },
   computed: {
     rowSelection () {
       return {
         type: 'checkbox',
+        fixed: true,
         onChange: (selectedRowKeys, selectedRows) => {
           this.downloadArticle.il_gn = []
           selectedRows.forEach(v => {
@@ -596,7 +682,7 @@ export default {
           // console.log(selected, selectedRows, changeRows)
         },
         selectedRowKeys: this.selectedTableRow,
-        hideDefaultSelections: true,
+        hideDefaultSelections: false,
         selections: [
           {
             key: 'all-data',
@@ -612,6 +698,7 @@ export default {
   },
   methods: {
     next () {
+      if (this.dealModeVal === '2' && this.actualVal - this.notMoreThanVal > 0) return this.$message.error(`超出数量 ${this.actualVal - this.notMoreThanVal}`)
       if (this.current === 1) {
         this.downloadArticleEvent()
       }
@@ -622,7 +709,7 @@ export default {
     },
     // 下载
     downloadArticleBtn () {
-      if (!this.selectedItem.length) return false
+      if (!this.selectedItem.length) return this.$message.error('没有勾选下载文章')
       this.getArticleTxt(this.selectedItem)
     },
     // 下载文章事件
@@ -652,8 +739,12 @@ export default {
     // 获取内链列表
     async getIlls () {
       const { data: res } = await this.$http.get('ills')
+      if (res.status === 3) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/#/login' })
       if (res.status !== 0) return this.$message.error(res.reason)
-      this.data = res.list
+      let i = 1
+      this.data = res.list.map(v => {
+        return { ...v, key: i++ }
+      })
       this.cacheData = res.list
     },
     // 新增内链 显示/隐藏
@@ -689,10 +780,13 @@ export default {
       if (this.dealModeVal === '0') {
         this.downloadArticle.tt.push([{ type: 'ffs', strs: [] }])
       }
+      // 实际勾选的数值
+      let actualVal = 0
       for (let i = 0; i < this.value.length; i++) {
         const cacheData = []
         switch (this.value[i]) {
           case 0:
+            actualVal += this.keywordsNum
             cacheData.push({
               type: 'mk',
               strs: this.mk.trim() ? this.mk.trim().split('\n') : []
@@ -705,6 +799,7 @@ export default {
             // ]
             break
           case 1:
+            actualVal += this.keywordsNum * this.area.trim().split('\n').length
             cacheData.push({
               type: 'area',
               strs: this.area.trim() ? this.area.trim().split('\n') : []
@@ -725,6 +820,7 @@ export default {
             // ]
             break
           case 2:
+            actualVal += this.keywordsNum * this.prefix.trim().split('\n').length
             cacheData.push({
               type: 'prefix',
               strs: this.prefix.trim() ? this.prefix.trim().split('\n') : []
@@ -745,6 +841,7 @@ export default {
             // ]
             break
           case 3:
+            actualVal += this.keywordsNum * this.tail.trim().split('\n').length
             cacheData.push({
               type: 'mk',
               strs: this.mk.trim() ? this.mk.trim().split('\n') : []
@@ -765,6 +862,7 @@ export default {
             // ]
             break
           case 4:
+            actualVal += this.keywordsNum * this.area.trim().split('\n').length * this.prefix.split('\n').length
             cacheData.push({
               type: 'area',
               strs: this.area.trim() ? this.area.trim().split('\n') : []
@@ -793,6 +891,7 @@ export default {
             // ]
             break
           case 5:
+            actualVal += this.keywordsNum * this.tail.trim().split('\n').length * this.prefix.split('\n').length
             cacheData.push({
               type: 'prefix',
               strs: this.prefix.trim() ? this.prefix.trim().split('\n') : []
@@ -821,6 +920,7 @@ export default {
             // ]
             break
           case 6:
+            actualVal += this.keywordsNum * this.tail.trim().split('\n').length * this.area.split('\n').length
             cacheData.push({
               type: 'area',
               strs: this.area.trim() ? this.area.trim().split('\n') : []
@@ -849,6 +949,7 @@ export default {
             // ]
             break
           case 7:
+            actualVal += this.keywordsNum * this.tail.trim().split('\n').length * this.area.split('\n').length * this.prefix.split('\n').length
             cacheData.push({
               type: 'area',
               strs: this.area.trim() ? this.area.trim().split('\n') : []
@@ -888,6 +989,7 @@ export default {
         // console.log(cacheData)
         this.downloadArticle.tt.push(cacheData)
       }
+      this.actualVal = actualVal
     },
     // 主词默认值
     getMkDefaultVal () {
@@ -895,13 +997,22 @@ export default {
     },
     // 编辑按钮
     edit (key) {
-      const newData = [...this.data]
-      const target = newData.filter(item => key === item.id)[0]
-      this.editingKey = key
-      if (target) {
-        target.editable = true
-        this.data = newData
-      }
+      this.internalChainVisible = true
+      Object.assign(this.internalChainGroup, key)
+      // const newData = [...this.data]
+      // const target = newData.filter(item => key === item.id)[0]
+      // this.editingKey = key
+      // if (target) {
+      //   target.editable = true
+      //   this.data = newData
+      // }
+    },
+    // 编辑 内链组 对话框 提交 事件
+    async editInternalChainGroup () {
+      const { data: res } = await this.$http.post('upil', this.internalChainGroup)
+      if (res.status !== 0) return this.$message.error(res.reason)
+      this.getIlls()
+      this.internalChainVisible = false
     },
     // 取消编辑按钮
     cancel (key) {
@@ -969,7 +1080,9 @@ export default {
     async getAllSubject (val) {
       const { data: res } = await this.$http.get(`qpf?gn=${val}`)
       if (res.status !== 0) return this.$message.error(res.reason)
-      this.mk = res.mks.join('\n')
+      this.notMoreThanVal = res.mks.length
+      const newArray = [...new Set(res.mks)]
+      this.mk = newArray.join('\n')
     },
     // 小助手按钮点击事件
     assistantShowModal (val) {
@@ -987,6 +1100,21 @@ export default {
     },
     // 地域词 对话框 确定事件
     areaHandleOk () {
+      // const NCCheckedList = this.NCCheckedList.length ? this.NCCheckedList.join('\n') + '\n' : ''
+      // const NECheckedList = this.NECheckedList.length ? this.NECheckedList.join('\n') + '\n' : ''
+      // const ECCheckedList = this.ECCheckedList.length ? this.ECCheckedList.join('\n') + '\n' : ''
+      // const CCCheckedList = this.CCCheckedList.length ? this.CCCheckedList.join('\n') + '\n' : ''
+      // const SCCheckedList = this.SCCheckedList.length ? this.SCCheckedList.join('\n') + '\n' : ''
+      // const SWCheckedList = this.SWCheckedList.length ? this.SWCheckedList.join('\n') + '\n' : ''
+      // const NWCheckedList = this.NWCheckedList.length ? this.NWCheckedList.join('\n') : ''
+      // this.area = NCCheckedList + NECheckedList + ECCheckedList + CCCheckedList + SCCheckedList + SWCheckedList + NWCheckedList
+      this.areaVisible = false
+      // this.compoundMode()
+    },
+    // 华北
+    NCOnChange (_NCCheckedList) {
+      this.NCIndeterminate = !!_NCCheckedList.length && _NCCheckedList.length < NCPlainOptions.length
+      this.NCCheckAll = _NCCheckedList.length === NCPlainOptions.length
       const NCCheckedList = this.NCCheckedList.length ? this.NCCheckedList.join('\n') + '\n' : ''
       const NECheckedList = this.NECheckedList.length ? this.NECheckedList.join('\n') + '\n' : ''
       const ECCheckedList = this.ECCheckedList.length ? this.ECCheckedList.join('\n') + '\n' : ''
@@ -995,12 +1123,7 @@ export default {
       const SWCheckedList = this.SWCheckedList.length ? this.SWCheckedList.join('\n') + '\n' : ''
       const NWCheckedList = this.NWCheckedList.length ? this.NWCheckedList.join('\n') : ''
       this.area = NCCheckedList + NECheckedList + ECCheckedList + CCCheckedList + SCCheckedList + SWCheckedList + NWCheckedList
-      this.areaVisible = false
-    },
-    // 华北
-    NCOnChange (NCCheckedList) {
-      this.NCIndeterminate = !!NCCheckedList.length && NCCheckedList.length < NCPlainOptions.length
-      this.NCCheckAll = NCCheckedList.length === NCPlainOptions.length
+      this.compoundMode()
     },
     NCOnCheckAllChange (e) {
       Object.assign(this, {
@@ -1008,11 +1131,29 @@ export default {
         NCIndeterminate: false,
         NCCheckAll: e.target.checked
       })
+      const NCCheckedList = this.NCCheckedList.length ? this.NCCheckedList.join('\n') + '\n' : ''
+      const NECheckedList = this.NECheckedList.length ? this.NECheckedList.join('\n') + '\n' : ''
+      const ECCheckedList = this.ECCheckedList.length ? this.ECCheckedList.join('\n') + '\n' : ''
+      const CCCheckedList = this.CCCheckedList.length ? this.CCCheckedList.join('\n') + '\n' : ''
+      const SCCheckedList = this.SCCheckedList.length ? this.SCCheckedList.join('\n') + '\n' : ''
+      const SWCheckedList = this.SWCheckedList.length ? this.SWCheckedList.join('\n') + '\n' : ''
+      const NWCheckedList = this.NWCheckedList.length ? this.NWCheckedList.join('\n') : ''
+      this.area = NCCheckedList + NECheckedList + ECCheckedList + CCCheckedList + SCCheckedList + SWCheckedList + NWCheckedList
+      this.compoundMode()
     },
     // 东北
-    NEOnChange (NECheckedList) {
-      this.NEIndeterminate = !!NECheckedList.length && NECheckedList.length < NEPlainOptions.length
-      this.NECheckAll = NECheckedList.length === NEPlainOptions.length
+    NEOnChange (_NECheckedList) {
+      this.NEIndeterminate = !!_NECheckedList.length && _NECheckedList.length < NEPlainOptions.length
+      this.NECheckAll = _NECheckedList.length === NEPlainOptions.length
+      const NCCheckedList = this.NCCheckedList.length ? this.NCCheckedList.join('\n') + '\n' : ''
+      const NECheckedList = this.NECheckedList.length ? this.NECheckedList.join('\n') + '\n' : ''
+      const ECCheckedList = this.ECCheckedList.length ? this.ECCheckedList.join('\n') + '\n' : ''
+      const CCCheckedList = this.CCCheckedList.length ? this.CCCheckedList.join('\n') + '\n' : ''
+      const SCCheckedList = this.SCCheckedList.length ? this.SCCheckedList.join('\n') + '\n' : ''
+      const SWCheckedList = this.SWCheckedList.length ? this.SWCheckedList.join('\n') + '\n' : ''
+      const NWCheckedList = this.NWCheckedList.length ? this.NWCheckedList.join('\n') : ''
+      this.area = NCCheckedList + NECheckedList + ECCheckedList + CCCheckedList + SCCheckedList + SWCheckedList + NWCheckedList
+      this.compoundMode()
     },
     NEOnCheckAllChange (e) {
       Object.assign(this, {
@@ -1020,11 +1161,29 @@ export default {
         NEIndeterminate: false,
         NECheckAll: e.target.checked
       })
+      const NCCheckedList = this.NCCheckedList.length ? this.NCCheckedList.join('\n') + '\n' : ''
+      const NECheckedList = this.NECheckedList.length ? this.NECheckedList.join('\n') + '\n' : ''
+      const ECCheckedList = this.ECCheckedList.length ? this.ECCheckedList.join('\n') + '\n' : ''
+      const CCCheckedList = this.CCCheckedList.length ? this.CCCheckedList.join('\n') + '\n' : ''
+      const SCCheckedList = this.SCCheckedList.length ? this.SCCheckedList.join('\n') + '\n' : ''
+      const SWCheckedList = this.SWCheckedList.length ? this.SWCheckedList.join('\n') + '\n' : ''
+      const NWCheckedList = this.NWCheckedList.length ? this.NWCheckedList.join('\n') : ''
+      this.area = NCCheckedList + NECheckedList + ECCheckedList + CCCheckedList + SCCheckedList + SWCheckedList + NWCheckedList
+      this.compoundMode()
     },
     // 华东
-    ECOnChange (ECCheckedList) {
-      this.ECIndeterminate = !!ECCheckedList.length && ECCheckedList.length < ECPlainOptions.length
-      this.ECCheckAll = ECCheckedList.length === ECPlainOptions.length
+    ECOnChange (_ECCheckedList) {
+      this.ECIndeterminate = !!_ECCheckedList.length && _ECCheckedList.length < ECPlainOptions.length
+      this.ECCheckAll = _ECCheckedList.length === ECPlainOptions.length
+      const NCCheckedList = this.NCCheckedList.length ? this.NCCheckedList.join('\n') + '\n' : ''
+      const NECheckedList = this.NECheckedList.length ? this.NECheckedList.join('\n') + '\n' : ''
+      const ECCheckedList = this.ECCheckedList.length ? this.ECCheckedList.join('\n') + '\n' : ''
+      const CCCheckedList = this.CCCheckedList.length ? this.CCCheckedList.join('\n') + '\n' : ''
+      const SCCheckedList = this.SCCheckedList.length ? this.SCCheckedList.join('\n') + '\n' : ''
+      const SWCheckedList = this.SWCheckedList.length ? this.SWCheckedList.join('\n') + '\n' : ''
+      const NWCheckedList = this.NWCheckedList.length ? this.NWCheckedList.join('\n') : ''
+      this.area = NCCheckedList + NECheckedList + ECCheckedList + CCCheckedList + SCCheckedList + SWCheckedList + NWCheckedList
+      this.compoundMode()
     },
     ECOnCheckAllChange (e) {
       Object.assign(this, {
@@ -1032,11 +1191,29 @@ export default {
         ECIndeterminate: false,
         ECCheckAll: e.target.checked
       })
+      const NCCheckedList = this.NCCheckedList.length ? this.NCCheckedList.join('\n') + '\n' : ''
+      const NECheckedList = this.NECheckedList.length ? this.NECheckedList.join('\n') + '\n' : ''
+      const ECCheckedList = this.ECCheckedList.length ? this.ECCheckedList.join('\n') + '\n' : ''
+      const CCCheckedList = this.CCCheckedList.length ? this.CCCheckedList.join('\n') + '\n' : ''
+      const SCCheckedList = this.SCCheckedList.length ? this.SCCheckedList.join('\n') + '\n' : ''
+      const SWCheckedList = this.SWCheckedList.length ? this.SWCheckedList.join('\n') + '\n' : ''
+      const NWCheckedList = this.NWCheckedList.length ? this.NWCheckedList.join('\n') : ''
+      this.area = NCCheckedList + NECheckedList + ECCheckedList + CCCheckedList + SCCheckedList + SWCheckedList + NWCheckedList
+      this.compoundMode()
     },
     // 华中
-    CCOnChange (CCCheckedList) {
-      this.CCIndeterminate = !!CCCheckedList.length && CCCheckedList.length < CCPlainOptions.length
-      this.CCCheckAll = CCCheckedList.length === CCPlainOptions.length
+    CCOnChange (_CCCheckedList) {
+      this.CCIndeterminate = !!_CCCheckedList.length && _CCCheckedList.length < CCPlainOptions.length
+      this.CCCheckAll = _CCCheckedList.length === CCPlainOptions.length
+      const NCCheckedList = this.NCCheckedList.length ? this.NCCheckedList.join('\n') + '\n' : ''
+      const NECheckedList = this.NECheckedList.length ? this.NECheckedList.join('\n') + '\n' : ''
+      const ECCheckedList = this.ECCheckedList.length ? this.ECCheckedList.join('\n') + '\n' : ''
+      const CCCheckedList = this.CCCheckedList.length ? this.CCCheckedList.join('\n') + '\n' : ''
+      const SCCheckedList = this.SCCheckedList.length ? this.SCCheckedList.join('\n') + '\n' : ''
+      const SWCheckedList = this.SWCheckedList.length ? this.SWCheckedList.join('\n') + '\n' : ''
+      const NWCheckedList = this.NWCheckedList.length ? this.NWCheckedList.join('\n') : ''
+      this.area = NCCheckedList + NECheckedList + ECCheckedList + CCCheckedList + SCCheckedList + SWCheckedList + NWCheckedList
+      this.compoundMode()
     },
     CCOnCheckAllChange (e) {
       Object.assign(this, {
@@ -1044,11 +1221,29 @@ export default {
         CCIndeterminate: false,
         CCCheckAll: e.target.checked
       })
+      const NCCheckedList = this.NCCheckedList.length ? this.NCCheckedList.join('\n') + '\n' : ''
+      const NECheckedList = this.NECheckedList.length ? this.NECheckedList.join('\n') + '\n' : ''
+      const ECCheckedList = this.ECCheckedList.length ? this.ECCheckedList.join('\n') + '\n' : ''
+      const CCCheckedList = this.CCCheckedList.length ? this.CCCheckedList.join('\n') + '\n' : ''
+      const SCCheckedList = this.SCCheckedList.length ? this.SCCheckedList.join('\n') + '\n' : ''
+      const SWCheckedList = this.SWCheckedList.length ? this.SWCheckedList.join('\n') + '\n' : ''
+      const NWCheckedList = this.NWCheckedList.length ? this.NWCheckedList.join('\n') : ''
+      this.area = NCCheckedList + NECheckedList + ECCheckedList + CCCheckedList + SCCheckedList + SWCheckedList + NWCheckedList
+      this.compoundMode()
     },
     // 华南
-    SCOnChange (SCCheckedList) {
-      this.SCIndeterminate = !!SCCheckedList.length && SCCheckedList.length < SCPlainOptions.length
-      this.SCCheckAll = SCCheckedList.length === SCPlainOptions.length
+    SCOnChange (_SCCheckedList) {
+      this.SCIndeterminate = !!_SCCheckedList.length && _SCCheckedList.length < SCPlainOptions.length
+      this.SCCheckAll = _SCCheckedList.length === SCPlainOptions.length
+      const NCCheckedList = this.NCCheckedList.length ? this.NCCheckedList.join('\n') + '\n' : ''
+      const NECheckedList = this.NECheckedList.length ? this.NECheckedList.join('\n') + '\n' : ''
+      const ECCheckedList = this.ECCheckedList.length ? this.ECCheckedList.join('\n') + '\n' : ''
+      const CCCheckedList = this.CCCheckedList.length ? this.CCCheckedList.join('\n') + '\n' : ''
+      const SCCheckedList = this.SCCheckedList.length ? this.SCCheckedList.join('\n') + '\n' : ''
+      const SWCheckedList = this.SWCheckedList.length ? this.SWCheckedList.join('\n') + '\n' : ''
+      const NWCheckedList = this.NWCheckedList.length ? this.NWCheckedList.join('\n') : ''
+      this.area = NCCheckedList + NECheckedList + ECCheckedList + CCCheckedList + SCCheckedList + SWCheckedList + NWCheckedList
+      this.compoundMode()
     },
     SCOnCheckAllChange (e) {
       Object.assign(this, {
@@ -1056,11 +1251,29 @@ export default {
         SCIndeterminate: false,
         SCCheckAll: e.target.checked
       })
+      const NCCheckedList = this.NCCheckedList.length ? this.NCCheckedList.join('\n') + '\n' : ''
+      const NECheckedList = this.NECheckedList.length ? this.NECheckedList.join('\n') + '\n' : ''
+      const ECCheckedList = this.ECCheckedList.length ? this.ECCheckedList.join('\n') + '\n' : ''
+      const CCCheckedList = this.CCCheckedList.length ? this.CCCheckedList.join('\n') + '\n' : ''
+      const SCCheckedList = this.SCCheckedList.length ? this.SCCheckedList.join('\n') + '\n' : ''
+      const SWCheckedList = this.SWCheckedList.length ? this.SWCheckedList.join('\n') + '\n' : ''
+      const NWCheckedList = this.NWCheckedList.length ? this.NWCheckedList.join('\n') : ''
+      this.area = NCCheckedList + NECheckedList + ECCheckedList + CCCheckedList + SCCheckedList + SWCheckedList + NWCheckedList
+      this.compoundMode()
     },
     // 西南
-    SWOnChange (SWCheckedList) {
-      this.SWIndeterminate = !!SWCheckedList.length && SWCheckedList.length < SWPlainOptions.length
-      this.SWCheckAll = SWCheckedList.length === SWPlainOptions.length
+    SWOnChange (_SWCheckedList) {
+      this.SWIndeterminate = !!_SWCheckedList.length && _SWCheckedList.length < SWPlainOptions.length
+      this.SWCheckAll = _SWCheckedList.length === SWPlainOptions.length
+      const NCCheckedList = this.NCCheckedList.length ? this.NCCheckedList.join('\n') + '\n' : ''
+      const NECheckedList = this.NECheckedList.length ? this.NECheckedList.join('\n') + '\n' : ''
+      const ECCheckedList = this.ECCheckedList.length ? this.ECCheckedList.join('\n') + '\n' : ''
+      const CCCheckedList = this.CCCheckedList.length ? this.CCCheckedList.join('\n') + '\n' : ''
+      const SCCheckedList = this.SCCheckedList.length ? this.SCCheckedList.join('\n') + '\n' : ''
+      const SWCheckedList = this.SWCheckedList.length ? this.SWCheckedList.join('\n') + '\n' : ''
+      const NWCheckedList = this.NWCheckedList.length ? this.NWCheckedList.join('\n') : ''
+      this.area = NCCheckedList + NECheckedList + ECCheckedList + CCCheckedList + SCCheckedList + SWCheckedList + NWCheckedList
+      this.compoundMode()
     },
     SWOnCheckAllChange (e) {
       Object.assign(this, {
@@ -1068,11 +1281,29 @@ export default {
         SWIndeterminate: false,
         SWCheckAll: e.target.checked
       })
+      const NCCheckedList = this.NCCheckedList.length ? this.NCCheckedList.join('\n') + '\n' : ''
+      const NECheckedList = this.NECheckedList.length ? this.NECheckedList.join('\n') + '\n' : ''
+      const ECCheckedList = this.ECCheckedList.length ? this.ECCheckedList.join('\n') + '\n' : ''
+      const CCCheckedList = this.CCCheckedList.length ? this.CCCheckedList.join('\n') + '\n' : ''
+      const SCCheckedList = this.SCCheckedList.length ? this.SCCheckedList.join('\n') + '\n' : ''
+      const SWCheckedList = this.SWCheckedList.length ? this.SWCheckedList.join('\n') + '\n' : ''
+      const NWCheckedList = this.NWCheckedList.length ? this.NWCheckedList.join('\n') : ''
+      this.area = NCCheckedList + NECheckedList + ECCheckedList + CCCheckedList + SCCheckedList + SWCheckedList + NWCheckedList
+      this.compoundMode()
     },
     // 西北
-    NWOnChange (NWCheckedList) {
-      this.NWIndeterminate = !!NWCheckedList.length && NWCheckedList.length < NWPlainOptions.length
-      this.NWCheckAll = NWCheckedList.length === NWPlainOptions.length
+    NWOnChange (_NWCheckedList) {
+      this.NWIndeterminate = !!_NWCheckedList.length && _NWCheckedList.length < NWPlainOptions.length
+      this.NWCheckAll = _NWCheckedList.length === NWPlainOptions.length
+      const NCCheckedList = this.NCCheckedList.length ? this.NCCheckedList.join('\n') + '\n' : ''
+      const NECheckedList = this.NECheckedList.length ? this.NECheckedList.join('\n') + '\n' : ''
+      const ECCheckedList = this.ECCheckedList.length ? this.ECCheckedList.join('\n') + '\n' : ''
+      const CCCheckedList = this.CCCheckedList.length ? this.CCCheckedList.join('\n') + '\n' : ''
+      const SCCheckedList = this.SCCheckedList.length ? this.SCCheckedList.join('\n') + '\n' : ''
+      const SWCheckedList = this.SWCheckedList.length ? this.SWCheckedList.join('\n') + '\n' : ''
+      const NWCheckedList = this.NWCheckedList.length ? this.NWCheckedList.join('\n') : ''
+      this.area = NCCheckedList + NECheckedList + ECCheckedList + CCCheckedList + SCCheckedList + SWCheckedList + NWCheckedList
+      this.compoundMode()
     },
     NWOnCheckAllChange (e) {
       Object.assign(this, {
@@ -1080,21 +1311,73 @@ export default {
         NWIndeterminate: false,
         NWCheckAll: e.target.checked
       })
+      const NCCheckedList = this.NCCheckedList.length ? this.NCCheckedList.join('\n') + '\n' : ''
+      const NECheckedList = this.NECheckedList.length ? this.NECheckedList.join('\n') + '\n' : ''
+      const ECCheckedList = this.ECCheckedList.length ? this.ECCheckedList.join('\n') + '\n' : ''
+      const CCCheckedList = this.CCCheckedList.length ? this.CCCheckedList.join('\n') + '\n' : ''
+      const SCCheckedList = this.SCCheckedList.length ? this.SCCheckedList.join('\n') + '\n' : ''
+      const SWCheckedList = this.SWCheckedList.length ? this.SWCheckedList.join('\n') + '\n' : ''
+      const NWCheckedList = this.NWCheckedList.length ? this.NWCheckedList.join('\n') : ''
+      this.area = NCCheckedList + NECheckedList + ECCheckedList + CCCheckedList + SCCheckedList + SWCheckedList + NWCheckedList
+      this.compoundMode()
     },
     // 词头 对话框 确定事件
     prefixHandleOk () {
-      this.prefix = this.prefixData.join('\n')
+      // this.prefix = this.prefixData.join('\n')
       this.prefixVisible = false
+      // this.compoundMode()
     },
     // 词尾 对话框 确定事件
     suffixHandleOk () {
-      this.tail = this.suffixData.join('\n')
+      // this.tail = this.suffixData.join('\n')
       this.suffixVisible = false
+      // this.compoundMode()
     },
     // 处理方式
     dealModehandleSelectChange (val) {
+      this.compoundMode()
       // console.log(val)
       // console.log(this.dealModeVal)
+    },
+    // 当前任务提交的关键词个数
+    async getTaskKeywordsNum () {
+      const { data: res } = await this.$http.get(`pg/kw?gn=${this.downloadArticle.gn}`)
+      if (res.status !== 0) return this.$message.error(res.reason)
+      this.keywordsNum = res.kw.split(',').length
+    },
+    // 词头全选事件
+    prefixOnCheckAllChange (e) {
+      Object.assign(this, {
+        prefixCheckedList: e.target.checked ? prefixData : [],
+        prefixIndeterminate: false,
+        prefixCheckAll: e.target.checked
+      })
+      this.prefix = this.prefixCheckedList.join('\n')
+      this.compoundMode()
+    },
+    // 词头小助手 单选事件
+    prefixOnChange (prefixCheckedList) {
+      this.prefix = prefixCheckedList.join('\n')
+      this.compoundMode()
+      this.prefixIndeterminate = !!prefixCheckedList.length && prefixCheckedList.length < prefixData.length
+      this.prefixCheckAll = prefixCheckedList.length === prefixData.length
+    },
+    // 词尾全选事件
+    suffixOnCheckAllChange (e) {
+      Object.assign(this, {
+        suffixCheckedList: e.target.checked ? suffixData : [],
+        suffixIndeterminate: false,
+        suffixCheckAll: e.target.checked
+      })
+      this.tail = this.suffixCheckedList.join('\n')
+      this.compoundMode()
+    },
+    // 词尾小助手 单选事件
+    suffixOnChange (suffixCheckedList) {
+      this.tail = suffixCheckedList.join('\n')
+      this.compoundMode()
+      this.suffixIndeterminate = !!suffixCheckedList.length && suffixCheckedList.length < suffixData.length
+      this.suffixCheckAll = suffixCheckedList.length === suffixData.length
     }
   }
 }

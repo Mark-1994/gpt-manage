@@ -67,18 +67,19 @@
               </a-select>
             </a-form-item>
 
-            <a-form-item label="文章数量" extra="文章数量不得低于※" style="text-align: left;">
-              <a-input-number v-model="articleNum" :min="kwValue.split('\n').length" @blur="articleNumber" />
+            <a-form-item label="文章数量" :extra="`文章数量不得低于 ${kwValue.split('\n').length}`" style="text-align: left;">
+              <a-input-number v-model="articleNum" :min="kwValue.split('\n').length" @change="articleNumber" />
             </a-form-item>
 
-            <a-form-item label="文章字数" extra="VIP会员可选择1000字文章 升级会员" style="text-align: left;">
+            <!-- <a-form-item label="文章字数" extra="VIP会员可选择1000字文章 升级会员" style="text-align: left;"> -->
+            <a-form-item label="文章字数" style="text-align: left;">
               <a-radio-group
                 v-decorator="[
                   'wn',
                   { rules: [{ required: true, message: '请选择!' }] }
                 ]"
               >
-                <a-radio value="500">
+                <a-radio value="500" disabled>
                   500字
                 </a-radio>
                 <a-radio value="1000">
@@ -179,6 +180,15 @@
         </div>
       </a-col>
     </a-row>
+
+    <!-- 文章生成 对话框 -->
+    <a-modal v-model="articleGenerateVisible" title="文章生成" @ok="articleGenerateHandleOk">
+      <p>文章数量：{{ articleNum }}</p>
+      <p>文章字数：{{ articleWordCount }}</p>
+      <p>文章类型：{{ articleTypeCurrent }}</p>
+      <p>总扣费积分：{{ articleOrderPrice }}</p>
+    </a-modal>
+
   </div>
 </template>
 
@@ -200,7 +210,9 @@ export default {
       wrapperCol: { span: 9 }
     },
     // 文章数量
-    articleNum: '',
+    articleNum: 1,
+    // 文章字数
+    articleWordCount: 0,
     // 关键词输入框内容
     kwValue: '',
     // 生成文章 文章类型下拉框
@@ -212,17 +224,35 @@ export default {
     // 非会员单篇文章价格
     articleItemPrices: 0,
     // 差价
-    onSale: 0
+    onSale: 0,
+    // 文章生成 对话框 显示/隐藏
+    articleGenerateVisible: false,
+    // 文章类型
+    articleTypeCurrent: '',
+    // 文章名称
+    articleName: '',
+    // 模型 id
+    articleModelId: 0
   }),
   methods: {
     handleSubmit (e) {
       e.preventDefault()
       this.form.validateFields((err, values) => {
         if (!err) {
+          this.articleGenerateVisible = true
+          this.articleWordCount = values.wn
+          this.articleType.map(v => {
+            if (v.id === Number(values.model_id.split('-')[1])) {
+              this.articleTypeCurrent = v.name
+            }
+          })
+          this.articleName = values.gn
+          this.articleModelId = Number(values.model_id.split('-')[1])
           values.prefix = this.kwValue.split('\n')
           values.post_num = this.articleNum
           values.model_id = Number(values.model_id.split('-')[1])
-          this.getArticleGenerate(values)
+          values.wn = Number(values.wn)
+          // this.getArticleGenerate(values)
         }
       })
     },
@@ -248,6 +278,7 @@ export default {
     // 获取可用模型
     async getModel () {
       const { data: res } = await this.$http.get('uinfo')
+      if (res.status === 3) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/#/login' })
       if (res.status !== 0) return this.$message.error(res.reason)
       // 文章类型下拉框
       this.articleType = res.model
@@ -257,6 +288,7 @@ export default {
       const { data: res } = await this.$http.post('gen_post', values)
       if (res.status !== 0) return this.$message.error(res.reason)
       this.$message.success('提交了')
+      this.articleGenerateVisible = false
     },
     // 单篇文章价格
     async getArticlePrice (values) {
@@ -267,6 +299,7 @@ export default {
         this.orderCost()
       } else if (values.ml === 0) {
         this.articleItemPrices = res.cost
+        this.orderCost()
       }
     },
     // 文章生成-文章数量失去焦点事件-订单费用
@@ -289,8 +322,20 @@ export default {
     },
     // 手动修改关键词事件
     manualModifyKeywords (e) {
+      this.articleNum = this.kwValue.split('\n').length
+      this.orderCost()
       // console.log(e.target.value)
       // console.log(this.kwValue)
+    },
+    // 文章生成 对话框 确认按钮
+    articleGenerateHandleOk () {
+      this.getArticleGenerate({
+        gn: this.articleName,
+        model_id: this.articleModelId,
+        post_num: this.articleNum,
+        prefix: this.kwValue.split('\n'),
+        wn: this.articleWordCount
+      })
     }
   }
 }

@@ -76,10 +76,10 @@
     <a-drawer width="640" placement="right" :closable="false" :visible="visible" @close="onClose">
       <a-tabs default-active-key="1">
         <a-tab-pane key="1" tab="获取账户信息">
-          <p>接口地址：http://api.91nlp.cn/api/info</p>
+          <p>接口地址：http://api.91nlp.cn:5080/api/info</p>
           <p>返回格式：JSON</p>
           <p>请求方式：GET</p>
-          <p>请求示例：http://api.91nlp.cn/api/info?key=申请的key</p>
+          <p>请求示例：http://api.91nlp.cn:5080/api/info?key=申请的key</p>
           <p>请求参数：</p>
           <a-table :columns="accountInfoColumns" :data-source="accountInfodata" bordered :pagination="false" size="middle">
             <template slot="description">
@@ -133,10 +133,10 @@
           <a-table :columns="errorCodeColumns" :data-source="errorCodeData" bordered :pagination="false" size="middle" />
         </a-tab-pane>
         <a-tab-pane key="2" tab="生成文章">
-          <p>接口地址：http://api.91nlp.cn/api/genpost</p>
+          <p>接口地址：http://api.91nlp.cn:5080/api/genpost</p>
           <p>返回格式：JSON</p>
           <p>请求方式：POST</p>
-          <p>请求示例：http://api.91nlp.cn/api/genpost?key=申请的key</p>
+          <p>请求示例：http://api.91nlp.cn:5080/api/genpost?key=申请的key</p>
           <p>请求参数：</p>
           <a-table :columns="accountInfoColumns" :data-source="accountInfodata" bordered :pagination="false" size="middle">
             <template slot="description">
@@ -165,13 +165,13 @@
           </pre>
           <a-divider />
           <p>错误码参照：</p>
-          <a-table :columns="errorCodeColumns" :data-source="errorCodeData" bordered :pagination="false" size="middle" />
+          <a-table :columns="errorCodeColumns" :data-source="generateReturnData" bordered :pagination="false" size="middle" />
         </a-tab-pane>
         <a-tab-pane key="3" tab="获取任务状态">
-          <p>接口地址：http://api.91nlp.cn/api/tinfo</p>
+          <p>接口地址：http://api.91nlp.cn:5080/api/tinfo</p>
           <p>返回格式：JSON</p>
           <p>请求方式：GET</p>
-          <p>请求示例：http://api.91nlp.cn/api/tinfo?key=申请的key&gn=要查询的任务名</p>
+          <p>请求示例：http://api.91nlp.cn:5080/api/tinfo?key=申请的key&gn=要查询的任务名</p>
           <p>请求参数：</p>
           <a-table :columns="accountInfoColumns" :data-source="accountInfodata" bordered :pagination="false" size="middle">
             <template slot="description">
@@ -202,13 +202,13 @@
           </pre>
           <a-divider />
           <p>错误码参照：</p>
-          <a-table :columns="errorCodeColumns" :data-source="errorCodeData" bordered :pagination="false" size="middle" />
+          <a-table :columns="errorCodeColumns" :data-source="taskReturnData" bordered :pagination="false" size="middle" />
         </a-tab-pane>
         <a-tab-pane key="4" tab="下载生成的文章">
-          <p>接口地址：http://api.91nlp.cn/api/dl</p>
+          <p>接口地址：http://api.91nlp.cn:5080/api/dl</p>
           <p>返回格式：JSON</p>
           <p>请求方式：POST</p>
-          <p>请求示例：http://api.91nlp.cn/api/dl?key=申请的key</p>
+          <p>请求示例：http://api.91nlp.cn:5080/api/dl?key=申请的key</p>
           <p>请求参数：</p>
           <a-table :columns="accountInfoColumns" :data-source="accountInfodata" bordered :pagination="false" size="middle">
             <template slot="description">
@@ -233,12 +233,12 @@
           <pre style="background-color:#f8f8f8;border:1px solid #ededed;padding:10px 15px;line-height:24px;">
 {
     status: 0,
-    fn: "f660b1de-d9df-44c0-afbe-ed6b122ddb7f-1607169950926.zip"
+    dlink: "http://api.91nlp.cn:5080/dlzip?fn=30831834-72de-4dfe-8cfb-72c3a0c237c4160809025.zip"
 }
           </pre>
           <a-divider />
           <p>错误码参照：</p>
-          <a-table :columns="errorCodeColumns" :data-source="errorCodeData" bordered :pagination="false" size="middle" />
+          <a-table :columns="errorCodeColumns" :data-source="downloadReturnData" bordered :pagination="false" size="middle" />
         </a-tab-pane>
       </a-tabs>
     </a-drawer>
@@ -382,87 +382,66 @@ export default {
       downloadArticleData: [
         {
           key: '1',
-          name: 'tt',
-          type: 'array',
-          must: '是',
-          description: '标题处理'
-        },
-        {
-          key: '2',
-          name: 'type',
-          type: 'string',
-          must: '是',
-          description: 'area | prefix | mk | tai（地区 | 词头 | 主词 | 词尾）'
-        },
-        {
-          key: '3',
-          name: 'strs',
-          type: 'array',
-          must: '是',
-          description: '词数组'
-        },
-        {
-          key: '4',
-          name: 'post_prefix',
-          type: 'string',
-          must: '是',
-          description: '文章内容前缀'
-        },
-        {
-          key: '5',
-          name: 'post_suffix',
-          type: 'string',
-          must: '是',
-          description: '文章内容后缀'
-        },
-        {
-          key: '6',
-          name: 'enable_subtt',
-          type: 'number',
-          must: '是',
-          description: '0|1 插入一个小标题到内容中'
-        },
-        {
-          key: '7',
-          name: 'kw_bold',
-          type: 'string',
-          must: '是',
-          description: '0|1 是否关键词(即文章前缀)加粗'
-        },
-        {
-          key: '8',
-          name: 'il_bold',
-          type: 'number',
-          must: '是',
-          description: '0|1 是否内链加粗'
-        },
-        {
-          key: '9',
-          name: 'il_gn',
-          type: 'string',
-          must: '是',
-          description: '内链组名'
-        },
-        {
-          key: '10',
-          name: 'ptag',
-          type: 'number',
-          must: '是',
-          description: '0 纯文本格式 1 富文本格式'
-        },
-        {
-          key: '11',
           name: 'gn',
           type: 'string',
           must: '是',
-          description: '项目名'
+          description: '要下载的文章任务名'
         },
         {
-          key: '12',
-          name: 'dl_opt',
+          key: '2',
+          name: 'tt_pm',
           type: 'number',
           must: '是',
-          description: '1 所有文章装进一个txt中 2 每个文章一个txt,装进压缩包'
+          description: '文章标题处理方式 0:采用文章开头作为文章标题 1:[前缀+文章开头+后缀]作为标题 2:随机标题 3:文章第一句话作为标题'
+        },
+        {
+          key: '3',
+          name: 'tt_pf',
+          type: 'array',
+          must: '是',
+          description: '文章前缀数组 仅当tt_pm为1时需要提交此参数'
+        },
+        {
+          key: '4',
+          name: 'tt_tl',
+          type: 'array',
+          must: '是',
+          description: '文章后缀数组 仅当tt_pm为1时需要提交此参数'
+        },
+        {
+          key: '5',
+          name: 'tt_rd',
+          type: 'array',
+          must: '是',
+          description: '随机标题数组 仅当tt_pm为2时需要提交此参数'
+        },
+        {
+          key: '6',
+          name: 'inner_link',
+          type: 'number',
+          must: '是',
+          description: '是否加内链 1是 0否'
+        },
+        {
+          key: '7',
+          name: 'inner_link_gn',
+          type: 'string',
+          must: '是',
+          description: '内链组名 仅当inner_link为1时需要提交此参数'
+        },
+        {
+          key: '8',
+          name: 'inner_link_bold',
+          type: 'number',
+          must: '是',
+          description: '是否给内链加粗 1是 0否 仅当inner_link为1时需要提交此参数'
+        },
+        {
+          key: '9',
+          name: 'kw_bold',
+          type: 'number',
+          must: '是',
+          description: '是否给文章开头加粗 1是 0否'
         }
       ],
       // 获取账户信息-返回参数
@@ -554,13 +533,13 @@ export default {
           key: '1',
           name: 'status',
           type: 'number',
-          description: '状态'
+          description: '状态码'
         },
         {
           key: '2',
-          name: 'fn',
+          name: 'dlink',
           type: 'string',
-          description: '文件名'
+          description: '文章下载链接,6分钟内有效'
         }
       ],
       // 获取账户信息-错误码
@@ -578,7 +557,7 @@ export default {
         {
           key: '0',
           errorCode: '0',
-          description: '成功'
+          description: '接口请求成功'
         },
         {
           key: '1',
@@ -588,42 +567,83 @@ export default {
         {
           key: '2',
           errorCode: '3',
-          description: '登录失败'
+          description: 'key有误'
         },
         {
           key: '3',
-          errorCode: '4',
-          description: '达到限制'
+          errorCode: '11',
+          description: '无本接口调用权限'
+        }
+      ],
+      generateReturnData: [
+        {
+          key: '0',
+          errorCode: '0',
+          description: '接口请求成功'
         },
         {
-          key: '4',
-          errorCode: '5',
-          description: '失败'
+          key: '1',
+          errorCode: '1',
+          description: '参数错误'
         },
         {
-          key: '5',
-          errorCode: '6',
-          description: '已过期'
+          key: '2',
+          errorCode: '3',
+          description: 'key有误'
         },
         {
-          key: '6',
+          key: '3',
           errorCode: '7',
           description: '余额不足'
         },
         {
-          key: '7',
-          errorCode: '8',
-          description: '用户不存在'
-        },
-        {
-          key: '8',
-          errorCode: '9',
-          description: '非法操作'
-        },
-        {
-          key: '9',
+          key: '4',
           errorCode: '11',
-          description: '无对应权限'
+          description: '无本接口调用权限'
+        }
+      ],
+      taskReturnData: [
+        {
+          key: '0',
+          errorCode: '0',
+          description: '接口请求成功'
+        },
+        {
+          key: '1',
+          errorCode: '1',
+          description: '参数错误'
+        },
+        {
+          key: '2',
+          errorCode: '3',
+          description: 'key有误'
+        },
+        {
+          key: '3',
+          errorCode: '11',
+          description: '无本接口调用权限'
+        }
+      ],
+      downloadReturnData: [
+        {
+          key: '0',
+          errorCode: '0',
+          description: '接口请求成功'
+        },
+        {
+          key: '1',
+          errorCode: '1',
+          description: '参数错误'
+        },
+        {
+          key: '2',
+          errorCode: '3',
+          description: 'key有误'
+        },
+        {
+          key: '3',
+          errorCode: '11',
+          description: '无本接口调用权限'
         }
       ],
       // 接口 key 值
@@ -663,6 +683,7 @@ export default {
     // 获取 API 信息
     async getApiInfo () {
       const { data: res } = await this.$http.get('pg/apinfo')
+      if (res.status === 3) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/#/login' })
       if (res.status === 11) {
         this.apiAuthority = false
         return this.$message.error('无API权限,建议其充值会员')
