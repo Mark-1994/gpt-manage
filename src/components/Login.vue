@@ -276,14 +276,25 @@ export default {
       e.preventDefault()
       this.form.validateFields(async (err, values) => {
         if (!err) {
-          const { data: res } = await this.$http.post('register', {
-            mb: values.registerUserName,
-            passwd: values.registerPassword,
-            auth_code: values.captcha,
-            ticket: localStorage.getItem('ticket'),
-            fid: this.urlParams
-          })
-          if (res.status !== 0) return this.$message.error(res.reason)
+          if (window.location.host === 'sem.hbzhaosheng.cn') {
+            const { data: res } = await this.$http.post('register', {
+              mb: values.registerUserName,
+              passwd: values.registerPassword,
+              auth_code: values.captcha,
+              ticket: localStorage.getItem('ticket'),
+              fid: 'pee2ho9ongie'
+            })
+            if (res.status !== 0) return this.$message.error(res.reason)
+          } else {
+            const { data: res } = await this.$http.post('register', {
+              mb: values.registerUserName,
+              passwd: values.registerPassword,
+              auth_code: values.captcha,
+              ticket: localStorage.getItem('ticket'),
+              fid: this.urlParams
+            })
+            if (res.status !== 0) return this.$message.error(res.reason)
+          }
           this.$message.success('注册了')
           this.showLogin = 0
         }

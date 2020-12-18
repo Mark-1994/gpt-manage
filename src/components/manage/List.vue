@@ -2,15 +2,21 @@
   <div class="list_container">
     <h3>文章队列</h3>
 
-    <a-table :columns="columns" :data-source="allTask" bordered :pagination="{ position: 'bottom' }" @change="pageTurning" size="middle">
+    <a-table :columns="columns" :data-source="allTask" bordered :pagination="{ position: 'bottom' }" @change="pageTurning" size="middle" :scroll="{ x: 900 }">
       <template slot="keywords">
         <a href="javascript:;" @click="showKeywords">查看</a>
       </template>
       <template slot="create_at" slot-scope="text">
         {{ text | dateFormat }}
       </template>
+      <template slot="taskdetail" slot-scope="text, record">
+        <!-- {{ `执行中:${record.queue} 成功:${record.dn} 失败:${record.en}` }} -->
+        <p :style="{ margin: '0' }">{{ `执行中：${record.queue}` }}</p>
+        <p :style="{ margin: '0' }">{{ `成功：${record.dn}` }}</p>
+        <p :style="{ margin: '0' }">{{ `失败：${record.en}` }}</p>
+      </template>
       <template slot="deal" slot-scope="record">
-        <a href="javascript:;" @click="handle($event)" :disabled="record.state === '生产中'">处理</a>
+        <a href="javascript:;" @click="handle($event)">处理</a>
         <a-divider type="vertical" />
         <a-popconfirm
           v-if="allTask.length"
@@ -50,17 +56,22 @@ export default {
       columns: [
         {
           title: '序号',
-          dataIndex: 'key'
+          dataIndex: 'key',
+          width: 60,
+          fixed: 'left'
         },
         {
           title: '项目名',
           dataIndex: 'gn',
-          className: 'item-name'
+          className: 'item-name',
+          width: 100,
+          fixed: 'left'
         },
         {
           title: '字数',
-          dataIndex: 'wn'
-          // sorter: (a, b) => a.wn - b.wn
+          dataIndex: 'wn',
+          // sorter: (a, b) => a.wn - b.wn,
+          width: 80
         },
         {
           title: '文章数量',
@@ -85,6 +96,11 @@ export default {
           // }
         },
         {
+          title: '任务详情',
+          dataIndex: 'taskdetail',
+          scopedSlots: { customRender: 'taskdetail' }
+        },
+        {
           title: '状态',
           dataIndex: 'state',
           // filters: [
@@ -99,12 +115,15 @@ export default {
           // ],
           filterMultiple: false,
           onFilter: (value, record) => record.state.indexOf(value) === 0,
-          scopedSlots: { customRender: 'state' }
+          scopedSlots: { customRender: 'state' },
+          width: 80,
+          fixed: 'right'
         },
         {
           title: '操作',
           scopedSlots: { customRender: 'deal' },
-          width: 110
+          width: 110,
+          fixed: 'right'
         }
       ],
       // 所有任务进度
@@ -140,7 +159,8 @@ export default {
       this.allTask = res.list
     },
     handle (event) {
-      const itemName = event.currentTarget.parentElement.parentElement.children[1].innerText
+      // const itemName = event.currentTarget.parentElement.parentElement.children[1].innerText
+      const itemName = event.currentTarget.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.previousSibling.querySelector('.ant-table-tbody').querySelector('.item-name').innerText
       window.sessionStorage.setItem('itemName', itemName)
       if (document.querySelector('.articleDeal')) {
         document.querySelector('.articleDeal').click()

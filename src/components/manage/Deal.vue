@@ -178,6 +178,9 @@
                       <template slot="index" slot-scope="text, record, index">
                         {{ index }}
                       </template>
+                      <template slot="value" slot-scope="text">
+                        {{ text }}
+                      </template>
                       <template slot="create_at" slot-scope="text">
                         {{ text | dateFormat }}
                       </template>
@@ -295,8 +298,8 @@
         <a-form-item label="内链">
           <a-input v-model="newAddInternalChain.link" />
         </a-form-item>
-        <a-form-item label="关键词" extra="关键词以 “,” 分隔">
-          <a-textarea placeholder="" :rows="2" v-model="newAddInternalChain.value" />
+        <a-form-item label="关键词" extra="关键词格式：每行一个">
+          <a-textarea placeholder="" :auto-size="{ minRows: 2, maxRows: 4 }" v-model="newAddInternalChain.value" />
         </a-form-item>
       </a-form>
     </a-modal>
@@ -682,7 +685,7 @@ export default {
           // console.log(selected, selectedRows, changeRows)
         },
         selectedRowKeys: this.selectedTableRow,
-        hideDefaultSelections: false,
+        hideDefaultSelections: true,
         selections: [
           {
             key: 'all-data',
@@ -690,6 +693,14 @@ export default {
             onSelect: () => {
               this.selectedTableRow = [...Array(this.articleListData.length + 1).keys()]
               this.selectedItem = this.articleListData
+            }
+          },
+          {
+            key: 'cancel-all-data',
+            text: '取消选择所有数据',
+            onSelect: () => {
+              this.selectedTableRow = []
+              this.selectedItem = []
             }
           }
         ]
@@ -722,6 +733,9 @@ export default {
         i++
         return { ...v, key: i }
       })
+      // 默认全选
+      this.selectedTableRow = [...Array(this.articleListData.length + 1).keys()]
+      this.selectedItem = this.articleListData
       // if (this.downloadArticle.dl_opt === 2) {
       //   return window.open(`http://api.91nlp.cn/dlzip?fn=${res.fn}`)
       // } else {
@@ -753,6 +767,7 @@ export default {
     },
     // 新增内链 对话框 确定按钮
     handleOk () {
+      this.newAddInternalChain.value = this.newAddInternalChain.value.split('\n').filter(item => item).join(',')
       this.getCil(this.newAddInternalChain)
     },
     // 新增内链 接口
@@ -789,7 +804,8 @@ export default {
             actualVal += this.keywordsNum
             cacheData.push({
               type: 'mk',
-              strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+              // strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+              strs: []
             })
             // this.downloadArticle.tt = [
             //   {
@@ -806,7 +822,8 @@ export default {
             })
             cacheData.push({
               type: 'mk',
-              strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+              // strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+              strs: []
             })
             // this.downloadArticle.tt = [
             //   {
@@ -827,7 +844,8 @@ export default {
             })
             cacheData.push({
               type: 'mk',
-              strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+              // strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+              strs: []
             })
             // this.downloadArticle.tt = [
             //   {
@@ -844,7 +862,8 @@ export default {
             actualVal += this.keywordsNum * this.tail.trim().split('\n').length
             cacheData.push({
               type: 'mk',
-              strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+              // strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+              strs: []
             })
             cacheData.push({
               type: 'tail',
@@ -873,7 +892,8 @@ export default {
             })
             cacheData.push({
               type: 'mk',
-              strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+              // strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+              strs: []
             })
             // this.downloadArticle.tt = [
             //   {
@@ -898,7 +918,8 @@ export default {
             })
             cacheData.push({
               type: 'mk',
-              strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+              // strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+              strs: []
             })
             cacheData.push({
               type: 'tail',
@@ -927,7 +948,8 @@ export default {
             })
             cacheData.push({
               type: 'mk',
-              strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+              // strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+              strs: []
             })
             cacheData.push({
               type: 'tail',
@@ -960,7 +982,8 @@ export default {
             })
             cacheData.push({
               type: 'mk',
-              strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+              // strs: this.mk.trim() ? this.mk.trim().split('\n') : []
+              strs: []
             })
             cacheData.push({
               type: 'tail',

@@ -67,8 +67,8 @@
               </a-select>
             </a-form-item>
 
-            <a-form-item label="文章数量" :extra="`文章数量不得低于 ${kwValue.split('\n').length}`" style="text-align: left;">
-              <a-input-number v-model="articleNum" :min="kwValue.split('\n').length" @change="articleNumber" />
+            <a-form-item label="文章数量" :extra="`文章数量不得低于 ${kwValue.split('\n').filter(item => item).length}`" style="text-align: left;">
+              <a-input-number v-model="articleNum" :min="kwValue.split('\n').filter(item => item).length" @change="articleNumber" />
             </a-form-item>
 
             <!-- <a-form-item label="文章字数" extra="VIP会员可选择1000字文章 升级会员" style="text-align: left;"> -->
@@ -248,7 +248,7 @@ export default {
           })
           this.articleName = values.gn
           this.articleModelId = Number(values.model_id.split('-')[1])
-          values.prefix = this.kwValue.split('\n')
+          values.prefix = this.kwValue.split('\n').filter(item => item)
           values.post_num = this.articleNum
           values.model_id = Number(values.model_id.split('-')[1])
           values.wn = Number(values.wn)
@@ -322,7 +322,7 @@ export default {
     },
     // 手动修改关键词事件
     manualModifyKeywords (e) {
-      this.articleNum = this.kwValue.split('\n').length
+      this.articleNum = this.kwValue.split('\n').filter(item => item).length
       this.orderCost()
       // console.log(e.target.value)
       // console.log(this.kwValue)
@@ -333,7 +333,7 @@ export default {
         gn: this.articleName,
         model_id: this.articleModelId,
         post_num: this.articleNum,
-        prefix: this.kwValue.split('\n'),
+        prefix: this.kwValue.split('\n').filter(item => item),
         wn: this.articleWordCount
       })
     }
