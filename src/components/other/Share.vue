@@ -3,13 +3,13 @@
     <!-- 列表 -->
     <div class="giant_screen">
       <a-row type="flex" justify="space-between" align="middle">
-        <a-col :span="10" :offset="1">
+        <a-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8" :xxl="8" :offset="1">
           <a-row :gutter="[0, 36]">
-            <a-col>
-              <p>通过此链接注册可获得 <span :style="{ color: '#FFD139', fontSize: '48px' }">{{ shareData.nt }}</span> 元佣金</p>
+            <a-col :span="24">
+              <p>通过此链接注册可获得 <span :style="{ color: '#FFD139', fontSize: '48px' }">{{ shareData.nt }}</span> <span :style="{ opacity: '.4' }">元</span> 佣金</p>
               <p>用户注册后可获得首次充值金额的 {{ shareData.rt * 100 }}% 积分</p>
             </a-col>
-            <a-col class="expandConvert">
+            <a-col class="expandConvert" :span="24">
               <a-button type="primary" shape="round" :style="{ backgroundColor: '#94A5FF', border: '0' }" @click="copyText">
                 复制推广链接
               </a-button>
@@ -21,13 +21,13 @@
         </a-col>
         <a-col :span="6" :offset="1">
           <a-row :gutter="[0, 55]">
-            <a-col><span :style="{ color: '#FFD139', fontSize: '48px' }">{{ shareData.sn }}</span> 人</a-col>
+            <a-col><span :style="{ color: '#FFD139', fontSize: '48px' }">{{ shareData.sn }}</span> <span :style="{ opacity: '.4' }">人</span> </a-col>
             <a-col :style="{ fontSize: '24px' }">已邀请人数</a-col>
           </a-row>
         </a-col>
         <a-col :span="6">
           <a-row :gutter="[0, 55]">
-            <a-col><span :style="{ color: '#FFD139', fontSize: '48px' }">{{ shareData.ticket }}</span> 元</a-col>
+            <a-col><span :style="{ color: '#FFD139', fontSize: '48px' }">{{ shareData.ticket }}</span> <span :style="{ opacity: '.4' }">元</span> </a-col>
             <a-col :style="{ fontSize: '24px' }">我的佣金</a-col>
           </a-row>
         </a-col>
@@ -206,7 +206,7 @@ export default {
   bottom: 0;
   background-color: #FFFFFF;
   width: 257px;
-  height: 267px;
+  height: 287px;
   opacity: .2;
   border-radius: 100% 0 0 0;
 }

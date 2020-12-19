@@ -72,10 +72,10 @@
             </a-progress>
           </a-col>
           <a-col>
-            <a-button v-if="!indexInfo.is_qd" type="primary" shape="round" size="large" ghost @click="autoGraph">
+            <a-button v-if="!indexInfo.is_qd" type="primary" shape="round" size="large" ghost @click="autoGraph" :style="{ borderColor: '#0039FD', color: '#0039FD' }">
               签到
             </a-button>
-            <a-button v-else type="primary" shape="round" size="large" ghost>
+            <a-button v-else type="primary" shape="round" size="large" ghost :style="{ borderColor: '#0039FD', color: '#0039FD' }">
               已签到
             </a-button>
           </a-col>
@@ -384,17 +384,17 @@ export default {
       const { data: res } = await this.$http.get('pg/index')
       window.localStorage.setItem('nick_name', '')
 
-      // if (window.location.host !== 'a.91nlp.cn') {
-      //   if (res.status !== 0) {
-      //     return this.$message.error('Error', function () {
-      //       window.location.href = '/login/#/login'
-      //     })
-      //   } else {
-      //     return this.$message.error('Error', function () {
-      //       window.location.href = 'http://a.91nlp.cn/#/login'
-      //     })
-      //   }
-      // }
+      if (window.location.host !== 'a.91nlp.cn') {
+        if (res.status !== 0) {
+          return this.$message.error('Error', function () {
+            window.location.href = '/login/#/login'
+          })
+        } else {
+          return this.$message.error('Error', function () {
+            window.location.href = 'http://a.91nlp.cn/#/login'
+          })
+        }
+      }
 
       if (res.status === 10) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/' })
       if (res.status === 3) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/#/login' })

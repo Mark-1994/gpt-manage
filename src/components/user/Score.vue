@@ -4,20 +4,20 @@
 
     <a-tabs type="card" activeKey="2" :tabBarGutter="0" class="scorePanel">
       <a-tab-pane key="1" disabled>
-        <span slot="tab">
+        <span slot="tab" :style="{ fontWeight: '500' }">
           <img src="../../assets/gpt-diamonds.png" alt="" style="margin-right: 10px;width: 25px;">
           升级会员
         </span>
         Content of Tab Pane 1
       </a-tab-pane>
       <a-tab-pane key="2" style="border: 1px solid #e8e8e8;border-top: 0;border-radius: 0 0 16px 16px;">
-        <span slot="tab" style="color: #000000;">
+        <span slot="tab" style="color: #000000;font-weight: 500;">
           <img src="../../assets/gpt-money.png" alt="" style="margin-right: 10px;width: 25px;">
           积分充值
         </span>
         <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
           <a-form-item label="当前账号" :style="{ textAlign: 'left',paddingTop: '24px' }">
-            {{ currentAccount }}
+            <span :style="{ fontWeight: '500' }">{{ currentAccount }}</span>
           </a-form-item>
           <a-form-item label="积分金额" :style="{ textAlign: 'left' }" class="integralAmountVal">
             <a-radio-group v-model="integralAmount" @change="choiceCombo">
@@ -42,7 +42,7 @@
                             <a-col>赠送 {{ item.gift_coin }} 积分</a-col>
                           </a-row> -->
                           <a-row style="text-align: center;">
-                            <a-col :span="10">
+                            <a-col :span="10" :style="{ color: '#FF3A3A', fontWeight: '500' }">
                               ￥<i style="font-style: normal;font-size: 24px;">{{ item.rmb_fen / 100 }}</i>
                             </a-col>
                             <a-col :span="14">
@@ -63,11 +63,11 @@
           </a-form-item>
           <a-form-item label="支付方式" :style="{ textAlign: 'left' }">
             <a-radio-group v-model="payType">
-              <a-radio :value="1">
+              <a-radio :value="1" :style="{ fontWeight: '500' }">
                 <img src="../../assets/gpt-alipay01.svg" alt="" height="25">
                 支付宝
               </a-radio>
-              <a-radio :value="2" disabled>
+              <a-radio :value="2" :style="{ fontWeight: '500' }" disabled>
                 <img src="../../assets/gpt-wechat.svg" alt="" height="25">
                 微信支付
               </a-radio>
@@ -75,7 +75,7 @@
           </a-form-item>
           <a-form-item :wrapper-col="{ span: 14, offset: 10 }">
             <a-row type="flex" justify="center" align="middle">
-              <a-col :span="14">
+              <a-col :span="11" :offset="3">
                 <a-row>
                   <a-col>
                     <span style="margin-right: 19px;">实付： <i style="font-style: normal;color: #FFB05D;font-size: 24px;">{{ actuallyPaid }}</i> 元</span>
@@ -86,7 +86,7 @@
                 </a-row>
               </a-col>
               <a-col :span="10">
-                <a-button type="primary" shape="round" @click="confirmPayment">
+                <a-button type="primary" shape="round" @click="confirmPayment" :style="{ backgroundColor: '#0039fd', borderColor: '#0039fd' }">
                   确认支付
                 </a-button>
               </a-col>

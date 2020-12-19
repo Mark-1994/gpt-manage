@@ -308,7 +308,8 @@ export default {
           const { data: res } = await this.$http.post('change_passwd', {
             mb: values.resetUserName,
             passwd: values.resetPassword,
-            auth_code: values.resetCaptcha
+            auth_code: values.resetCaptcha,
+            ticket: localStorage.getItem('ticket')
           })
           if (res.status !== 0) return this.$message.error(res.reason)
           this.$message.success('重置了')
@@ -347,6 +348,7 @@ export default {
         mb: this.$refs.resetmb.value
       })
       if (res.status !== 0) return this.$message.error(res.reason)
+      localStorage.setItem('ticket', res.ticket)
       this.$message.success('发送了')
 
       // 倒计时

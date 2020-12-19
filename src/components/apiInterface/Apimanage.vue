@@ -60,7 +60,7 @@
           />
         </a-form-item>
         <a-form-item :colon="false" label=" " :wrapper-col="{ span: 12 }" style="text-align: left;">
-          <a-button type="primary" html-type="submit" :disabled="!apiAuthority">
+          <a-button type="primary" html-type="submit" :disabled="!apiAuthority" shape="round">
             更新
           </a-button>
         </a-form-item>

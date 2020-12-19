@@ -58,47 +58,55 @@ export default {
           title: '序号',
           dataIndex: 'key',
           width: 60,
-          fixed: 'left'
+          fixed: 'left',
+          align: 'center'
         },
         {
           title: '项目名',
           dataIndex: 'gn',
           className: 'item-name',
           width: 100,
-          fixed: 'left'
+          fixed: 'left',
+          align: 'center'
         },
         {
           title: '字数',
           dataIndex: 'wn',
           // sorter: (a, b) => a.wn - b.wn,
-          width: 80
+          width: 80,
+          align: 'center'
         },
         {
           title: '文章数量',
-          dataIndex: 'post_num'
-          // sorter: (a, b) => a.post_num - b.post_num
+          dataIndex: 'post_num',
+          // sorter: (a, b) => a.post_num - b.post_num,
+          align: 'center'
         },
         {
           title: '关键词',
-          scopedSlots: { customRender: 'keywords' }
+          scopedSlots: { customRender: 'keywords' },
+          align: 'center'
         },
         {
           title: '模型简称',
-          dataIndex: 'model_name'
+          dataIndex: 'model_name',
+          align: 'center'
         },
         {
           title: '创建时间',
           dataIndex: 'create_at',
-          scopedSlots: { customRender: 'create_at' }
+          scopedSlots: { customRender: 'create_at' },
           // defaultSortOrder: 'descend',
           // sorter: (a, b) => {
           //   return a.create_at - b.create_at
-          // }
+          // },
+          align: 'center'
         },
         {
           title: '任务详情',
           dataIndex: 'taskdetail',
-          scopedSlots: { customRender: 'taskdetail' }
+          scopedSlots: { customRender: 'taskdetail' },
+          align: 'center'
         },
         {
           title: '状态',
@@ -117,13 +125,15 @@ export default {
           onFilter: (value, record) => record.state.indexOf(value) === 0,
           scopedSlots: { customRender: 'state' },
           width: 80,
-          fixed: 'right'
+          fixed: 'right',
+          align: 'center'
         },
         {
           title: '操作',
           scopedSlots: { customRender: 'deal' },
           width: 110,
-          fixed: 'right'
+          fixed: 'right',
+          align: 'center'
         }
       ],
       // 所有任务进度

@@ -3,7 +3,7 @@
     <h3>模型列表</h3>
 
     <div style="margin-bottom: 16px;text-align: left;padding: 0 40px;">
-      <a-button type="primary" @click="showCreateModel">
+      <a-button type="primary" @click="showCreateModel" shape="round" :style="{ backgroundColor: '#0039FD', border: '1px solid #0039FD' }">
         创建模型
       </a-button>
     </div>

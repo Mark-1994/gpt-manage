@@ -114,10 +114,10 @@
                 </p>
                 <p style="margin: 0;">省 <span style="color: #0039FD;margin-left: 10px;">{{onSale}} 积分</span></p>
               </div>
-              <a-button type="primary" html-type="submit" style="margin-right: 14px;">
+              <a-button type="primary" shape="round" html-type="submit" style="margin-right: 14px;background-color: #0039FD;border: 1px solid #0039FD;">
                 提交
               </a-button>
-              <a-button type="primary" ghost html-type="reset">
+              <a-button type="primary" shape="round" ghost html-type="reset" :style="{ borderColor: '#0039FD', color: '#0039FD' }">
                 重置
               </a-button>
             </a-form-item>

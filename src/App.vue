@@ -11,5 +11,9 @@ export default {
 </script>
 
 <style lang="less">
-
+#app,
+.login_container,
+#components-layout-demo-basic > section {
+  // height: 100%;
+}
 </style>
