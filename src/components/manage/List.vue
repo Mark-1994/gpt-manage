@@ -16,7 +16,7 @@
         <p :style="{ margin: '0' }">{{ `失败：${record.en}` }}</p>
       </template>
       <template slot="deal" slot-scope="record">
-        <a href="javascript:;" @click="handle($event)">处理</a>
+        <a href="javascript:;" @click="handle($event, record)">处理</a>
         <a-divider type="vertical" />
         <a-popconfirm
           v-if="allTask.length"
@@ -168,10 +168,10 @@ export default {
       })
       this.allTask = res.list
     },
-    handle (event) {
+    handle (event, record) {
       // const itemName = event.currentTarget.parentElement.parentElement.children[1].innerText
-      const itemName = event.currentTarget.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.previousSibling.querySelector('.ant-table-tbody').querySelector('.item-name').innerText
-      window.sessionStorage.setItem('itemName', itemName)
+      // const itemName = event.currentTarget.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.previousSibling.querySelector('.ant-table-tbody').querySelector('.item-name').innerText
+      window.sessionStorage.setItem('itemName', record.gn)
       if (document.querySelector('.articleDeal')) {
         document.querySelector('.articleDeal').click()
       } else {

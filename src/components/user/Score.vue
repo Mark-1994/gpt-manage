@@ -116,7 +116,7 @@ export default {
       // 当前帐号
       currentAccount: window.localStorage.getItem('nick_name'),
       // 积分金额
-      integralAmount: 1,
+      integralAmount: 4,
       // 支付宝 Or 微信
       payType: 1,
       // 实付
@@ -214,6 +214,12 @@ export default {
       div[role="tab"]:nth-child(2) {
         border-radius: 0 16px 0 0;
       }
+    }
+    /deep/ .ant-radio-checked .ant-radio-inner {
+      border-color: #0039FD;
+    }
+    /deep/ .ant-radio-inner::after {
+      background-color: #0039FD;
     }
   }
   .gpt-list-footer {

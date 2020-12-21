@@ -70,30 +70,36 @@ export default {
       columns: [
         {
           title: '序号',
-          dataIndex: 'pmid'
+          dataIndex: 'pmid',
+          align: 'center'
         },
         {
           title: '模型名',
           dataIndex: 'mn',
-          className: 'item-name'
+          className: 'item-name',
+          align: 'center'
         },
         {
           title: '最大语料大小',
-          dataIndex: 'yl_limit'
+          dataIndex: 'yl_limit',
+          align: 'center'
         },
         {
           title: '状态',
-          dataIndex: 'state'
+          dataIndex: 'state',
+          align: 'center'
         },
         {
           title: '语料上传成功时间',
           dataIndex: 'upat',
-          scopedSlots: { customRender: 'upat' }
+          scopedSlots: { customRender: 'upat' },
+          align: 'center'
         },
         {
           title: '模型创建时间',
           dataIndex: 'create_at',
-          scopedSlots: { customRender: 'create_at' }
+          scopedSlots: { customRender: 'create_at' },
+          align: 'center'
         }
       ],
       // 所有任务进度

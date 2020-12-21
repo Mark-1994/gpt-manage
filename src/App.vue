@@ -12,8 +12,10 @@ export default {
 
 <style lang="less">
 #app,
-.login_container,
-#components-layout-demo-basic > section {
-  // height: 100%;
+.login_container {
+  height: 100%;
+}
+.login_container {
+  background-color: #f0f2f5;
 }
 </style>

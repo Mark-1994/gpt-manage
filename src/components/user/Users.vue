@@ -204,17 +204,20 @@ export default {
       columns: [
         {
           title: '模型名',
-          dataIndex: 'model_name'
+          dataIndex: 'model_name',
+          align: 'center'
         },
         {
           title: '文章内容',
           dataIndex: 'txt',
-          ellipsis: true
+          ellipsis: true,
+          align: 'center'
         },
         {
           title: '生成成功时间',
           dataIndex: 'done_at',
-          scopedSlots: { customRender: 'done_at' }
+          scopedSlots: { customRender: 'done_at' },
+          align: 'center'
         }
       ],
       // 首页信息
@@ -384,17 +387,17 @@ export default {
       const { data: res } = await this.$http.get('pg/index')
       window.localStorage.setItem('nick_name', '')
 
-      if (window.location.host !== 'a.91nlp.cn') {
-        if (res.status !== 0) {
-          return this.$message.error('Error', function () {
-            window.location.href = '/login/#/login'
-          })
-        } else {
-          return this.$message.error('Error', function () {
-            window.location.href = 'http://a.91nlp.cn/#/login'
-          })
-        }
-      }
+      // if (window.location.host !== 'a.91nlp.cn') {
+      //   if (res.status !== 0) {
+      //     return this.$message.error('Error', function () {
+      //       window.location.href = '/login/#/login'
+      //     })
+      //   } else {
+      //     return this.$message.error('Error', function () {
+      //       window.location.href = 'http://a.91nlp.cn/#/login'
+      //     })
+      //   }
+      // }
 
       if (res.status === 10) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/' })
       if (res.status === 3) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/#/login' })

@@ -60,7 +60,7 @@
           />
         </a-form-item>
         <a-form-item :colon="false" label=" " :wrapper-col="{ span: 12 }" style="text-align: left;">
-          <a-button type="primary" html-type="submit" :disabled="!apiAuthority" shape="round">
+          <a-button type="primary" html-type="submit" :disabled="!apiAuthority" shape="round" :style="{ backgroundColor: '#0039FD',border: '1px solid #0039FD' }">
             更新
           </a-button>
         </a-form-item>
@@ -137,6 +137,15 @@
           <p>返回格式：JSON</p>
           <p>请求方式：POST</p>
           <p>请求示例：http://api.91nlp.cn:5080/api/genpost?key=申请的key</p>
+          <pre style="background-color:#f8f8f8;border:1px solid #ededed;padding:10px 15px;line-height:24px;">
+{
+    "prefix": ["文章仿写"],
+    "model_id": 7,
+    "wn": 1000,
+    "gn": "example22",
+    "post_num": 1
+}
+          </pre>
           <p>请求参数：</p>
           <a-table :columns="accountInfoColumns" :data-source="accountInfodata" bordered :pagination="false" size="middle">
             <template slot="description">
@@ -209,6 +218,19 @@
           <p>返回格式：JSON</p>
           <p>请求方式：POST</p>
           <p>请求示例：http://api.91nlp.cn:5080/api/dl?key=申请的key</p>
+          <pre style="background-color:#f8f8f8;border:1px solid #ededed;padding:10px 15px;line-height:24px;">
+{
+    "gn": "example2",
+    "tt_pm": 0,
+    "tt_pf": [],
+    "tt_tl": [],
+    "tt_rd": [],
+    "inner_link": 0,
+    "inner_link_gn": '',
+    "inner_link_bold": 0,
+    "kw_bold": 0
+}
+          </pre>
           <p>请求参数：</p>
           <a-table :columns="accountInfoColumns" :data-source="accountInfodata" bordered :pagination="false" size="middle">
             <template slot="description">
@@ -747,6 +769,9 @@ export default {
   }
   .ant-table-wrapper {
     padding: 0 40px;
+    .ant-switch-checked {
+      background-color: #0039FD;
+    }
   }
   .gpt-list-footer {
     color: #ACACAC;
