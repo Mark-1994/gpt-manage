@@ -252,6 +252,10 @@
                         <a-button type="primary" size="small" @click="contentEditShowModal(record)">
                           编辑
                         </a-button>
+                        &nbsp;
+                        <a-button type="dashed" size="small" @click="refundShowModal(record)" :disabled="!!record.state">
+                          {{ record.state === 0 ? '退积分' : record.state === 1 ? '审核中' : record.state === 2 ? '退款同意' : '退款拒绝' }}
+                        </a-button>
                         <!-- <a href="javascript:;" @click="contentEditShowModal(record)">编辑</a> -->
                       </template>
                     </a-table>
@@ -305,7 +309,15 @@
     </a-modal>
 
     <!-- 内容编辑器 对话框 -->
-    <a-modal v-model="contentEditVisible" :title="contentEditCacheRecord.tt" :footer="null" width="80%">
+    <a-modal v-model="contentEditVisible" :title="contentEditCacheRecord.tt" width="80%">
+      <template slot="footer">
+        <a-button @click="handleCancel">
+          取消
+        </a-button>
+        <a-button type="primary" @click="contentHandleOk">
+          确认
+        </a-button>
+      </template>
       <quill-editor v-model="contentEditCacheRecord.txt"></quill-editor>
     </a-modal>
 
@@ -1401,6 +1413,29 @@ export default {
       this.compoundMode()
       this.suffixIndeterminate = !!suffixCheckedList.length && suffixCheckedList.length < suffixData.length
       this.suffixCheckAll = suffixCheckedList.length === suffixData.length
+    },
+    // 退还积分
+    refundShowModal (rowData) {
+      const _this = this
+      this.$confirm({
+        title: '您确定要退还积分吗？',
+        content: '退积分',
+        async onOk () {
+          const { data: res } = await _this.$http.post('prc', {
+            ids: [rowData.id]
+          })
+          if (res.status !== 0) return _this.$message.error(res.reason)
+          _this.downloadArticleEvent()
+        }
+      })
+    },
+    // 关闭 内容编辑器 对话框
+    handleCancel () {
+      this.contentEditVisible = false
+    },
+    // 提交 内容编辑器 对话框
+    contentHandleOk () {
+      console.log(this.contentEditCacheRecord.txt)
     }
   }
 }
