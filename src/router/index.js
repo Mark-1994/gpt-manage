@@ -9,6 +9,7 @@ import List from '../components/manage/List.vue'
 import Deal from '../components/manage/Deal.vue'
 import Modelslist from '../components/articleModel/Modelslist.vue'
 import Apimanage from '../components/apiInterface/Apimanage.vue'
+import Library from '../components/release/Library.vue'
 import Share from '../components/other/Share.vue'
 
 Vue.use(VueRouter)
@@ -47,6 +48,9 @@ const routes = [
     }, {
       path: '/apimanage',
       component: Apimanage
+    }, {
+      path: '/library',
+      component: Library
     }, {
       path: '/share',
       component: Share

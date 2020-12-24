@@ -83,6 +83,14 @@
                       API接口2
                     </a-menu-item> -->
                   </a-sub-menu>
+                  <a-sub-menu key="sub5">
+                    <span slot="title">
+                      <a-icon type="appstore" :style="{ fontSize: '16px', color: '#0039FD' }" /><span>发布模块</span>
+                    </span>
+                    <a-menu-item key="library">
+                      文章库管理
+                    </a-menu-item>
+                  </a-sub-menu>
                   <a-sub-menu key="sub4">
                     <span slot="title">
                       <a-icon type="appstore" :style="{ fontSize: '16px', color: '#0039FD' }" /><span>其他</span>

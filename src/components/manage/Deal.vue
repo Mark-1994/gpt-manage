@@ -282,7 +282,7 @@
                 type="primary"
                 @click="downloadArticleBtn"
               >
-                下载
+                保存
               </a-button>
               <a-button v-if="current > 0" style="margin-left: 8px" @click="prev">
                 上一步
@@ -1435,7 +1435,15 @@ export default {
     },
     // 提交 内容编辑器 对话框
     contentHandleOk () {
-      console.log(this.contentEditCacheRecord.txt)
+      this.getArticleContent(this.contentEditCacheRecord)
+    },
+    // 提交 文章内容 到服务器
+    async getArticleContent (contentObj) {
+      const { data: res } = await this.$http.post('upp', {
+        posts: [contentObj]
+      })
+      if (res.status !== 0) return this.$message.error(res.reason)
+      this.contentEditVisible = false
     }
   }
 }

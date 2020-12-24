@@ -39,7 +39,9 @@ import {
   Divider,
   Tabs,
   Steps,
-  Space
+  Space,
+  DatePicker,
+  TimePicker
 } from 'ant-design-vue'
 Vue.use(Button)
 Vue.use(Layout)
@@ -69,6 +71,8 @@ Vue.use(Divider)
 Vue.use(Tabs)
 Vue.use(Steps)
 Vue.use(Space)
+Vue.use(DatePicker)
+Vue.use(TimePicker)
 
 Vue.use(VueQuillEditor)
 
