@@ -3,7 +3,7 @@
     <h3>任务发布管理</h3>
 
     <div style="margin-bottom: 20px;text-align: left;padding: 0 40px;">
-      <a-space :size="6" align="end" :style="{ flexWrap: 'wrap' }">
+      <a-space :size="6" align="end" :style="{ flexWrap: 'wrap', lineHeight: '40px' }">
         <a-input-search placeholder="搜索关键词" style="width: 181px;" class="searchInput" />
         <!-- <a-range-picker class="gpt-time-range" :placeholder="['开始日期', '结束日期']" /> -->
         <a-date-picker
@@ -204,11 +204,13 @@ export default {
   /deep/ .gpt-choose-condition .ant-select-selection {
     border-radius: 17px;
     color: #000;
-    border: 2px solid #0039FD;
+    border: 1px solid #0039FD;
   }
   /deep/ .gpt-choose-condition .ant-select-selection:hover,
-  /deep/ .gpt-choose-condition .ant-select-selection:active {
-    border-right-width: 2px !important;
+  /deep/ .gpt-choose-condition .ant-select-selection:active,
+  /deep/ .gpt-choose-condition .ant-select-selection:focus,
+  /deep/ .gpt-choose-condition .ant-select-selection:link {
+    border-right-width: 1px !important;
   }
   /deep/ .gpt-choose-condition .ant-select-selection i {
     color: #0039FD;
