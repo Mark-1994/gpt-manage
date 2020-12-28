@@ -90,6 +90,9 @@
                     <a-menu-item key="library">
                       文章库管理
                     </a-menu-item>
+                    <a-menu-item key="configure">
+                      发布配置管理
+                    </a-menu-item>
                   </a-sub-menu>
                   <a-sub-menu key="sub4">
                     <span slot="title">

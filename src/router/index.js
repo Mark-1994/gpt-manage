@@ -10,6 +10,7 @@ import Deal from '../components/manage/Deal.vue'
 import Modelslist from '../components/articleModel/Modelslist.vue'
 import Apimanage from '../components/apiInterface/Apimanage.vue'
 import Library from '../components/release/Library.vue'
+import Configure from '../components/release/Configure.vue'
 import Share from '../components/other/Share.vue'
 
 Vue.use(VueRouter)
@@ -51,6 +52,9 @@ const routes = [
     }, {
       path: '/library',
       component: Library
+    }, {
+      path: '/configure',
+      component: Configure
     }, {
       path: '/share',
       component: Share

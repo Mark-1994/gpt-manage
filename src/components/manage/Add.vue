@@ -232,7 +232,9 @@ export default {
     // 文章名称
     articleName: '',
     // 模型 id
-    articleModelId: 0
+    articleModelId: 0,
+    // 提交 防抖
+    timer: null
   }),
   methods: {
     handleSubmit (e) {
@@ -329,13 +331,16 @@ export default {
     },
     // 文章生成 对话框 确认按钮
     articleGenerateHandleOk () {
-      this.getArticleGenerate({
-        gn: this.articleName,
-        model_id: this.articleModelId,
-        post_num: this.articleNum,
-        prefix: this.kwValue.split('\n').filter(item => item),
-        wn: this.articleWordCount
-      })
+      clearTimeout(this.timer)
+      this.timer = setTimeout(() => {
+        this.getArticleGenerate({
+          gn: this.articleName,
+          model_id: this.articleModelId,
+          post_num: this.articleNum,
+          prefix: this.kwValue.split('\n').filter(item => item),
+          wn: this.articleWordCount
+        })
+      }, 500)
     }
   }
 }
