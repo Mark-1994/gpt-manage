@@ -255,7 +255,7 @@
           <pre style="background-color:#f8f8f8;border:1px solid #ededed;padding:10px 15px;line-height:24px;">
 {
     status: 0,
-    dlink: "http://api.91nlp.cn:5080/dlzip?fn=30831834-72de-4dfe-8cfb-72c3a0c237c4160809025.zip"
+    posts: {}
 }
           </pre>
           <a-divider />
@@ -559,9 +559,9 @@ export default {
         },
         {
           key: '2',
-          name: 'dlink',
-          type: 'string',
-          description: '文章下载链接,6分钟内有效'
+          name: 'posts',
+          type: 'object',
+          description: '文章内容'
         }
       ],
       // 获取账户信息-错误码

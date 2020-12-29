@@ -1094,9 +1094,9 @@ export default {
       const zip = new JSZip()
       for (let i = 0; i < val.length; i++) {
         if (!this.downloadArticle.ptag) {
-          zip.file(val[i].tt + '-' + i + '.txt', val[i].txt.replace(/<.*?>/ig, ''))
+          zip.file(val[i].tt.replace('/', '') + '-' + i + '.txt', val[i].txt.replace(/<.*?>/ig, ''))
         } else {
-          zip.file(val[i].tt + '-' + i + '.txt', val[i].txt)
+          zip.file(val[i].tt.replace('/', '') + '-' + i + '.txt', val[i].txt)
         }
       }
       zip.generateAsync({ type: 'blob' })
