@@ -93,6 +93,9 @@
                     <a-menu-item key="configure">
                       发布配置管理
                     </a-menu-item>
+                    <a-menu-item key="clock">
+                      定时发布管理
+                    </a-menu-item>
                   </a-sub-menu>
                   <a-sub-menu key="sub4">
                     <span slot="title">
@@ -108,12 +111,12 @@
                 </a-menu>
               </a-layout-sider>
             </a-col>
-            <a-col :span="14">
+            <a-col :span="this.$route.path === '/users' ? 14 : 20">
               <a-layout-content class="gpt-branch">
                 <router-view @getNickName="showNickName"/>
               </a-layout-content>
             </a-col>
-            <a-col :span="6">
+            <a-col :span="6" v-if="this.$route.path === '/users'">
               <a-layout-sider class="gpt-content-right" width="100%">
                 <h3>
                   <!-- <a-icon type="question-circle" :style="{ fontSize: '28px', color: '#0039FD' }" /> -->
