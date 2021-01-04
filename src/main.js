@@ -77,6 +77,7 @@ Vue.use(TimePicker)
 Vue.use(VueQuillEditor)
 
 axios.defaults.baseURL = 'http://api.91nlp.cn:5080/'
+// axios.defaults.timeout = 30000 // 请求超时时间
 axios.defaults.withCredentials = true
 // axios.defaults.headers = { 'Content-Type': 'multipart/form-data' }
 // axios.interceptors.request.use(config => {

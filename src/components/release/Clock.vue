@@ -49,30 +49,83 @@
           </a-select>
         </a-form-item>
         <a-form-item label="发布文章库">
-          <a-select v-decorator="['post_gn', { rules: [{ required: true, message: '不能为空!' }] }]">
+          <a-select v-decorator="['post_gn', { rules: [{ required: true, message: '不能为空!' }] }]" @change="selectArticleLibrary">
             <a-select-option :value="item.gn" v-for="item in articleNameList" :key="item.create_at">
               {{ item.gn }}
             </a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="发布模块">
-          <a-select v-decorator="['post_module', { rules: [{ required: true, message: '不能为空!' }] }]">
-            <a-select-option :value="item.gn" v-for="item in websiteColumnList" :key="item.create_at">
-              {{ item.gn }}
+          <a-select v-decorator="['post_module', { rules: [{ required: true, message: '不能为空!' }] }]" :disabled="postModuleDisable">
+            <a-select-option :value="item.cname" v-for="item in websiteColumnList" :key="item.cid">
+              {{ item.cname }}
             </a-select-option>
           </a-select>
+        </a-form-item>
+        <a-form-item label="发布文章数">
+          <a-input-number v-decorator="['post_num', { rules: [{ required: true, message: '不能为空!' }] }]" :min="0" :max="postNumMax" :style="{ width: '100%' }" :disabled="postNumDisable" />
         </a-form-item>
         <a-form-item label="条数说明">
           <p :style="{ color: '#000', opacity: '.5', lineHeight: 'normal', margin: '0' }">如果发布条数为0，则发布已选择文章库中所有文章。</p>
         </a-form-item>
-        <a-form-item label="每日发布时间区间 单位时">
-          <a-input v-decorator="['root', { rules: [{ required: true, message: '不能为空!' }] }]"></a-input>
+        <a-form-item label="时间区间 单位时">
+          <!-- <a-range-picker v-decorator="['alive_hour', { rules: [{ required: true, message: '不能为空!' }] }]" format="HH" /> -->
+          <a-row>
+            <a-col span="10">
+              <a-form-item style="width: 100%;">
+                <!-- <a-time-picker v-decorator="['alive_hour_start', { rules: [{ required: true, message: '不能为空!' }] }]" format="HH" style="width: 100%;" placeholder="开始" /> -->
+                <a-time-picker
+                  v-decorator="['alive_hour_start', { rules: [{ required: true, message: '不能为空!' }] }]"
+                  format="HH"
+                  placeholder="开始"
+                  @openChange="handleStartOpenChange"
+                  :disabled-date="disabledStartDate"
+                  :style="{ width: '100%' }"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col span="4">
+              <a-form-item style="width: 100%;text-align: center;">
+                -
+              </a-form-item>
+            </a-col>
+            <a-col span="10">
+              <a-form-item style="width: 100%;">
+                <!-- <a-time-picker v-decorator="['alive_hour_end', { rules: [{ required: true, message: '不能为空!' }] }]" format="HH" style="width: 100%;" placeholder="结束" /> -->
+                <a-time-picker
+                  v-decorator="['alive_hour_end', { rules: [{ required: true, message: '不能为空!' }] }]"
+                  format="HH"
+                  placeholder="结束"
+                  :open="endOpen"
+                  @openChange="handleEndOpenChange"
+                  :disabled-date="disabledEndDate"
+                  :style="{ width: '100%' }"
+                />
+              </a-form-item>
+            </a-col>
+          </a-row>
         </a-form-item>
         <a-form-item label="发布间隔 单位秒">
-          <a-input v-decorator="['author', { rules: [{ required: true, message: '不能为空!' }] }]"></a-input>
+          <a-row>
+            <a-col span="10">
+              <a-form-item style="width: 100%;">
+                <a-time-picker v-decorator="['push_delay_start', { rules: [{ required: true, message: '不能为空!' }] }]" format="ss" style="width: 100%;" placeholder="开始" />
+              </a-form-item>
+            </a-col>
+            <a-col span="4">
+              <a-form-item style="width: 100%;text-align: center;">
+                -
+              </a-form-item>
+            </a-col>
+            <a-col span="10">
+              <a-form-item style="width: 100%;">
+                <a-time-picker v-decorator="['push_delay_end', { rules: [{ required: true, message: '不能为空!' }] }]" format="ss" style="width: 100%;" placeholder="结束" />
+              </a-form-item>
+            </a-col>
+          </a-row>
         </a-form-item>
         <a-form-item label="开始发布日期">
-          <a-input v-decorator="['post_orgin', { rules: [{ required: true, message: '不能为空!' }] }]"></a-input>
+          <a-date-picker v-decorator="['start_date', { rules: [{ required: true, message: '不能为空!' }] }]" style="width: 100%;" placeholder="请选择日期" format="YYYY-MM-DD" :disabled-date="disabledDate" />
         </a-form-item>
         <a-form-item style="width: 100%;text-align: center;" :wrapper-col="{ span: 24 }">
           <a-space :size="8">
@@ -91,6 +144,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
   created () {
     this.getConfigManage()
@@ -207,7 +261,17 @@ export default {
       // 新增定时任务 对话框 发布文章库 下拉框
       articleNameList: [],
       // 新增定时任务 对话框 发布模块 下拉框
-      websiteColumnList: []
+      websiteColumnList: [],
+      // 发布模块 开放|禁止
+      postModuleDisable: true,
+      // 发布文章数 开放|禁止
+      postNumDisable: true,
+      // 发布文章属 最大值
+      postNumMax: 1,
+      // 隐藏 结束时间 区间 小时
+      endOpen: false,
+      startValue: null,
+      endValue: null
     }
   },
   computed: {
@@ -231,6 +295,8 @@ export default {
     showAddPanel () {
       this.getSiteNameList()
       this.getArticleNameList(500, 1)
+      this.postModuleDisable = true
+      this.postNumDisable = true
       this.addPanelVisible = true
     },
     // 新增定时发布面板 表单提交
@@ -254,8 +320,11 @@ export default {
     // 获取网站栏目（发布模块）列表
     async getWebsiteColumnList (siteName) {
       const { data: res } = await this.$http.get('pg/ls_lm?site_name=' + siteName)
+      this.form.resetFields('post_module')
+      this.postModuleDisable = true
       if (res.status !== 0) return this.$message.error(res.reason)
       this.websiteColumnList = res.list
+      this.postModuleDisable = false
     },
     // 获取 网站名 列表
     async getSiteNameList () {
@@ -271,6 +340,43 @@ export default {
     },
     handleChange (value) {
       this.getWebsiteColumnList(value)
+    },
+    // 选择发布文章库
+    selectArticleLibrary (value) {
+      this.postNumDisable = false
+      this.articleNameList.map(x => {
+        if (x.gn === value) {
+          this.postNumMax = x.post_num
+        }
+      })
+    },
+    // 不能选择今天之前的日期
+    disabledDate (current) {
+      return current && current < moment().endOf('day')
+    },
+    handleStartOpenChange (open) {
+      if (!open) {
+        this.endOpen = true
+      }
+    },
+    handleEndOpenChange (open) {
+      this.endOpen = open
+    },
+    disabledStartDate (startValue) {
+      const endValue = this.endValue
+      console.log(startValue.valueOf())
+      if (!startValue || !endValue) {
+        return true
+      }
+      return startValue.valueOf() > endValue.valueOf()
+    },
+    disabledEndDate (endValue) {
+      const startValue = this.startValue
+      console.log(endValue.valueOf())
+      if (!endValue || !startValue) {
+        return true
+      }
+      return startValue.valueOf() >= endValue.valueOf()
     }
   }
 }
