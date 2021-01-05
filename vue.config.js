@@ -4,7 +4,7 @@ module.exports = {
     open: true,
     // 端口号
     port: 8081,
-    host: '127.0.0.1',
+    host: '0.0.0.0',
     disableHostCheck: true
   },
   // 关闭 eslint 规范

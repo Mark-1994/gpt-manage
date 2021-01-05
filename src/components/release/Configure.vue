@@ -23,8 +23,11 @@
       <template slot="push_bd" slot-scope="text">
         {{ text ? '是' : '否' }}
       </template>
-      <template slot="deal">
-        <a-button type="primary" disabled>编辑</a-button>
+      <template slot="deal" slot-scope="record">
+        <a-space :size="2">
+          <a-button type="primary" :style="{ backgroundColor: '#0039FD', borderColor: '#0039FD' }" @click="siteCheck(record.id)" size="small">测试</a-button>
+          <a-button type="primary" :style="{ backgroundColor: '#0039FD', borderColor: '#0039FD' }" @click="editSiteConfig(record)" size="small">编辑</a-button>
+        </a-space>
       </template>
     </a-table>
 
@@ -137,6 +140,109 @@
         <a-button class="gpt-add-panel-cancel" @click="addPanelCancel">取消</a-button>
       </template>
     </a-modal>
+
+    <!-- 编辑网站配置 对话框 -->
+    <a-modal v-model="editPanelVisible" title="编辑配置" class="gpt-add-panel" :width="721" :footer="null" destroyOnClose>
+
+      <a-form :form="formEdit" layout="inline" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }" :colon="false" class="gpt-add-panel-form" @submit="editPanelSave" hideRequiredMark>
+        <a-form-item label="网站ID">
+          <a-input v-decorator="['id', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.id }]" disabled></a-input>
+        </a-form-item>
+        <a-form-item label="网站名称">
+          <a-input v-decorator="['site_name', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.site_name }]"></a-input>
+        </a-form-item>
+        <a-form-item label="网站地址">
+          <a-input v-decorator="['site_url', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.link }]"></a-input>
+        </a-form-item>
+        <a-form-item label="CMS类型">
+          <a-select v-decorator="['cms_type', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.cms_type }]">
+            <a-select-option value="织梦(dedeCMS)">
+              织梦(dedeCMS)
+            </a-select-option>
+            <a-select-option value="帝国(empCMS)">
+              帝国(empCMS)
+            </a-select-option>
+            <a-select-option value="WordPress">
+              WordPress
+            </a-select-option>
+            <a-select-option value="Z-BLOG">
+              Z-BLOG
+            </a-select-option>
+            <a-select-option value="discuz">
+              discuz
+            </a-select-option>
+            <a-select-option value="易优CMS(EYouCMS)">
+              易优CMS(EYouCMS)
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item label="接口文件名">
+          <a-input v-decorator="['path', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.path }]"></a-input>
+        </a-form-item>
+        <a-form-item label="发布登陆密码">
+          <a-input-password v-decorator="['passwd', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.passwd }]"></a-input-password>
+        </a-form-item>
+        <a-form-item label="编码格式">
+          <a-select v-decorator="['charset', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.post_charset }]">
+            <a-select-option value="UTF-8">
+              UTF-8
+            </a-select-option>
+            <a-select-option value="GBK">
+              GBK
+            </a-select-option>
+            <a-select-option value="GB2312">
+              GB2312
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item label="根目录">
+          <a-input v-decorator="['root', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.root_dir }]"></a-input>
+        </a-form-item>
+        <a-form-item label="文章作者">
+          <a-input v-decorator="['author', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.post_author }]"></a-input>
+        </a-form-item>
+        <a-form-item label="文章来源">
+          <a-input v-decorator="['post_orgin', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.post_orgin }]"></a-input>
+        </a-form-item>
+        <a-form-item label="百度站长TOKEN">
+          <a-input v-decorator="['bd_token', { rules: [{ validator: (rule, value, cb) => !formEdit.getFieldValue('push_bd') || value !== '', message: '不能为空!' }], initialValue: editPanelData.bd_token }]"></a-input>
+        </a-form-item>
+        <a-form-item label="百度推送">
+          <a-radio-group v-decorator="['push_bd', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.push_bd }]">
+            <a-radio :value="true">
+              是
+            </a-radio>
+            <a-radio :value="false">
+              否
+            </a-radio>
+          </a-radio-group>
+        </a-form-item>
+        <a-form-item label="插件下载">
+          <a-space :size="14" :style="{ flexWrap: 'wrap', lineHeight: '40px' }">
+            <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
+              织梦UTF-8
+            </a-button>
+            <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
+              织梦GBK
+            </a-button>
+          </a-space>
+        </a-form-item>
+        <a-form-item label="发布用户">
+          <a-input v-decorator="['user', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.user }]"></a-input>
+        </a-form-item>
+        <a-form-item style="width: 100%;text-align: center;" :wrapper-col="{ span: 24 }">
+          <a-space :size="8">
+            <a-button class="gpt-add-panel-sure" html-type="submit">
+              保存
+            </a-button>
+            <a-button class="gpt-add-panel-cancel" @click="editPanelCancel">
+              取消
+            </a-button>
+          </a-space>
+        </a-form-item>
+      </a-form>
+
+    </a-modal>
   </div>
 </template>
 
@@ -148,6 +254,7 @@ export default {
   data () {
     return {
       form: this.$form.createForm(this, { name: 'coordinated' }),
+      formEdit: this.$form.createForm(this, { name: 'coordinatedEdit' }),
       columns: [
         {
           title: '序号',
@@ -254,7 +361,11 @@ export default {
         push_bd: ''
       },
       // 百度 token 输入框自定义校验
-      bdTokenStatus: true
+      bdTokenStatus: true,
+      // 编辑配置对话框 显示/隐藏
+      editPanelVisible: false,
+      // 编辑配置对话框 数据
+      editPanelData: {}
     }
   },
   computed: {
@@ -298,6 +409,37 @@ export default {
     },
     bdTokenEvent (e) {
       this.bdTokenStatus = e.target.value
+    },
+    // 检查网站插件是否部署成功
+    async siteCheck (sid) {
+      const { data: res } = await this.$http.get(`pg/site_check?sid=${sid}`)
+      if (res.status !== 0) return this.$message.error(res.reason)
+      this.$message.success('测试成功')
+    },
+    // 编辑网站配置
+    editSiteConfig (values) {
+      this.editPanelData = values
+      this.editPanelVisible = true
+    },
+    // 编辑对话框 取消按钮
+    editPanelCancel () {
+      this.editPanelVisible = false
+    },
+    // 提交编辑面板
+    editPanelSave (e) {
+      e.preventDefault()
+      this.formEdit.validateFields(async (error, values) => {
+        if (!error) {
+          this.editSiteConfigEvent(values)
+        }
+      })
+    },
+    // 编辑网站配置
+    async editSiteConfigEvent (values) {
+      const { data: res } = await this.$http.post('pg/mdfsite', values)
+      if (res.status !== 0) return this.$message.error(res.reason)
+      this.getConfigManage()
+      this.editPanelVisible = false
     }
   }
 }

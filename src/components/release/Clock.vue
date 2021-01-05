@@ -17,11 +17,12 @@
     </div>
 
     <a-table :columns="columns" :data-source="allTask" bordered size="middle" class="gpt-data-table" :row-selection="rowSelection" :scroll="{ x: 1500 }" rowKey="id">
-      <template slot="create_at" slot-scope="text">
-        {{ text | dateFormat }}
+      <template slot="state" slot-scope="text">
+        <span :style="{ color: text ? 'green' : 'red' }">{{ text ? '发布中' : '停止' }}</span>
+        <a-switch checked-children="启动" un-checked-children="停止" default-checked="true" />
       </template>
-      <template slot="push_bd" slot-scope="text">
-        {{ text ? '是' : '否' }}
+      <template slot="push_type" slot-scope="text">
+        {{ text === '1' ? '立即发布' : '定时发布' }}
       </template>
       <template slot="deal">
         <a-button type="primary" disabled>编辑</a-button>
@@ -42,8 +43,8 @@
           <a-input v-decorator="['task_name', { rules: [{ required: true, message: '不能为空!' }] }]"></a-input>
         </a-form-item>
         <a-form-item label="网站名">
-          <a-select v-decorator="['site_name', { rules: [{ required: true, message: '不能为空!' }] }]" @change="handleChange">
-            <a-select-option :value="item.site_name" v-for="item in siteNameList" :key="item.id">
+          <a-select v-decorator="['site_id', { rules: [{ required: true, message: '不能为空!' }] }]" @change="handleChange">
+            <a-select-option :value="item.id" v-for="item in siteNameList" :key="item.id">
               {{ item.site_name }}
             </a-select-option>
           </a-select>
@@ -57,7 +58,7 @@
         </a-form-item>
         <a-form-item label="发布模块">
           <a-select v-decorator="['post_module', { rules: [{ required: true, message: '不能为空!' }] }]" :disabled="postModuleDisable">
-            <a-select-option :value="item.cname" v-for="item in websiteColumnList" :key="item.cid">
+            <a-select-option :value="item.cname + ',' + item.cid" v-for="item in websiteColumnList" :key="item.cid">
               {{ item.cname }}
             </a-select-option>
           </a-select>
@@ -105,11 +106,12 @@
             </a-col>
           </a-row>
         </a-form-item>
-        <a-form-item label="发布间隔 单位秒">
+        <a-form-item label="发布间隔 单位分">
           <a-row>
             <a-col span="10">
               <a-form-item style="width: 100%;">
-                <a-time-picker v-decorator="['push_delay_start', { rules: [{ required: true, message: '不能为空!' }] }]" format="ss" style="width: 100%;" placeholder="开始" />
+                <!-- <a-time-picker v-decorator="['push_delay_min', { rules: [{ required: true, message: '不能为空!' }] }]" format="ss" style="width: 100%;" placeholder="开始" /> -->
+                <a-input-number v-decorator="['push_delay_min', { rules: [{ required: true, message: '不能为空!' }] }]" :min="1" :max="1440" :style="{ width: '100%' }" />
               </a-form-item>
             </a-col>
             <a-col span="4">
@@ -119,7 +121,8 @@
             </a-col>
             <a-col span="10">
               <a-form-item style="width: 100%;">
-                <a-time-picker v-decorator="['push_delay_end', { rules: [{ required: true, message: '不能为空!' }] }]" format="ss" style="width: 100%;" placeholder="结束" />
+                <!-- <a-time-picker v-decorator="['push_delay_max', { rules: [{ required: true, message: '不能为空!' }] }]" format="ss" style="width: 100%;" placeholder="结束" /> -->
+                <a-input-number v-decorator="['push_delay_max', { rules: [{ required: true, message: '不能为空!' }] }]" :min="Number(form.getFieldValue('push_delay_min')) || 1" :max="1440" :style="{ width: '100%' }" />
               </a-form-item>
             </a-col>
           </a-row>
@@ -147,7 +150,7 @@
 import moment from 'moment'
 export default {
   created () {
-    this.getConfigManage()
+    this.getClockManage()
   },
   data () {
     return {
@@ -161,71 +164,71 @@ export default {
           width: 100
         },
         {
+          title: '任务名',
+          dataIndex: 'task_name',
+          align: 'center'
+        },
+        {
           title: '网站名',
           dataIndex: 'site_name',
           className: 'item-name',
           align: 'center'
         },
         {
-          title: '网址',
-          dataIndex: 'link',
+          title: '文章库',
+          dataIndex: 'post_gn',
           align: 'center'
         },
         {
-          title: 'cms类型',
-          dataIndex: 'cms_type',
+          title: '发布模块名',
+          dataIndex: 'push_module',
           align: 'center'
         },
         {
-          title: '编码',
-          dataIndex: 'post_charset',
+          title: '发布数量',
+          dataIndex: 'push_num',
           align: 'center'
         },
         {
-          title: '根目录',
-          dataIndex: 'root_dir',
+          title: '成功发布数量',
+          dataIndex: 'dn',
           align: 'center'
         },
         {
-          title: '接口地址',
-          dataIndex: 'path',
+          title: '发布失败数量',
+          dataIndex: 'en',
           align: 'center'
         },
         {
-          title: '发布用户名',
-          dataIndex: 'user',
+          title: '发布开始日期',
+          dataIndex: 'start_date',
           align: 'center'
         },
         {
-          title: '发布密码',
-          dataIndex: 'passwd',
+          title: '发布间隔（分钟）',
+          dataIndex: 'push_delay',
           align: 'center'
         },
         {
-          title: '提交百度收录',
-          dataIndex: 'push_bd',
-          scopedSlots: { customRender: 'push_bd' },
+          title: '每日起始时间（时）',
+          dataIndex: 'daily_start_at',
           align: 'center'
         },
         {
-          title: '百度站长平台token',
-          dataIndex: 'bd_token',
+          title: '每日终止时间（时）',
+          dataIndex: 'daily_end_at',
           align: 'center'
         },
         {
-          title: '文章来源',
-          dataIndex: 'post_orgin',
+          title: '发布模式',
+          dataIndex: 'push_type',
+          scopedSlots: { customRender: 'push_type' },
           align: 'center'
         },
         {
-          title: '文章作者',
-          dataIndex: 'post_author',
-          align: 'center'
-        },
-        {
-          title: '创建时间',
-          dataIndex: 'create_at',
-          scopedSlots: { customRender: 'create_at' },
+          title: '发布状态',
+          dataIndex: 'state',
+          scopedSlots: { customRender: 'state' },
           align: 'center'
         },
         {
@@ -245,7 +248,7 @@ export default {
       // 新增定时发布 表单数据
       addPanelData: {
         task_name: '',
-        site_name: '',
+        site_id: '',
         post_gn: '',
         post_module: '',
         passwd: '',
@@ -283,8 +286,8 @@ export default {
   },
   methods: {
     // 定时发布管理 列表
-    async getConfigManage () {
-      const { data: res } = await this.$http.get('pg/slist')
+    async getClockManage () {
+      const { data: res } = await this.$http.get('pg/tdl')
       if (res.status !== 0) return this.$message.error(res.reason)
       let i = 1
       this.allTask = res.list.map(v => {
@@ -304,11 +307,18 @@ export default {
       e.preventDefault()
       this.form.validateFields(async (error, values) => {
         if (!error) {
-          const { data: res } = await this.$http.post('pg/nsite', values)
+          const val = {
+            ...values,
+            start_date: values.start_date.format('YYYYMMDD'),
+            push_delay: { min: values.push_delay_min, max: values.push_delay_max },
+            alive_hour: { start: Number(values.alive_hour_start.format('H')), end: Number(values.alive_hour_end.format('H')) },
+            post_module: values.post_module.split(',')[0],
+            post_module_id: values.post_module.split(',')[1]
+          }
+          const { data: res } = await this.$http.post('pg/ntpost', val)
           if (res.status !== 0) return this.$message.error(res.reason)
-          this.getConfigManage()
+          this.getClockManage()
           this.addPanelVisible = false
-          this.form.resetFields()
         }
       })
     },
@@ -318,8 +328,8 @@ export default {
       this.form.resetFields()
     },
     // 获取网站栏目（发布模块）列表
-    async getWebsiteColumnList (siteName) {
-      const { data: res } = await this.$http.get('pg/ls_lm?site_name=' + siteName)
+    async getWebsiteColumnList (siteId) {
+      const { data: res } = await this.$http.get('pg/ls_lm?site_id=' + siteId)
       this.form.resetFields('post_module')
       this.postModuleDisable = true
       if (res.status !== 0) return this.$message.error(res.reason)
