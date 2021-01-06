@@ -87,9 +87,9 @@
                     <span slot="title">
                       <a-icon type="appstore" :style="{ fontSize: '16px', color: '#0039FD' }" /><span>发布模块</span>
                     </span>
-                    <a-menu-item key="library">
+                    <!-- <a-menu-item key="library">
                       文章库管理
-                    </a-menu-item>
+                    </a-menu-item> -->
                     <a-menu-item key="configure">
                       发布配置管理
                     </a-menu-item>

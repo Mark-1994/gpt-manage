@@ -7,6 +7,7 @@ import Score from '../components/user/Score.vue'
 import Add from '../components/manage/Add.vue'
 import List from '../components/manage/List.vue'
 import Deal from '../components/manage/Deal.vue'
+import Kwlist from '../components/manage/Kwlist.vue'
 import Modelslist from '../components/articleModel/Modelslist.vue'
 import Apimanage from '../components/apiInterface/Apimanage.vue'
 import Library from '../components/release/Library.vue'
@@ -62,6 +63,9 @@ const routes = [
     }, {
       path: '/share',
       component: Share
+    }, {
+      path: '/kwlist',
+      component: Kwlist
     }]
   }
 ]

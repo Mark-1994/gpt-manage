@@ -17,15 +17,20 @@
     </div>
 
     <a-table :columns="columns" :data-source="allTask" bordered size="middle" class="gpt-data-table" :row-selection="rowSelection" :scroll="{ x: 1500 }" rowKey="id">
+      <!-- <template slot="state" slot-scope="text, record"> -->
       <template slot="state" slot-scope="text">
         <span :style="{ color: text ? 'green' : 'red' }">{{ text ? '发布中' : '停止' }}</span>
-        <a-switch checked-children="启动" un-checked-children="停止" default-checked="true" />
+        <!-- <a-switch checked-children="启动" un-checked-children="停止" :default-checked="text ? true : false" @change="value => onChangeState(value, record.id)" /> -->
       </template>
       <template slot="push_type" slot-scope="text">
         {{ text === '1' ? '立即发布' : '定时发布' }}
       </template>
-      <template slot="deal">
-        <a-button type="primary" disabled>编辑</a-button>
+      <template slot="deal" slot-scope="record">
+        <a-space :size="2">
+          <a-button type="primary" :icon="record.state ? 'pause' : 'caret-right'" size="small" :style="{ backgroundColor: '#0039FD', borderColor: '#0039FD' }" @click="onChangeState(!record.state, record.id)"></a-button>
+          <!-- <a-button type="primary" icon="form" size="small" :style="{ backgroundColor: '#0039FD', borderColor: '#0039FD' }"></a-button> -->
+          <a-button type="danger" icon="delete" size="small" :style="{ backgroundColor: '#FD3A00', borderColor: '#FD3A00' }" @click="deleteClockTask(record.id)"></a-button>
+        </a-space>
       </template>
     </a-table>
 
@@ -387,6 +392,34 @@ export default {
         return true
       }
       return startValue.valueOf() >= endValue.valueOf()
+    },
+    // 启动/停止 定时任务
+    async onChangeState (checked, tid) {
+      const { data: res } = await this.$http.get(`pg/sw_td?tid=${tid}&type=${checked ? 1 : 0}`)
+      if (res.status !== 0) return this.$message.error(res.reason)
+      setTimeout(() => {
+        this.getClockManage()
+      }, 500)
+    },
+    // 删除定时任务
+    deleteClockTask (tid) {
+      const _this = this
+      this.$confirm({
+        title: '您确定要删除当前定时任务吗？',
+        content: '删除定时任务',
+        onOk () {
+          _this.deleteClockTaskEvent(tid)
+        },
+        onCancel () {
+          // console.log('Cancel')
+        }
+      })
+    },
+    // 删除定时任务 事件
+    async deleteClockTaskEvent (tid) {
+      const { data: res } = await this.$http.get(`pg/td_del?tid=${tid}`)
+      if (res.status !== 0) return this.$message.error(res.reason)
+      this.getClockManage()
     }
   }
 }

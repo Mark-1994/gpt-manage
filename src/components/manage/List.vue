@@ -18,6 +18,8 @@
       <template slot="deal" slot-scope="record">
         <a href="javascript:;" @click="handle($event, record)">处理</a>
         <a-divider type="vertical" />
+        <a href="/#/kwlist">关键词列表</a>
+        <a-divider type="vertical" />
         <a-popconfirm
           v-if="allTask.length"
           title="确定删除?"
@@ -131,7 +133,7 @@ export default {
         {
           title: '操作',
           scopedSlots: { customRender: 'deal' },
-          width: 110,
+          width: 180,
           fixed: 'right',
           align: 'center'
         }

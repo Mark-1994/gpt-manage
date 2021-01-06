@@ -27,6 +27,7 @@
         <a-space :size="2">
           <a-button type="primary" :style="{ backgroundColor: '#0039FD', borderColor: '#0039FD' }" @click="siteCheck(record.id)" size="small">测试</a-button>
           <a-button type="primary" :style="{ backgroundColor: '#0039FD', borderColor: '#0039FD' }" @click="editSiteConfig(record)" size="small">编辑</a-button>
+          <a-button type="danger" icon="delete" size="small" :style="{ backgroundColor: '#FD3A00', borderColor: '#FD3A00' }" @click="deleteSiteConfig(record.id)"></a-button>
         </a-space>
       </template>
     </a-table>
@@ -49,13 +50,13 @@
         </a-form-item>
         <a-form-item label="CMS类型">
           <a-select v-decorator="['cms_type', { rules: [{ required: true, message: '不能为空!' }] }]">
-            <a-select-option value="织梦(dedeCMS)">
+            <!-- <a-select-option value="织梦(dedeCMS)">
               织梦(dedeCMS)
-            </a-select-option>
+            </a-select-option> -->
             <a-select-option value="帝国(empCMS)">
               帝国(empCMS)
             </a-select-option>
-            <a-select-option value="WordPress">
+            <!-- <a-select-option value="WordPress">
               WordPress
             </a-select-option>
             <a-select-option value="Z-BLOG">
@@ -66,7 +67,7 @@
             </a-select-option>
             <a-select-option value="易优CMS(EYouCMS)">
               易优CMS(EYouCMS)
-            </a-select-option>
+            </a-select-option> -->
           </a-select>
         </a-form-item>
         <a-form-item label="接口文件名">
@@ -145,7 +146,7 @@
     <a-modal v-model="editPanelVisible" title="编辑配置" class="gpt-add-panel" :width="721" :footer="null" destroyOnClose>
 
       <a-form :form="formEdit" layout="inline" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }" :colon="false" class="gpt-add-panel-form" @submit="editPanelSave" hideRequiredMark>
-        <a-form-item label="网站ID">
+        <a-form-item label="网站ID" v-show="false">
           <a-input v-decorator="['id', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.id }]" disabled></a-input>
         </a-form-item>
         <a-form-item label="网站名称">
@@ -156,13 +157,13 @@
         </a-form-item>
         <a-form-item label="CMS类型">
           <a-select v-decorator="['cms_type', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.cms_type }]">
-            <a-select-option value="织梦(dedeCMS)">
+            <!-- <a-select-option value="织梦(dedeCMS)">
               织梦(dedeCMS)
-            </a-select-option>
+            </a-select-option> -->
             <a-select-option value="帝国(empCMS)">
               帝国(empCMS)
             </a-select-option>
-            <a-select-option value="WordPress">
+            <!-- <a-select-option value="WordPress">
               WordPress
             </a-select-option>
             <a-select-option value="Z-BLOG">
@@ -173,7 +174,7 @@
             </a-select-option>
             <a-select-option value="易优CMS(EYouCMS)">
               易优CMS(EYouCMS)
-            </a-select-option>
+            </a-select-option> -->
           </a-select>
         </a-form-item>
         <a-form-item label="接口文件名">
@@ -440,6 +441,26 @@ export default {
       if (res.status !== 0) return this.$message.error(res.reason)
       this.getConfigManage()
       this.editPanelVisible = false
+    },
+    // 删除网站配置
+    deleteSiteConfig (sid) {
+      const _this = this
+      this.$confirm({
+        title: '您确定要删除当前配置项吗？',
+        content: '注意：删除配置将会连同相关联的定时任务一起删除，请谨慎操作！',
+        onOk () {
+          _this.deleteSiteConfigEvent(sid)
+        },
+        onCancel () {
+          // console.log('Cancel')
+        }
+      })
+    },
+    // 删除网站配置 事件
+    async deleteSiteConfigEvent (sid) {
+      const { data: res } = await this.$http.get(`pg/site_del?sid=${sid}`)
+      if (res.status !== 0) return this.$message.error(res.reason)
+      this.getConfigManage()
     }
   }
 }
