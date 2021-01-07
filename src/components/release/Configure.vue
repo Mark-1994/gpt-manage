@@ -50,9 +50,9 @@
         </a-form-item>
         <a-form-item label="CMS类型">
           <a-select v-decorator="['cms_type', { rules: [{ required: true, message: '不能为空!' }] }]">
-            <!-- <a-select-option value="织梦(dedeCMS)">
+            <a-select-option value="织梦(dedeCMS)">
               织梦(dedeCMS)
-            </a-select-option> -->
+            </a-select-option>
             <a-select-option value="帝国(empCMS)">
               帝国(empCMS)
             </a-select-option>
@@ -157,9 +157,9 @@
         </a-form-item>
         <a-form-item label="CMS类型">
           <a-select v-decorator="['cms_type', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.cms_type }]">
-            <!-- <a-select-option value="织梦(dedeCMS)">
+            <a-select-option value="织梦(dedeCMS)">
               织梦(dedeCMS)
-            </a-select-option> -->
+            </a-select-option>
             <a-select-option value="帝国(empCMS)">
               帝国(empCMS)
             </a-select-option>

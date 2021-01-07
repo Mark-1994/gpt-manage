@@ -23,19 +23,40 @@
       <template slot="create_at" slot-scope="text">
         {{ text | dateFormat }}
       </template>
-      <template slot="deal">
+      <template slot="deal" slot-scope="record">
         <a-space :size="2">
-          <a-button type="primary" size="small" disabled>编辑</a-button>
+          <a-button type="primary" size="small" :disabled="onceAgainPost" @click="editItem(record)">编辑</a-button>
           <!-- <a-button type="danger" icon="delete" size="small" :style="{ backgroundColor: '#FD3A00', borderColor: '#FD3A00' }"></a-button> -->
         </a-space>
+      </template>
+      <template slot="title">
+        <div :style="{ textAlign: 'left' }">
+          项目名：<span :style="{ fontWeight: 'bold' }">{{ this.$route.params.gn }}</span>
+        </div>
       </template>
     </a-table>
 
     <div class="gpt-list-footer">
+      <div :style="{ textAlign: 'left' }">
+        <a-space>
+          <a-button type="primary" @click="saveEditContent" :disabled="onceAgainPost">
+            保存
+          </a-button>
+          <!-- <a-button>
+            重置
+          </a-button> -->
+        </a-space>
+      </div>
       <!-- <p>说明：</p>
       <p>下载单个txt:单个文章每个文字开头会有关键词每篇文章以----隔开</p>
       <p>下载压缩包:每篇文章一个txt文件名为关键词，单个关键词多篇文章 关键词后面加数字</p> -->
     </div>
+
+    <!-- 编辑 对话框 -->
+    <a-modal v-model="editVisible" title="编辑" width="80%" :footer="null">
+      <a-input v-model="editPanelData.title" :style="{ marginBottom: '8px' }" placeholder="文章标题" />
+      <quill-editor v-model="editPanelData.post"></quill-editor>
+    </a-modal>
 
   </div>
 </template>
@@ -43,7 +64,10 @@
 <script>
 export default {
   created () {
-    this.getKwList()
+    if (!this.$route.params.gn) {
+      return this.$router.push('/list')
+    }
+    this.getKwList(this.$route.params.gn ? this.$route.params.gn : '')
   },
   data () {
     return {
@@ -87,7 +111,15 @@ export default {
         }
       ],
       // 所有任务进度
-      allTask: []
+      allTask: [],
+      // 编辑 对话框 显示|隐藏
+      editVisible: false,
+      // 编辑 对话框 数据
+      editPanelData: {},
+      // 点击编辑 保存 id
+      idList: {},
+      // 是否禁止 二次 编辑提交
+      onceAgainPost: this.$route.params.is_modified
     }
   },
   computed: {
@@ -99,13 +131,48 @@ export default {
   },
   methods: {
     // 定时发布管理 列表
-    async getKwList () {
-      const { data: res } = await this.$http.get('pg/plist?gn=test2')
+    async getKwList (gn) {
+      const { data: res } = await this.$http.get(`pg/plist?gn=${gn}`)
       if (res.status !== 0) return this.$message.error(res.reason)
       let i = 1
       this.allTask = res.list.map(v => {
         return { ...v, key: i++ }
       })
+    },
+    editItem (rowData) {
+      this.idList[rowData.id] = rowData
+      this.editPanelData = rowData
+      this.editVisible = true
+    },
+    // 保存编辑的内容
+    saveEditContent () {
+      const _this = this
+      this.$confirm({
+        title: '您确定要保存吗？',
+        content: <span style="color: red;">一个项目只能保存一次，请谨慎操作！</span>,
+        onOk () {
+          const updateDate = {
+            gn: _this.$route.params.gn,
+            list: []
+          }
+          for (const key in _this.idList) {
+            _this.idList[key].tt = _this.idList[key].title
+            _this.idList[key].txt = _this.idList[key].post
+            updateDate.list.push(_this.idList[key])
+          }
+          _this.getUpDateArticle(updateDate)
+        },
+        onCancel () {
+          // console.log('Cancel')
+        }
+      })
+    },
+    // 批量更新文章
+    async getUpDateArticle (updateDate) {
+      const { data: res } = await this.$http.post('pg/uppts', updateDate)
+      if (res.status !== 0) return this.$message.error(res.reason)
+      // this.$route.params.is_modified = !this.$route.params.is_modified
+      this.onceAgainPost = true
     }
   }
 }

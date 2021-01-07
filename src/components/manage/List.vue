@@ -18,7 +18,7 @@
       <template slot="deal" slot-scope="record">
         <a href="javascript:;" @click="handle($event, record)">处理</a>
         <a-divider type="vertical" />
-        <a href="/#/kwlist">关键词列表</a>
+        <router-link :to="{ name: 'Kwlist', params: { gn: record.gn, is_modified: record.is_modified } }">关键词列表</router-link>
         <a-divider type="vertical" />
         <a-popconfirm
           v-if="allTask.length"

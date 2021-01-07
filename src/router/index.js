@@ -65,6 +65,7 @@ const routes = [
       component: Share
     }, {
       path: '/kwlist',
+      name: 'Kwlist',
       component: Kwlist
     }]
   }

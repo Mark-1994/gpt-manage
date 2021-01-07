@@ -276,7 +276,7 @@ export default {
       e.preventDefault()
       this.form.validateFields(async (err, values) => {
         if (!err) {
-          if (window.location.host === 'sem.hbzhaosheng.cn') {
+          if (window.location.host !== 'a.91nlp.cn') {
             const { data: res } = await this.$http.post('register', {
               mb: values.registerUserName,
               passwd: values.registerPassword,
