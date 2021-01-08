@@ -6,6 +6,15 @@
       <template slot="keywords">
         <a href="javascript:;" @click="showKeywords">查看</a>
       </template>
+      <template slot="customTitle">
+        失败
+        <a-tooltip placement="topLeft">
+          <template slot="title">
+            自动退还生成失败的积分
+          </template>
+          <a-icon type="question-circle" />
+        </a-tooltip>
+      </template>
       <template slot="create_at" slot-scope="text">
         {{ text | dateFormat }}
       </template>
@@ -16,7 +25,9 @@
         <p :style="{ margin: '0' }">{{ `失败：${record.en}` }}</p>
       </template>
       <template slot="deal" slot-scope="record">
-        <a href="javascript:;" @click="handle($event, record)">处理</a>
+        <a href="javascript:;" @click="downloadItem(record.gn)" :disabled="!record.is_modified">下载</a>
+        <a-divider type="vertical" />
+        <a href="javascript:;" @click="handle($event, record)" :disabled="record.is_modified">处理</a>
         <a-divider type="vertical" />
         <router-link :to="{ name: 'Kwlist', params: { gn: record.gn, is_modified: record.is_modified } }">关键词列表</router-link>
         <a-divider type="vertical" />
@@ -49,6 +60,8 @@
 </template>
 
 <script>
+import JSZip from 'jszip'
+import FileSaver from 'file-saver'
 export default {
   created () {
     this.getAllTask(500, 1)
@@ -84,11 +97,11 @@ export default {
           // sorter: (a, b) => a.post_num - b.post_num,
           align: 'center'
         },
-        {
-          title: '关键词',
-          scopedSlots: { customRender: 'keywords' },
-          align: 'center'
-        },
+        // {
+        //   title: '关键词',
+        //   scopedSlots: { customRender: 'keywords' },
+        //   align: 'center'
+        // },
         {
           title: '模型简称',
           dataIndex: 'model_name',
@@ -104,10 +117,25 @@ export default {
           // },
           align: 'center'
         },
+        // {
+        //   title: '任务详情',
+        //   dataIndex: 'taskdetail',
+        //   scopedSlots: { customRender: 'taskdetail' },
+        //   align: 'center'
+        // },
         {
-          title: '任务详情',
-          dataIndex: 'taskdetail',
-          scopedSlots: { customRender: 'taskdetail' },
+          title: '执行中',
+          dataIndex: 'queue',
+          align: 'center'
+        },
+        {
+          title: '成功',
+          dataIndex: 'dn',
+          align: 'center'
+        },
+        {
+          dataIndex: 'en',
+          slots: { title: 'customTitle' },
           align: 'center'
         },
         {
@@ -133,7 +161,7 @@ export default {
         {
           title: '操作',
           scopedSlots: { customRender: 'deal' },
-          width: 180,
+          width: 228,
           fixed: 'right',
           align: 'center'
         }
@@ -202,6 +230,27 @@ export default {
       if (res.status !== 0) return this.$message.error(res.reason)
       const dataSource = [...this.allTask]
       this.allTask = dataSource.filter(item => item.gn !== gn)
+    },
+    // 下载文章库
+    downloadItem (gn) {
+      this.getItemArticle(gn)
+    },
+    // 下载生成的文章
+    async getItemArticle (gn) {
+      const val = {
+        pr: false,
+        gn: gn
+      }
+      const { data: res } = await this.$http.post('dlpost', val)
+      if (res.status !== 0) return this.$message.error(res.reason)
+      const zip = new JSZip()
+      for (let i = 0; i < res.posts.length; i++) {
+        zip.file(res.posts[i].tt.replace('/', '') + '-' + i + '.txt', res.posts[i].txt)
+      }
+      zip.generateAsync({ type: 'blob' })
+        .then(content => {
+          FileSaver.saveAs(content, gn + '.zip')
+        })
     }
   }
 }

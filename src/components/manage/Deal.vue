@@ -571,7 +571,8 @@ export default {
         ptag: 0,
         // -------------------------
         gn: window.sessionStorage.getItem('itemName'),
-        dl_opt: 1
+        dl_opt: 1,
+        pr: true
       },
       // 地区
       area: '',

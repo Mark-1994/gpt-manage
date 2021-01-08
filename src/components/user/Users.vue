@@ -387,17 +387,17 @@ export default {
       const { data: res } = await this.$http.get('pg/index')
       window.localStorage.setItem('nick_name', '')
 
-      // if (window.location.host !== 'a.91nlp.cn') {
-      //   if (res.status !== 0) {
-      //     return this.$message.error('Error', function () {
-      //       window.location.href = '/login/#/login'
-      //     })
-      //   } else {
-      //     return this.$message.error('Error', function () {
-      //       window.location.href = 'http://a.91nlp.cn/#/login'
-      //     })
-      //   }
-      // }
+      if (window.location.host !== 'a.91nlp.cn') {
+        if (res.status !== 0) {
+          return this.$message.error('Error', function () {
+            window.location.href = '/login/#/login'
+          })
+        } else {
+          return this.$message.error('Error', function () {
+            window.location.href = 'http://a.91nlp.cn/#/login'
+          })
+        }
+      }
 
       if (res.status === 10) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/' })
       if (res.status === 3) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/#/login' })

@@ -12,7 +12,9 @@ import Modelslist from '../components/articleModel/Modelslist.vue'
 import Apimanage from '../components/apiInterface/Apimanage.vue'
 import Library from '../components/release/Library.vue'
 import Configure from '../components/release/Configure.vue'
+import Task from '../components/release/Task.vue'
 import Clock from '../components/release/Clock.vue'
+import Log from '../components/release/Log.vue'
 import Share from '../components/other/Share.vue'
 
 Vue.use(VueRouter)
@@ -67,6 +69,12 @@ const routes = [
       path: '/kwlist',
       name: 'Kwlist',
       component: Kwlist
+    }, {
+      path: '/log',
+      component: Log
+    }, {
+      path: '/task',
+      component: Task
     }]
   }
 ]

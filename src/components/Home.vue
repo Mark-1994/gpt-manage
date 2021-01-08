@@ -93,8 +93,14 @@
                     <a-menu-item key="configure">
                       发布配置管理
                     </a-menu-item>
+                    <a-menu-item key="task">
+                      任务发布管理
+                    </a-menu-item>
                     <a-menu-item key="clock">
                       定时发布管理
+                    </a-menu-item>
+                    <a-menu-item key="log">
+                      发布记录
                     </a-menu-item>
                   </a-sub-menu>
                   <a-sub-menu key="sub4">

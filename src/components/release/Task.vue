@@ -1,27 +1,18 @@
 <template>
   <div class="list_container">
-    <h3>定时发布管理</h3>
+    <h3>任务发布管理</h3>
 
     <div style="margin-bottom: 20px;text-align: left;padding: 0 40px;">
       <a-space :size="6" align="end" :style="{ flexWrap: 'wrap', lineHeight: '40px' }">
         <a-button type="primary" :style="{ borderRadius: '17px', backgroundColor: '#0039FD', borderColor: '#0039FD' }" @click="showAddPanel">
-          新增定时发布
+          新增发布任务
         </a-button>
-        <!-- <a-button type="primary" :style="{ borderRadius: '17px', backgroundColor: '#FD3A00', borderColor: '#FD3A00' }">
-          删除选中
-        </a-button>
-        <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
-          下载
-        </a-button> -->
       </a-space>
     </div>
 
     <a-table :columns="columns" :data-source="allTask" bordered size="middle" class="gpt-data-table" :row-selection="rowSelection" :scroll="{ x: 1500 }" rowKey="id">
-      <!-- <template slot="state" slot-scope="text, record"> -->
       <template slot="state" slot-scope="text, record">
-        <!-- <span :style="{ color: text ? 'green' : 'red' }">{{ text ? '发布中' : '停止' }}</span> -->
         {{ record.dn + record.en >= record.push_num ? '完成' : text ? '发布中' : '停止' }}
-        <!-- <a-switch checked-children="启动" un-checked-children="停止" :default-checked="text ? true : false" @change="value => onChangeState(value, record.id)" /> -->
       </template>
       <template slot="push_type" slot-scope="text">
         {{ text === '1' ? '立即发布' : '定时发布' }}
@@ -29,7 +20,6 @@
       <template slot="deal" slot-scope="record">
         <a-space :size="2">
           <a-button type="primary" :icon="!(record.dn + record.en >= record.push_num) && record.state ? 'pause' : 'caret-right'" size="small" :disabled="record.dn + record.en >= record.push_num" @click="onChangeState(!record.state, record.id)"></a-button>
-          <!-- <a-button type="primary" icon="form" size="small" :style="{ backgroundColor: '#0039FD', borderColor: '#0039FD' }"></a-button> -->
           <a-button type="danger" icon="delete" size="small" :style="{ backgroundColor: '#FD3A00', borderColor: '#FD3A00' }" @click="deleteClockTask(record.id)"></a-button>
         </a-space>
       </template>
@@ -41,8 +31,8 @@
       <p>下载压缩包:每篇文章一个txt文件名为关键词，单个关键词多篇文章 关键词后面加数字</p> -->
     </div>
 
-    <!-- 新增定时发布对话框 -->
-    <a-modal v-model="addPanelVisible" title="新增定时发布" class="gpt-add-panel" :width="721" :footer="null" destroyOnClose>
+    <!-- 新增发布任务对话框 -->
+    <a-modal v-model="addPanelVisible" title="新增发布任务" class="gpt-add-panel" :width="721" :footer="null" destroyOnClose>
 
       <a-form :form="form" layout="inline" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }" :colon="false" class="gpt-add-panel-form" @submit="addPanelSave" hideRequiredMark>
         <a-form-item label="任务名称">
@@ -75,67 +65,6 @@
         <a-form-item label="条数说明">
           <p :style="{ color: '#000', opacity: '.5', lineHeight: 'normal', margin: '0' }">如果发布条数为0，则发布已选择文章库中所有文章。</p>
         </a-form-item>
-        <a-form-item label="时间区间 单位时">
-          <!-- <a-range-picker v-decorator="['alive_hour', { rules: [{ required: true, message: '不能为空!' }] }]" format="HH" /> -->
-          <a-row>
-            <a-col span="10">
-              <a-form-item style="width: 100%;">
-                <!-- <a-time-picker v-decorator="['alive_hour_start', { rules: [{ required: true, message: '不能为空!' }] }]" format="HH" style="width: 100%;" placeholder="开始" /> -->
-                <a-time-picker
-                  v-decorator="['alive_hour_start', { rules: [{ required: true, message: '不能为空!' }] }]"
-                  format="HH"
-                  placeholder="开始"
-                  @openChange="handleStartOpenChange"
-                  :disabled-date="disabledStartDate"
-                  :style="{ width: '100%' }"
-                />
-              </a-form-item>
-            </a-col>
-            <a-col span="4">
-              <a-form-item style="width: 100%;text-align: center;">
-                -
-              </a-form-item>
-            </a-col>
-            <a-col span="10">
-              <a-form-item style="width: 100%;">
-                <!-- <a-time-picker v-decorator="['alive_hour_end', { rules: [{ required: true, message: '不能为空!' }] }]" format="HH" style="width: 100%;" placeholder="结束" /> -->
-                <a-time-picker
-                  v-decorator="['alive_hour_end', { rules: [{ required: true, message: '不能为空!' }] }]"
-                  format="HH"
-                  placeholder="结束"
-                  :open="endOpen"
-                  @openChange="handleEndOpenChange"
-                  :disabled-date="disabledEndDate"
-                  :style="{ width: '100%' }"
-                />
-              </a-form-item>
-            </a-col>
-          </a-row>
-        </a-form-item>
-        <a-form-item label="发布间隔 单位分">
-          <a-row>
-            <a-col span="10">
-              <a-form-item style="width: 100%;">
-                <!-- <a-time-picker v-decorator="['push_delay_min', { rules: [{ required: true, message: '不能为空!' }] }]" format="ss" style="width: 100%;" placeholder="开始" /> -->
-                <a-input-number v-decorator="['push_delay_min', { rules: [{ required: true, message: '不能为空!' }] }]" :min="1" :max="1440" :style="{ width: '100%' }" />
-              </a-form-item>
-            </a-col>
-            <a-col span="4">
-              <a-form-item style="width: 100%;text-align: center;">
-                -
-              </a-form-item>
-            </a-col>
-            <a-col span="10">
-              <a-form-item style="width: 100%;">
-                <!-- <a-time-picker v-decorator="['push_delay_max', { rules: [{ required: true, message: '不能为空!' }] }]" format="ss" style="width: 100%;" placeholder="结束" /> -->
-                <a-input-number v-decorator="['push_delay_max', { rules: [{ required: true, message: '不能为空!' }] }]" :min="Number(form.getFieldValue('push_delay_min')) || 1" :max="1440" :style="{ width: '100%' }" />
-              </a-form-item>
-            </a-col>
-          </a-row>
-        </a-form-item>
-        <a-form-item label="开始发布日期">
-          <a-date-picker v-decorator="['start_date', { rules: [{ required: true, message: '不能为空!' }] }]" style="width: 100%;" placeholder="请选择日期" format="YYYY-MM-DD" :disabled-date="disabledDate" />
-        </a-form-item>
         <a-form-item style="width: 100%;text-align: center;" :wrapper-col="{ span: 24 }">
           <a-space :size="8">
             <a-button class="gpt-add-panel-sure" html-type="submit">
@@ -153,7 +82,6 @@
 </template>
 
 <script>
-import moment from 'moment'
 export default {
   created () {
     this.getClockManage()
@@ -249,22 +177,8 @@ export default {
       allTask: [],
       // 上传语料-私有模型 id
       mid: '',
-      // 新增定时发布对话框 显示/隐藏
+      // 新增发布任务对话框 显示/隐藏
       addPanelVisible: false,
-      // 新增定时发布 表单数据
-      addPanelData: {
-        task_name: '',
-        site_id: '',
-        post_gn: '',
-        post_module: '',
-        passwd: '',
-        root: '',
-        user: '',
-        author: '',
-        post_orgin: '',
-        bd_token: '',
-        push_bd: ''
-      },
       // 新增定时任务 对话框 网站名 下拉框
       siteNameList: [],
       // 新增定时任务 对话框 发布文章库 下拉框
@@ -276,11 +190,7 @@ export default {
       // 发布文章数 开放|禁止
       postNumDisable: true,
       // 发布文章数 最大值
-      postNumMax: 1,
-      // 隐藏 结束时间 区间 小时
-      endOpen: false,
-      startValue: null,
-      endValue: null
+      postNumMax: 1
     }
   },
   computed: {
@@ -293,14 +203,14 @@ export default {
   methods: {
     // 定时发布管理 列表
     async getClockManage () {
-      const { data: res } = await this.$http.get('pg/tdl?push_type=2')
+      const { data: res } = await this.$http.get('pg/tdl?push_type=1')
       if (res.status !== 0) return this.$message.error(res.reason)
       let i = 1
       this.allTask = res.list.map(v => {
         return { ...v, key: i++ }
       })
     },
-    // 显示新增定时发布面板
+    // 显示新增发布任务面板
     showAddPanel () {
       this.getSiteNameList()
       this.getArticleNameList(500, 1)
@@ -308,27 +218,24 @@ export default {
       this.postNumDisable = true
       this.addPanelVisible = true
     },
-    // 新增定时发布面板 表单提交
+    // 新增发布任务面板 表单提交
     addPanelSave (e) {
       e.preventDefault()
       this.form.validateFields(async (error, values) => {
         if (!error) {
           const val = {
             ...values,
-            start_date: values.start_date.format('YYYYMMDD'),
-            push_delay: { min: values.push_delay_min, max: values.push_delay_max },
-            alive_hour: { start: Number(values.alive_hour_start.format('H')), end: Number(values.alive_hour_end.format('H')) },
             post_module: values.post_module.split(',')[0],
             post_module_id: values.post_module.split(',')[1]
           }
-          const { data: res } = await this.$http.post('pg/ntpost', val)
+          const { data: res } = await this.$http.post('pg/nolpost', val)
           if (res.status !== 0) return this.$message.error(res.reason)
           this.getClockManage()
           this.addPanelVisible = false
         }
       })
     },
-    // 新增定时发布面板 取消按钮
+    // 新增发布任务面板 取消按钮
     addPanelCancel () {
       this.addPanelVisible = false
       this.form.resetFields()
@@ -365,34 +272,6 @@ export default {
           this.postNumMax = x.post_num
         }
       })
-    },
-    // 不能选择今天之前的日期
-    disabledDate (current) {
-      return current && current < moment().endOf('day')
-    },
-    handleStartOpenChange (open) {
-      if (!open) {
-        this.endOpen = true
-      }
-    },
-    handleEndOpenChange (open) {
-      this.endOpen = open
-    },
-    disabledStartDate (startValue) {
-      const endValue = this.endValue
-      console.log(startValue.valueOf())
-      if (!startValue || !endValue) {
-        return true
-      }
-      return startValue.valueOf() > endValue.valueOf()
-    },
-    disabledEndDate (endValue) {
-      const startValue = this.startValue
-      console.log(endValue.valueOf())
-      if (!endValue || !startValue) {
-        return true
-      }
-      return startValue.valueOf() >= endValue.valueOf()
     },
     // 启动/停止 定时任务
     async onChangeState (checked, tid) {
