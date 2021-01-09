@@ -193,6 +193,7 @@
 export default {
   created () {
     this.getUserInfo()
+    this.openNotification()
     // this.judgeDomain()
     // this.getArticlePrice(1, -1)
     // this.getArticlePrice(1, 1)
@@ -551,6 +552,16 @@ export default {
       } else if (ml === 3) {
         this.diamondsPrice = res.cost
       }
+    },
+    // 通知公告
+    openNotification () {
+      this.$notification.open({
+        message: '致站长：',
+        description: '91NLP文章仿写系统是一款基于AI通过GPU训练生成的文章仿写工具。目的在于解决站长原创内容输出的问题，利于SEO及解决百度新站老站文章收录问题。目前语料训练结果来看文章只适合蜘蛛抓取并不适合用户阅读。如果以用户阅读为目的此款工具可能无法满足您。如遇到文章生成出现大量重复词可点击 退积分 按钮进行文章积分退还。',
+        icon: <a-icon type="notification" style="color: #0039FD" />,
+        placement: 'bottomRight',
+        duration: 0
+      })
     }
   }
 }

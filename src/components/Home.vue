@@ -11,6 +11,9 @@
           <a-col :span="4" :offset="13">
             联系客服 QQ：<a href="http://wpa.qq.com/msgrd?v=3&uin=206819887&site=qq&menu=yes" target="_blank" style="color: #fff;">206819887</a>
           </a-col>
+          <!-- <a-col :span="4">
+            加入QQ群：206819887
+          </a-col> -->
           <a-col :span="3" class="header-right">
             <a-dropdown :trigger="['click']">
               <a class="ant-dropdown-link" @click="e => e.preventDefault()">

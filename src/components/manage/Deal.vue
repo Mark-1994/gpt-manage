@@ -243,6 +243,15 @@
                 <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
                   <a-form-item label="文章列表" style="text-align: left;" :wrapper-col="{ span: 24 }">
                     <a-table :columns="articleListColumns" :data-source="articleListData" bordered size="small" :row-selection="articleListRowSelection">
+                      <template slot="customTitle">
+                        操作
+                        <a-tooltip placement="topLeft">
+                          <template slot="title">
+                            退积分：由于是AI生成，可能会因为特殊符号等问题，部分文章可能出现大量重复关键词，这时您可以点击退积分，我们会返还您生成文章产生的积分。
+                          </template>
+                          <a-icon type="question-circle" />
+                        </a-tooltip>
+                      </template>
                       <template slot="txt" slot-scope="text, record">
                         <a href="javascript:;" :title="text" @click="contentEditShowModal(record)">
                           {{ text }}
@@ -256,6 +265,13 @@
                         <a-button type="dashed" size="small" @click="refundShowModal(record)" :disabled="!!record.state">
                           {{ record.state === 0 ? '退积分' : record.state === 1 ? '审核中' : record.state === 2 ? '退款同意' : '退款拒绝' }}
                         </a-button>
+                        &nbsp;
+                        <!-- <a-tooltip placement="topLeft">
+                          <template slot="title">
+                            由于是AI生成，可能会因为特殊符号等问题，部分文章可能出现大量重复关键词，这时您可以点击退积分，我们会返还您生成文章产生的积分。
+                          </template>
+                          <a-icon type="question-circle" />
+                        </a-tooltip> -->
                         <!-- <a href="javascript:;" @click="contentEditShowModal(record)">编辑</a> -->
                       </template>
                     </a-table>
@@ -302,8 +318,8 @@
         <a-form-item label="内链">
           <a-input v-model="newAddInternalChain.link" />
         </a-form-item>
-        <a-form-item label="关键词" extra="关键词格式：每行一个">
-          <a-textarea placeholder="" :auto-size="{ minRows: 2, maxRows: 4 }" v-model="newAddInternalChain.value" />
+        <a-form-item label="关键词" extra="关键词格式：每行一个，字数上限：5万">
+          <a-textarea placeholder="" :auto-size="{ minRows: 2, maxRows: 4 }" v-model="newAddInternalChain.value" :maxLength="50000" />
         </a-form-item>
       </a-form>
     </a-modal>
@@ -508,7 +524,7 @@ const articleListColumns = [
     ellipsis: true
   },
   {
-    title: '操作',
+    slots: { title: 'customTitle' },
     scopedSlots: { customRender: 'dealWith' }
   }
 ]

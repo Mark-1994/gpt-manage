@@ -14,6 +14,7 @@ import {
   Button,
   Layout,
   message,
+  notification,
   Col,
   Row,
   Dropdown,
@@ -91,6 +92,7 @@ axios.defaults.withCredentials = true
 Vue.prototype.$http = axios
 
 Vue.prototype.$message = message
+Vue.prototype.$notification = notification
 Vue.prototype.$confirm = Modal.confirm
 Vue.config.productionTip = false
 

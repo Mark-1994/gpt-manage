@@ -58,11 +58,11 @@
             </a-select-option>
             <!-- <a-select-option value="WordPress">
               WordPress
-            </a-select-option>
+            </a-select-option> -->
             <a-select-option value="Z-BLOG">
               Z-BLOG
             </a-select-option>
-            <a-select-option value="discuz">
+            <!-- <a-select-option value="discuz">
               discuz
             </a-select-option>
             <a-select-option value="易优CMS(EYouCMS)">
@@ -165,11 +165,11 @@
             </a-select-option>
             <!-- <a-select-option value="WordPress">
               WordPress
-            </a-select-option>
+            </a-select-option> -->
             <a-select-option value="Z-BLOG">
               Z-BLOG
             </a-select-option>
-            <a-select-option value="discuz">
+            <!-- <a-select-option value="discuz">
               discuz
             </a-select-option>
             <a-select-option value="易优CMS(EYouCMS)">
