@@ -56,18 +56,18 @@
             <a-select-option value="帝国(empCMS)">
               帝国(empCMS)
             </a-select-option>
-            <!-- <a-select-option value="WordPress">
+            <a-select-option value="WordPress">
               WordPress
-            </a-select-option> -->
+            </a-select-option>
             <a-select-option value="Z-BLOG">
               Z-BLOG
             </a-select-option>
-            <!-- <a-select-option value="discuz">
+            <a-select-option value="discuz">
               discuz
             </a-select-option>
             <a-select-option value="易优CMS(EYouCMS)">
               易优CMS(EYouCMS)
-            </a-select-option> -->
+            </a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="接口文件名">
@@ -163,18 +163,18 @@
             <a-select-option value="帝国(empCMS)">
               帝国(empCMS)
             </a-select-option>
-            <!-- <a-select-option value="WordPress">
+            <a-select-option value="WordPress">
               WordPress
-            </a-select-option> -->
+            </a-select-option>
             <a-select-option value="Z-BLOG">
               Z-BLOG
             </a-select-option>
-            <!-- <a-select-option value="discuz">
+            <a-select-option value="discuz">
               discuz
             </a-select-option>
             <a-select-option value="易优CMS(EYouCMS)">
               易优CMS(EYouCMS)
-            </a-select-option> -->
+            </a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="接口文件名">

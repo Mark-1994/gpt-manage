@@ -190,7 +190,9 @@ export default {
       // 发布文章数 开放|禁止
       postNumDisable: true,
       // 发布文章数 最大值
-      postNumMax: 1
+      postNumMax: 1,
+      // 任务 暂停|启动 防抖
+      timer: null
     }
   },
   computed: {
@@ -275,10 +277,13 @@ export default {
     },
     // 启动/停止 定时任务
     async onChangeState (checked, tid) {
-      const { data: res } = await this.$http.get(`pg/sw_td?tid=${tid}&type=${checked ? 1 : 0}`)
-      if (res.status !== 0) return this.$message.error(res.reason)
-      setTimeout(() => {
-        this.getClockManage()
+      clearTimeout(this.timer)
+      this.timer = setTimeout(async () => {
+        const { data: res } = await this.$http.get(`pg/sw_td?tid=${tid}&type=${checked ? 1 : 0}`)
+        if (res.status !== 0) return this.$message.error(res.reason)
+        setTimeout(() => {
+          this.getClockManage()
+        }, 800)
       }, 500)
     },
     // 删除定时任务

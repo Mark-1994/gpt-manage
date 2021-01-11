@@ -4,10 +4,10 @@
 
     <a-table :columns="columns" :data-source="allTask" bordered :pagination="{ position: 'bottom' }" size="middle" :scroll="{ x: 900 }">
       <template slot="ptype" slot-scope="text">
-        {{ text === 1 ? '在线发布' : '定时发布' }}
+        {{ text === '1' ? '在线发布' : '定时发布' }}
       </template>
       <template slot="pstate" slot-scope="text">
-        {{ text ? '成功' : '失败' }}
+        {{ text === 1 ? '成功' : '失败' }}
       </template>
       <template slot="time" slot-scope="text">
         {{ text | dateFormat }}
