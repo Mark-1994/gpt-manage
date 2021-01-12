@@ -98,10 +98,10 @@
         <a-form-item label="文章来源">
           <a-input v-decorator="['post_orgin', { rules: [{ required: true, message: '不能为空!' }] }]"></a-input>
         </a-form-item>
-        <a-form-item label="百度站长TOKEN">
+        <a-form-item label="百度站长TOKEN" v-if="false">
           <a-input v-decorator="['bd_token', { rules: [{ validator: (rule, value, cb) => !bdTokenStatus || value !== '', message: '不能为空!' }], initialValue: '' }]"></a-input>
         </a-form-item>
-        <a-form-item label="百度推送">
+        <a-form-item label="百度推送" v-if="false">
           <a-radio-group v-decorator="['push_bd', { rules: [{ required: true, message: '不能为空!' }] }]" @change="bdTokenEvent">
             <a-radio :value="true">
               是
@@ -205,10 +205,10 @@
         <a-form-item label="文章来源">
           <a-input v-decorator="['post_orgin', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.post_orgin }]"></a-input>
         </a-form-item>
-        <a-form-item label="百度站长TOKEN">
+        <a-form-item label="百度站长TOKEN" v-if="false">
           <a-input v-decorator="['bd_token', { rules: [{ validator: (rule, value, cb) => !formEdit.getFieldValue('push_bd') || value !== '', message: '不能为空!' }], initialValue: editPanelData.bd_token }]"></a-input>
         </a-form-item>
-        <a-form-item label="百度推送">
+        <a-form-item label="百度推送" v-if="false">
           <a-radio-group v-decorator="['push_bd', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.push_bd }]">
             <a-radio :value="true">
               是
@@ -395,6 +395,8 @@ export default {
       e.preventDefault()
       this.form.validateFields(async (error, values) => {
         if (!error) {
+          values.push_bd = false
+          values.bd_token = ''
           const { data: res } = await this.$http.post('pg/nsite', values)
           if (res.status !== 0) return this.$message.error(res.reason)
           this.getConfigManage()
@@ -437,6 +439,8 @@ export default {
     },
     // 编辑网站配置
     async editSiteConfigEvent (values) {
+      values.push_bd = false
+      values.bd_token = ''
       const { data: res } = await this.$http.post('pg/mdfsite', values)
       if (res.status !== 0) return this.$message.error(res.reason)
       this.getConfigManage()

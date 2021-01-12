@@ -56,6 +56,22 @@
         <a-tag v-for="(item, index) in showKeyword" :key="index">{{item}}</a-tag>
       </div>
     </a-modal>
+
+    <!-- 下载 对话框 -->
+    <a-modal v-model="downloadTypeVisible" title="下载方式" okText="确定" cancelText="取消" @ok="handleOk">
+      <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
+        <a-form-item label="文本格式" extra="纯文本格式为不含html标签格式，如果之前曾经处理过内容加粗外链等也将无效。富文本格式为带html标签格式，如果之前曾经处理过内容加粗外链等这种格式可以生效。">
+          <a-radio-group v-model="downloadTypeVal">
+            <a-radio :value="0">
+              纯文本格式
+            </a-radio>
+            <a-radio :value="1">
+              富文本格式
+            </a-radio>
+          </a-radio-group>
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </div>
 </template>
 
@@ -173,7 +189,13 @@ export default {
       // 点击关键词查看的项目名
       projectName: '',
       // 展示的关键词
-      showKeyword: []
+      showKeyword: [],
+      // 下载 对话框 显示|隐藏
+      downloadTypeVisible: false,
+      // 下载 对话框 值
+      downloadTypeVal: 0,
+      // 缓存 项目名
+      gnCacheVal: ''
     }
   },
   methods: {
@@ -233,7 +255,8 @@ export default {
     },
     // 下载文章库
     downloadItem (gn) {
-      this.getItemArticle(gn)
+      this.gnCacheVal = gn
+      this.downloadTypeVisible = true
     },
     // 下载生成的文章
     async getItemArticle (gn) {
@@ -245,12 +268,21 @@ export default {
       if (res.status !== 0) return this.$message.error(res.reason)
       const zip = new JSZip()
       for (let i = 0; i < res.posts.length; i++) {
-        zip.file(res.posts[i].tt.replace('/', '') + '-' + i + '.txt', res.posts[i].txt)
+        if (!this.downloadTypeVal) {
+          zip.file(res.posts[i].tt.replace('/', '') + '-' + i + '.txt', res.posts[i].txt.replace(/<.*?>/ig, ''))
+        } else {
+          zip.file(res.posts[i].tt.replace('/', '') + '-' + i + '.txt', res.posts[i].txt)
+        }
       }
       zip.generateAsync({ type: 'blob' })
         .then(content => {
           FileSaver.saveAs(content, gn + '.zip')
+          this.downloadTypeVisible = false
         })
+    },
+    // 下载确定按钮
+    handleOk () {
+      this.getItemArticle(this.gnCacheVal)
     }
   }
 }

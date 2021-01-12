@@ -370,7 +370,7 @@ export default {
     },
     // 不能选择今天之前的日期
     disabledDate (current) {
-      return current && current < moment().endOf('day')
+      return current && current < moment().subtract(1, 'days')
     },
     handleStartOpenChange (open) {
       if (!open) {

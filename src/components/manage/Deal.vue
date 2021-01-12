@@ -276,7 +276,7 @@
                       </template>
                     </a-table>
                   </a-form-item>
-                  <a-form-item label="文本格式" style="text-align: left;" extra="纯文本格式为不含html标签格式，如果之前曾经处理过内容加粗外链等也将无效。富文本格式为带html标签格式，如果之前曾经处理过内容加粗外链等这种格式可以生效。">
+                  <!-- <a-form-item label="文本格式" style="text-align: left;" extra="纯文本格式为不含html标签格式，如果之前曾经处理过内容加粗外链等也将无效。富文本格式为带html标签格式，如果之前曾经处理过内容加粗外链等这种格式可以生效。">
                     <a-radio-group v-model="downloadArticle.ptag">
                       <a-radio :value="0">
                         纯文本格式
@@ -285,7 +285,7 @@
                         富文本格式
                       </a-radio>
                     </a-radio-group>
-                  </a-form-item>
+                  </a-form-item> -->
                 </a-form>
               </div>
             </div>
@@ -297,6 +297,7 @@
                 v-if="current == steps.length - 1"
                 type="primary"
                 @click="downloadArticleBtn"
+                :disabled="onceAgainPost"
               >
                 保存
               </a-button>
@@ -325,7 +326,7 @@
     </a-modal>
 
     <!-- 内容编辑器 对话框 -->
-    <a-modal v-model="contentEditVisible" :title="contentEditCacheRecord.tt" width="80%">
+    <a-modal v-model="contentEditVisible" :title="contentEditCacheRecord.tt" width="80%" :footer="null">
       <template slot="footer">
         <a-button @click="handleCancel">
           取消
@@ -681,7 +682,11 @@ export default {
       // 编辑 内链组 对话框 显示/隐藏
       internalChainVisible: false,
       // 编辑内链组 分组名 链接 关键词
-      internalChainGroup: {}
+      internalChainGroup: {},
+      // 点击编辑 保存 id
+      idList: {},
+      // 禁止二次编辑
+      onceAgainPost: false
     }
   },
   computed: {
@@ -741,6 +746,7 @@ export default {
       if (this.dealModeVal === '2' && this.actualVal - this.notMoreThanVal > 0) return this.$message.error(`超出数量 ${this.actualVal - this.notMoreThanVal}`)
       if (this.current === 1) {
         this.downloadArticleEvent()
+        this.getCheckArticleEdited()
       }
       this.current++
     },
@@ -750,7 +756,42 @@ export default {
     // 下载
     downloadArticleBtn () {
       if (!this.selectedItem.length) return this.$message.error('没有勾选下载文章')
-      this.getArticleTxt(this.selectedItem)
+      // this.getArticleTxt(this.selectedItem)
+      const _this = this
+      this.$confirm({
+        title: '您确定要保存吗？',
+        content: h => <div style="color:red;">一个项目只能保存一次，请谨慎操作！</div>,
+        onOk () {
+          const updateDate = {
+            gn: _this.downloadArticle.gn,
+            // list: []
+            list: _this.articleListData
+          }
+          // for (const key in _this.idList) {
+          //   updateDate.list.push(_this.idList[key])
+          // }
+          _this.getUpDateArticle(updateDate)
+          setTimeout(function () {
+            _this.getCheckArticleEdited()
+          }, 800)
+        },
+        onCancel () {
+          // console.log('Cancel')
+        },
+        okText: '确定',
+        cancelText: '取消'
+      })
+    },
+    // 批量更新文章
+    async getUpDateArticle (updateDate) {
+      const { data: res } = await this.$http.post('pg/uppts', updateDate)
+      if (res.status !== 0) return this.$message.error(res.reason)
+    },
+    // 检查文章组否被编辑过
+    async getCheckArticleEdited () {
+      const { data: res } = await this.$http.get(`pg/pstate?gn=${this.downloadArticle.gn}`)
+      if (res.status !== 0) return this.$message.error(res.reason)
+      this.onceAgainPost = res.is_modified
     },
     // 下载文章事件
     async downloadArticleEvent () {
@@ -1126,6 +1167,7 @@ export default {
       this.contentEditRecord = val
       // this.contentEditCacheRecord = { ...this.contentEditRecord }
       this.contentEditCacheRecord = this.contentEditRecord
+      this.idList[val.id] = val
       this.contentEditVisible = true
     },
     // 获取任务所有主词

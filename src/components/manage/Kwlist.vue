@@ -25,7 +25,8 @@
       </template>
       <template slot="deal" slot-scope="record">
         <a-space :size="2">
-          <a-button type="primary" size="small" :disabled="onceAgainPost" @click="editItem(record)">编辑</a-button>
+          <!-- <a-button type="primary" size="small" :disabled="onceAgainPost" @click="editItem(record)">编辑</a-button> -->
+          <a-button type="primary" size="small" @click="editItem(record)">编辑</a-button>
           <!-- <a-button type="danger" icon="delete" size="small" :style="{ backgroundColor: '#FD3A00', borderColor: '#FD3A00' }"></a-button> -->
         </a-space>
       </template>
@@ -37,23 +38,23 @@
     </a-table>
 
     <div class="gpt-list-footer">
-      <div :style="{ textAlign: 'left' }">
+      <!-- <div :style="{ textAlign: 'left' }">
         <a-space>
           <a-button type="primary" @click="saveEditContent" :disabled="onceAgainPost">
             保存
           </a-button>
-          <!-- <a-button>
+          <a-button>
             重置
-          </a-button> -->
+          </a-button>
         </a-space>
-      </div>
+      </div> -->
       <!-- <p>说明：</p>
       <p>下载单个txt:单个文章每个文字开头会有关键词每篇文章以----隔开</p>
       <p>下载压缩包:每篇文章一个txt文件名为关键词，单个关键词多篇文章 关键词后面加数字</p> -->
     </div>
 
     <!-- 编辑 对话框 -->
-    <a-modal v-model="editVisible" title="编辑" width="80%" :footer="null">
+    <a-modal v-model="editVisible" title="编辑" width="80%" okText="保存" cancelText="取消" @ok="handleOk">
       <a-input v-model="editPanelData.title" :style="{ marginBottom: '8px' }" placeholder="文章标题" />
       <quill-editor v-model="editPanelData.post"></quill-editor>
     </a-modal>
@@ -173,6 +174,16 @@ export default {
       if (res.status !== 0) return this.$message.error(res.reason)
       // this.$route.params.is_modified = !this.$route.params.is_modified
       this.onceAgainPost = true
+    },
+    // 更新单篇文章
+    async getUpDateSingleArticle (vals) {
+      const { data: res } = await this.$http.post('pg/uppt', { ...vals, tt: vals.title, txt: vals.post })
+      if (res.status !== 0) return this.$message.error(res.reason)
+      this.editVisible = false
+    },
+    // 保存按钮
+    handleOk () {
+      this.getUpDateSingleArticle(this.editPanelData)
     }
   }
 }

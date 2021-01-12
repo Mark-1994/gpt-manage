@@ -3,6 +3,9 @@
     <h3>发布记录</h3>
 
     <a-table :columns="columns" :data-source="allTask" bordered :pagination="{ position: 'bottom' }" size="middle" :scroll="{ x: 900 }">
+      <template slot="link" slot-scope="text">
+        <a :href="text" target="_blank">{{ text }}</a>
+      </template>
       <template slot="ptype" slot-scope="text">
         {{ text === '1' ? '在线发布' : '定时发布' }}
       </template>
@@ -51,6 +54,13 @@ export default {
           align: 'center'
         },
         {
+          title: '发布文章链接',
+          dataIndex: 'link',
+          scopedSlots: { customRender: 'link' },
+          ellipsis: true,
+          align: 'center'
+        },
+        {
           title: '发布类型',
           dataIndex: 'ptype',
           scopedSlots: { customRender: 'ptype' },
@@ -81,7 +91,7 @@ export default {
   methods: {
     // 获取所有任务进度
     async getAllTask (rn, pn) {
-      const { data: res } = await this.$http.get(`pg/push_list?rn=${rn}&pn=${pn}`)
+      const { data: res } = await this.$http.get(`pg/push_log?rn=${rn}&pn=${pn}`)
       if (res.status === 3) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/#/login' })
       if (res.status !== 0) return this.$message.error(res.reason)
 
