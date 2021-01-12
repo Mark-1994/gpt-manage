@@ -113,11 +113,23 @@
         </a-form-item>
         <a-form-item label="插件下载">
           <a-space :size="14" :style="{ flexWrap: 'wrap', lineHeight: '40px' }">
-            <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
-              织梦UTF-8
+            <!-- <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
+              <a href="http://a.91nlp.cn/plugin/dz.zip" style="color: #fff;" target="_blank">织梦UTF-8</a>
             </a-button>
             <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
               织梦GBK
+            </a-button> -->
+            <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
+              <a href="http://a.91nlp.cn/plugin/dz.zip" style="color: #fff;" target="_blank">discuz</a>
+            </a-button>
+            <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
+              <a href="http://a.91nlp.cn/plugin/emp.zip" style="color: #fff;" target="_blank">帝国CMS</a>
+            </a-button>
+            <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
+              <a href="http://a.91nlp.cn/plugin/ey.zip" style="color: #fff;" target="_blank">易优CMS</a>
+            </a-button>
+            <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
+              <a href="http://a.91nlp.cn/plugin/zblog.zip" style="color: #fff;" target="_blank">Z-BLOG</a>
             </a-button>
           </a-space>
         </a-form-item>
@@ -220,11 +232,23 @@
         </a-form-item>
         <a-form-item label="插件下载">
           <a-space :size="14" :style="{ flexWrap: 'wrap', lineHeight: '40px' }">
-            <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
+            <!-- <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
               织梦UTF-8
             </a-button>
             <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
               织梦GBK
+            </a-button> -->
+            <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
+              <a href="http://a.91nlp.cn/plugin/dz.zip" style="color: #fff;" target="_blank">discuz</a>
+            </a-button>
+            <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
+              <a href="http://a.91nlp.cn/plugin/emp.zip" style="color: #fff;" target="_blank">帝国CMS</a>
+            </a-button>
+            <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
+              <a href="http://a.91nlp.cn/plugin/ey.zip" style="color: #fff;" target="_blank">易优CMS</a>
+            </a-button>
+            <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
+              <a href="http://a.91nlp.cn/plugin/zblog.zip" style="color: #fff;" target="_blank">Z-BLOG</a>
             </a-button>
           </a-space>
         </a-form-item>
