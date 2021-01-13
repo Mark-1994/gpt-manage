@@ -42,7 +42,8 @@ import {
   Steps,
   Space,
   DatePicker,
-  TimePicker
+  TimePicker,
+  Spin
 } from 'ant-design-vue'
 Vue.use(Button)
 Vue.use(Layout)
@@ -74,6 +75,7 @@ Vue.use(Steps)
 Vue.use(Space)
 Vue.use(DatePicker)
 Vue.use(TimePicker)
+Vue.use(Spin)
 
 Vue.use(VueQuillEditor)
 

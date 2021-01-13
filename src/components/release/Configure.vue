@@ -329,17 +329,17 @@ export default {
           dataIndex: 'passwd',
           align: 'center'
         },
-        {
-          title: '提交百度收录',
-          dataIndex: 'push_bd',
-          scopedSlots: { customRender: 'push_bd' },
-          align: 'center'
-        },
-        {
-          title: '百度站长平台token',
-          dataIndex: 'bd_token',
-          align: 'center'
-        },
+        // {
+        //   title: '提交百度收录',
+        //   dataIndex: 'push_bd',
+        //   scopedSlots: { customRender: 'push_bd' },
+        //   align: 'center'
+        // },
+        // {
+        //   title: '百度站长平台token',
+        //   dataIndex: 'bd_token',
+        //   align: 'center'
+        // },
         {
           title: '文章来源',
           dataIndex: 'post_orgin',

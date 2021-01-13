@@ -27,7 +27,7 @@
         <a-space :size="2">
           <!-- <a-button type="primary" size="small" :disabled="onceAgainPost" @click="editItem(record)">编辑</a-button> -->
           <a-button type="primary" size="small" @click="editItem(record)">编辑</a-button>
-          <!-- <a-button type="danger" icon="delete" size="small" :style="{ backgroundColor: '#FD3A00', borderColor: '#FD3A00' }"></a-button> -->
+          <a-button type="danger" icon="delete" size="small" :style="{ backgroundColor: '#FD3A00', borderColor: '#FD3A00' }" @click="deleteKwItem(record.id)"></a-button>
         </a-space>
       </template>
       <template slot="title">
@@ -184,6 +184,30 @@ export default {
     // 保存按钮
     handleOk () {
       this.getUpDateSingleArticle(this.editPanelData)
+    },
+    // 批量删除文章
+    deleteKwItem (id) {
+      const _this = this
+      this.$confirm({
+        title: '您确定要删除这篇文章吗？',
+        content: h => <div style="color:red;">删除文章</div>,
+        onOk () {
+          _this.deleteArticleMethod(id)
+        },
+        onCancel () {
+          // console.log('Cancel')
+        },
+        okText: '确定',
+        cancelText: '取消'
+      })
+    },
+    // 批量删除文章 方法
+    async deleteArticleMethod (id) {
+      const { data: res } = await this.$http.post('pg/delps', {
+        pts: [id]
+      })
+      if (res.status !== 0) return this.$message.error(res.reason)
+      this.getKwList(this.$route.params.gn ? this.$route.params.gn : '')
     }
   }
 }

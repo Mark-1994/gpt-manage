@@ -242,7 +242,8 @@
               <div class="content-box" v-else-if="current === 2">
                 <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
                   <a-form-item label="文章列表" style="text-align: left;" :wrapper-col="{ span: 24 }">
-                    <a-table :columns="articleListColumns" :data-source="articleListData" bordered size="small" :row-selection="articleListRowSelection">
+                    <!-- <a-table :columns="articleListColumns" :data-source="articleListData" bordered size="small" :row-selection="articleListRowSelection"> -->
+                    <a-table :columns="articleListColumns" :data-source="articleListData" bordered size="small" :loading="loading">
                       <template slot="customTitle">
                         操作
                         <a-tooltip placement="topLeft">
@@ -287,6 +288,7 @@
                     </a-radio-group>
                   </a-form-item> -->
                 </a-form>
+
               </div>
             </div>
             <div class="steps-action">
@@ -686,7 +688,9 @@ export default {
       // 点击编辑 保存 id
       idList: {},
       // 禁止二次编辑
-      onceAgainPost: false
+      onceAgainPost: false,
+      // 表格 loading
+      loading: true
     }
   },
   computed: {
@@ -704,6 +708,7 @@ export default {
     },
     articleListRowSelection () {
       return {
+        type: 'checkbox',
         // 选中项发生变化时的回调
         onChange: (selectedRowKeys, selectedRows) => {
           // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
@@ -755,22 +760,34 @@ export default {
     },
     // 下载
     downloadArticleBtn () {
-      if (!this.selectedItem.length) return this.$message.error('没有勾选下载文章')
+      // if (!this.selectedItem.length) return this.$message.error('没有勾选下载文章')
       // this.getArticleTxt(this.selectedItem)
       const _this = this
       this.$confirm({
         title: '您确定要保存吗？',
         content: h => <div style="color:red;">一个项目只能保存一次，请谨慎操作！</div>,
-        onOk () {
-          const updateDate = {
-            gn: _this.downloadArticle.gn,
-            // list: []
-            list: _this.articleListData
-          }
+        async onOk () {
+          // const updateDate = {
+          //   gn: _this.downloadArticle.gn,
+          //   // list: []
+          //   list: _this.articleListData
+          // }
+
           // for (const key in _this.idList) {
           //   updateDate.list.push(_this.idList[key])
           // }
-          _this.getUpDateArticle(updateDate)
+
+          // _this.getUpDateArticle(updateDate)
+          // setTimeout(function () {
+          //   _this.getCheckArticleEdited()
+          // }, 800)
+
+          const updateDate = {
+            gn: _this.downloadArticle.gn,
+            list: _this.articleListData
+          }
+          const { data: res } = await _this.$http.post('pg/uppts', updateDate)
+          if (res.status !== 0) return _this.$message.error(res.reason)
           setTimeout(function () {
             _this.getCheckArticleEdited()
           }, 800)
@@ -784,8 +801,8 @@ export default {
     },
     // 批量更新文章
     async getUpDateArticle (updateDate) {
-      const { data: res } = await this.$http.post('pg/uppts', updateDate)
-      if (res.status !== 0) return this.$message.error(res.reason)
+      // const { data: res } = await this.$http.post('pg/uppts', updateDate)
+      // if (res.status !== 0) return this.$message.error(res.reason)
     },
     // 检查文章组否被编辑过
     async getCheckArticleEdited () {
@@ -798,6 +815,7 @@ export default {
       this.compoundMode()
       const { data: res } = await this.$http.post('dlpost', this.downloadArticle)
       if (res.status !== 0) return this.$message.error(res.reason)
+      this.loading = false
       let i = 0
       this.articleListData = res.posts.map(v => {
         i++
