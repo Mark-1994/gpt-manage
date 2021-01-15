@@ -53,7 +53,7 @@
           <a class="login-form-forgot" href="javascript:;" @click="showRegister(2)">
             忘记密码
           </a>
-          <a-button type="primary" html-type="submit" class="login-form-button">
+          <a-button type="primary" html-type="submit" class="login-form-button" ref="dynamicPost">
             登录
           </a-button>
           Or
@@ -224,6 +224,7 @@ export default {
   },
   mounted () {
     document.querySelector('body').style.backgroundColor = 'rgba(223, 223, 223, .3)'
+    this.getUrlLoginParams()
   },
   data () {
     return {
@@ -256,7 +257,21 @@ export default {
             passwd: values.password
           })
           if (res.status !== 0) return this.$message.error(res.reason)
-          this.$message.success('登录了')
+
+          // 如果 sem 域名下登录成功
+          if (window.location.host !== 'a.91nlp.cn') {
+            var mb = values.userName
+            var passwd = values.password
+            return this.$router.push({
+              name: 'Users',
+              params: {
+                mb,
+                passwd
+              }
+            })
+          }
+
+          // this.$message.success('登录了')
           this.$router.push('/home')
         }
       })
@@ -377,6 +392,14 @@ export default {
         const value = param.split('=')[1]
         if (key === name) this.urlParams = value
       })
+    },
+    // 判断当前 url 是否带有 登录信息
+    getUrlLoginParams () {
+      if (this.$route.query.mb && this.$route.query.passwd) {
+        this.form.setFieldsValue({ userName: this.$route.query.mb })
+        this.form.setFieldsValue({ password: this.$route.query.passwd })
+        this.$refs.dynamicPost.$el.click()
+      }
     }
   }
 }

@@ -113,12 +113,6 @@
         </a-form-item>
         <a-form-item label="插件下载">
           <a-space :size="14" :style="{ flexWrap: 'wrap', lineHeight: '40px' }">
-            <!-- <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
-              <a href="http://a.91nlp.cn/plugin/dz.zip" style="color: #fff;" target="_blank">织梦UTF-8</a>
-            </a-button>
-            <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
-              织梦GBK
-            </a-button> -->
             <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
               <a href="http://a.91nlp.cn/plugin/dz.zip" style="color: #fff;" target="_blank">discuz</a>
             </a-button>
@@ -130,6 +124,9 @@
             </a-button>
             <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
               <a href="http://a.91nlp.cn/plugin/zblog.zip" style="color: #fff;" target="_blank">Z-BLOG</a>
+            </a-button>
+            <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
+              <a href="http://a.91nlp.cn/plugin/dede.zip" style="color: #fff;" target="_blank">dede</a>
             </a-button>
           </a-space>
         </a-form-item>
@@ -232,12 +229,6 @@
         </a-form-item>
         <a-form-item label="插件下载">
           <a-space :size="14" :style="{ flexWrap: 'wrap', lineHeight: '40px' }">
-            <!-- <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
-              织梦UTF-8
-            </a-button>
-            <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
-              织梦GBK
-            </a-button> -->
             <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
               <a href="http://a.91nlp.cn/plugin/dz.zip" style="color: #fff;" target="_blank">discuz</a>
             </a-button>
@@ -249,6 +240,9 @@
             </a-button>
             <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
               <a href="http://a.91nlp.cn/plugin/zblog.zip" style="color: #fff;" target="_blank">Z-BLOG</a>
+            </a-button>
+            <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
+              <a href="http://a.91nlp.cn/plugin/dede.zip" style="color: #fff;" target="_blank">dede</a>
             </a-button>
           </a-space>
         </a-form-item>

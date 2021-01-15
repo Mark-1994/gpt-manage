@@ -306,7 +306,7 @@ export default {
       if (file.event) {
         const folder = file.file.originFileObj
         const fileReader = new FileReader()
-        fileReader.onload = () => {
+        fileReader.onload = (evt) => {
           const fileStr = fileReader.result.trim().replace(/\r/g, '').split('\n').filter(m => !!m.trim()).map(m => m.trim())
           this.kwValue = fileStr.join('\r\n')
         }

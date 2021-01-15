@@ -16,12 +16,19 @@
       </a-space>
     </div>
 
-    <a-table :columns="columns" :data-source="allTask" bordered size="middle" class="gpt-data-table" :row-selection="rowSelection" :scroll="{ x: 1500 }" rowKey="id">
+    <!-- <a-table :columns="columns" :data-source="allTask" bordered size="middle" class="gpt-data-table" :row-selection="rowSelection" :scroll="{ x: 1500 }" rowKey="id"> -->
+    <a-table :columns="columns" :data-source="allTask" bordered size="middle" class="gpt-data-table" :scroll="{ x: 1500 }" rowKey="id">
       <!-- <template slot="state" slot-scope="text, record"> -->
       <template slot="state" slot-scope="text, record">
         <!-- <span :style="{ color: text ? 'green' : 'red' }">{{ text ? '发布中' : '停止' }}</span> -->
         {{ record.dn + record.en >= record.push_num ? '完成' : text ? '发布中' : '停止' }}
         <!-- <a-switch checked-children="启动" un-checked-children="停止" :default-checked="text ? true : false" @change="value => onChangeState(value, record.id)" /> -->
+      </template>
+      <template slot="daily_start_at" slot-scope="text">
+        {{ (text + '').padStart(2, '0') + ':00' }}
+      </template>
+      <template slot="daily_end_at" slot-scope="text">
+        {{ text === 23 ? (text + '').padStart(2, '0') + ':59' : (text + '').padStart(2, '0') + ':00' }}
       </template>
       <template slot="push_type" slot-scope="text">
         {{ text === '1' ? '立即发布' : '定时发布' }}
@@ -88,10 +95,15 @@
                   v-decorator="['alive_hour_start', { rules: [{ required: true, message: '不能为空!' }] }]"
                   format="HH"
                   placeholder="开始"
+                  :open="startOpen"
                   @openChange="handleStartOpenChange"
                   :disabled-date="disabledStartDate"
                   :style="{ width: '100%' }"
-                />
+                >
+                  <a-button slot="addon" size="small" type="primary" @click="handleClose">
+                    确定
+                  </a-button>
+                </a-time-picker>
               </a-form-item>
             </a-col>
             <a-col span="4">
@@ -105,12 +117,17 @@
                 <a-time-picker
                   v-decorator="['alive_hour_end', { rules: [{ required: true, message: '不能为空!' }] }]"
                   format="HH"
+                  :disabledHours="disabledDateTime"
                   placeholder="结束"
                   :open="endOpen"
                   @openChange="handleEndOpenChange"
                   :disabled-date="disabledEndDate"
                   :style="{ width: '100%' }"
-                />
+                >
+                  <a-button slot="addon" size="small" type="primary" @click="handleEndClose">
+                    确定
+                  </a-button>
+                </a-time-picker>
               </a-form-item>
             </a-col>
           </a-row>
@@ -219,13 +236,15 @@ export default {
           align: 'center'
         },
         {
-          title: '每日起始时间（时）',
+          title: '每日起始时间',
           dataIndex: 'daily_start_at',
+          scopedSlots: { customRender: 'daily_start_at' },
           align: 'center'
         },
         {
-          title: '每日终止时间（时）',
+          title: '每日终止时间',
           dataIndex: 'daily_end_at',
+          scopedSlots: { customRender: 'daily_end_at' },
           align: 'center'
         },
         {
@@ -286,6 +305,8 @@ export default {
       postNumDisable: true,
       // 发布文章数 最大值
       postNumMax: 1,
+      // 隐藏 开始时间 区间 小时
+      startOpen: false,
       // 隐藏 结束时间 区间 小时
       endOpen: false,
       startValue: null,
@@ -382,8 +403,13 @@ export default {
       return current && current < moment().subtract(1, 'days')
     },
     handleStartOpenChange (open) {
+      // if (!open) {
+      //   this.endOpen = true
+      // }
       if (!open) {
-        this.endOpen = true
+        this.startOpen = false
+      } else {
+        this.startOpen = true
       }
     },
     handleEndOpenChange (open) {
@@ -446,6 +472,21 @@ export default {
         return this.$message.error(`"${gn}"尚未处理!`)
       }
       this.postNumDisable = false
+    },
+    disabledDateTime () {
+      const hours = []
+      for (let i = 0; i < parseInt(this.form.getFieldValue('alive_hour_start') ? this.form.getFieldValue('alive_hour_start').format('HH') : 0) + 1; i++) {
+        hours.push(i)
+      }
+      return hours
+    },
+    // 开始 时间 确定 按钮
+    handleClose () {
+      this.startOpen = false
+      this.endOpen = true
+    },
+    handleEndClose () {
+      this.endOpen = false
     }
   }
 }

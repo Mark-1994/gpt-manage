@@ -30,10 +30,12 @@ const routes = [
   },
   {
     path: '/home',
+    name: 'Home',
     component: Home,
     redirect: 'users',
     children: [{
       path: '/users',
+      name: 'Users',
       component: Users
     }, {
       path: '/score',

@@ -86,7 +86,10 @@
       <a-col :span="6">
         <div class="gpt-content-item">
           <a-row :gutter="[0, 11]" style="padding: 20px 0;">
-            <a-col><a-icon type="database" :style="{ fontSize: '20px', color: '#025AFA' }" /></a-col>
+            <!-- <a-col><a-icon type="database" :style="{ fontSize: '29px', color: '#025AFA' }" /></a-col> -->
+            <a-col>
+              <img src="../../assets/gpt-icon01.png" alt="">
+            </a-col>
             <a-col class="gpt-content-points">我的积分</a-col>
             <a-col class="gpt-content-num">{{indexInfo.balance}}</a-col>
             <a-col>
@@ -100,7 +103,9 @@
       <a-col :span="6">
         <div class="gpt-content-item">
           <a-row :gutter="[0, 11]" style="padding: 20px 0;">
-            <a-col><a-icon type="database" :style="{ fontSize: '20px', color: '#025AFA' }" /></a-col>
+            <a-col>
+              <img src="../../assets/gpt-icon02.png" alt="">
+            </a-col>
             <a-col class="gpt-content-points">我的模型</a-col>
             <a-col class="gpt-content-num">{{indexInfo.pri_model_num}}</a-col>
             <a-col>
@@ -114,7 +119,9 @@
       <a-col :span="6">
         <div class="gpt-content-item">
           <a-row :gutter="[0, 11]" style="padding: 20px 0;">
-            <a-col><a-icon type="database" :style="{ fontSize: '20px', color: '#025AFA' }" /></a-col>
+            <a-col>
+              <img src="../../assets/gpt-icon03.png" alt="">
+            </a-col>
             <a-col class="gpt-content-points">API次数</a-col>
             <a-col class="gpt-content-num">{{indexInfo.api_use_times}}</a-col>
             <a-col>
@@ -128,7 +135,9 @@
       <a-col :span="6">
         <div class="gpt-content-item">
           <a-row :gutter="[0, 11]" style="padding: 20px 0;">
-            <a-col><a-icon type="database" :style="{ fontSize: '20px', color: '#025AFA' }" /></a-col>
+            <a-col>
+              <img src="../../assets/gpt-icon04.png" alt="">
+            </a-col>
             <a-col class="gpt-content-points">生成数量</a-col>
             <a-col class="gpt-content-num">{{indexInfo.post_num}}</a-col>
             <a-col>
@@ -388,17 +397,18 @@ export default {
       const { data: res } = await this.$http.get('pg/index')
       window.localStorage.setItem('nick_name', '')
 
-      // if (window.location.host !== 'a.91nlp.cn') {
-      //   if (res.status !== 0) {
-      //     return this.$message.error('Error', function () {
-      //       window.location.href = '/login/#/login'
-      //     })
-      //   } else {
-      //     return this.$message.error('Error', function () {
-      //       window.location.href = 'http://a.91nlp.cn/#/login'
-      //     })
-      //   }
-      // }
+      if (window.location.host !== 'a.91nlp.cn') {
+        if (res.status !== 0) {
+          return this.$message.error('Error', function () {
+            window.location.href = '/login/#/login'
+          })
+        } else {
+          const _this = this
+          return this.$message.error('Error', function () {
+            window.location.href = _this.$route.params.mb && _this.$route.params.mb ? ('http://a.91nlp.cn/#/login?mb=' + _this.$route.params.mb + '&passwd=' + _this.$route.params.passwd) : 'http://a.91nlp.cn/#/login'
+          })
+        }
+      }
 
       if (res.status === 10) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/' })
       if (res.status === 3) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/#/login' })

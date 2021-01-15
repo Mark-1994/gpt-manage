@@ -814,7 +814,10 @@ export default {
     async downloadArticleEvent () {
       this.compoundMode()
       const { data: res } = await this.$http.post('dlpost', this.downloadArticle)
-      if (res.status !== 0) return this.$message.error(res.reason)
+      if (res.status !== 0) {
+        this.loading = false
+        return this.$message.error(res.reason)
+      }
       this.loading = false
       let i = 0
       this.articleListData = res.posts.map(v => {
