@@ -150,6 +150,36 @@
         Footer
       </a-layout-footer> -->
     </a-layout>
+
+    <a-affix :offset-bottom="100" :style="{ width: 'auto', height: 'auto', textAlign: 'left' }" class="widthOverflow">
+      <a-button type="primary" :style="{ width: '44px', whiteSpace: 'normal', lineHeight: 1, padding: '6px', height: 'auto', borderRadius: 0 }" @click="showHelperDialog">
+        帮助助手
+      </a-button>
+    </a-affix>
+
+    <!-- 帮助助手 对话框 -->
+    <a-modal v-model="helperVisible" title="文章生成教程" width="80%" :footer="null">
+      <a-carousel arrows>
+        <div
+          slot="prevArrow"
+          class="custom-slick-arrow"
+          style="left: 10px;zIndex: 1"
+        >
+          <a-icon type="left-circle" />
+        </div>
+        <div slot="nextArrow" class="custom-slick-arrow" style="right: 10px">
+          <a-icon type="right-circle" />
+        </div>
+        <img src="../assets/gpt-first-step.jpg" alt="" :style="{ width: '100%', height: '100%' }">
+        <img src="../assets/gpt-second-step.jpg" alt="" :style="{ width: '100%', height: '100%' }">
+        <img src="../assets/gpt-third-step.jpg" alt="" :style="{ width: '100%', height: '100%' }">
+        <img src="../assets/gpt-fourth-step.jpg" alt="" :style="{ width: '100%', height: '100%' }">
+        <img src="../assets/gpt-five-step.jpg" alt="" :style="{ width: '100%', height: '100%' }">
+        <img src="../assets/gpt-six-step.jpg" alt="" :style="{ width: '100%', height: '100%' }">
+        <img src="../assets/gpt-seven-step.jpg" alt="" :style="{ width: '100%', height: '100%' }">
+      </a-carousel>
+    </a-modal>
+
   </div>
 </template>
 
@@ -163,7 +193,9 @@ export default {
       // 用户昵称
       nick_name: window.localStorage.getItem('nick_name') ? window.localStorage.getItem('nick_name') : '',
       // 文章列表
-      articleList: []
+      articleList: [],
+      // 帮助助手 显示|隐藏
+      helperVisible: false
     }
   },
   methods: {
@@ -181,6 +213,10 @@ export default {
       const { data: res } = await this.$http.get(`http://39.106.98.188:7001/getArticleInfo?cateid=${cateid}&limit=${limit}`)
       // if (res.status !== 0) return this.$message.error(res.reason)
       this.articleList = res
+    },
+    // 展示 帮助助手
+    showHelperDialog () {
+      this.helperVisible = true
     }
   }
 }
@@ -272,5 +308,38 @@ export default {
 }
 .gpt-content-box {
   width: 100%;
+}
+
+.ant-carousel /deep/ .slick-slide {
+  text-align: center;
+  height: 608px;
+  line-height: 100%;
+  // background: #364d79;
+  overflow: hidden;
+}
+
+.ant-carousel /deep/ .custom-slick-arrow {
+  width: 25px;
+  height: 25px;
+  font-size: 25px;
+  color: #000;
+  background-color: rgba(31, 45, 61, 0.11);
+  opacity: 0.3;
+}
+.ant-carousel /deep/ .custom-slick-arrow:before {
+  display: none;
+}
+.ant-carousel /deep/ .custom-slick-arrow:hover {
+  opacity: 0.5;
+}
+
+.ant-carousel /deep/ .slick-slide h3 {
+  color: #fff;
+}
+.ant-carousel /deep/ .slick-slide>div {
+  height: 100%;
+}
+.widthOverflow /deep/ .ant-affix {
+  width: auto !important;
 }
 </style>

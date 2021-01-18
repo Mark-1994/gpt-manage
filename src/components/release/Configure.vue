@@ -49,7 +49,7 @@
           <a-input v-decorator="['site_url', { rules: [{ required: true, message: '不能为空!' }] }]"></a-input>
         </a-form-item>
         <a-form-item label="CMS类型">
-          <a-select v-decorator="['cms_type', { rules: [{ required: true, message: '不能为空!' }] }]">
+          <a-select v-decorator="['cms_type', { rules: [{ required: true, message: '不能为空!' }] }]" @change="getCmsType">
             <a-select-option value="织梦(dedeCMS)">
               织梦(dedeCMS)
             </a-select-option>
@@ -71,7 +71,7 @@
           </a-select>
         </a-form-item>
         <a-form-item label="接口文件名">
-          <a-input v-decorator="['path', { rules: [{ required: true, message: '不能为空!' }] }]"></a-input>
+          <a-input v-decorator="['path', { rules: [{ required: true, message: '不能为空!' }] }]" :disabled="InterfaceFileNameDisabled"></a-input>
         </a-form-item>
         <a-form-item label="发布登陆密码">
           <a-input-password v-decorator="['passwd', { rules: [{ required: true, message: '不能为空!' }] }]"></a-input-password>
@@ -90,9 +90,9 @@
           </a-select>
         </a-form-item>
         <a-form-item label="根目录">
-          <a-input v-decorator="['root', { rules: [{ required: true, message: '不能为空!' }] }]"></a-input>
+          <a-input v-decorator="['root', { rules: [{ required: true, message: '不能为空!' }] }]" :disabled="rootDirectoryDisabled"></a-input>
         </a-form-item>
-        <a-form-item label="文章作者">
+        <a-form-item label="文章作者" :extra="articleAuthorExtra">
           <a-input v-decorator="['author', { rules: [{ required: true, message: '不能为空!' }] }]"></a-input>
         </a-form-item>
         <a-form-item label="文章来源">
@@ -130,7 +130,7 @@
             </a-button>
           </a-space>
         </a-form-item>
-        <a-form-item label="发布用户">
+        <a-form-item label="发布用户" :extra="systemUserName">
           <a-input v-decorator="['user', { rules: [{ required: true, message: '不能为空!' }] }]"></a-input>
         </a-form-item>
         <a-form-item style="width: 100%;text-align: center;" :wrapper-col="{ span: 24 }">
@@ -165,7 +165,7 @@
           <a-input v-decorator="['site_url', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.link }]"></a-input>
         </a-form-item>
         <a-form-item label="CMS类型">
-          <a-select v-decorator="['cms_type', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.cms_type }]">
+          <a-select v-decorator="['cms_type', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.cms_type }]" @change="editFormCmsType">
             <a-select-option value="织梦(dedeCMS)">
               织梦(dedeCMS)
             </a-select-option>
@@ -384,7 +384,15 @@ export default {
       // 编辑配置对话框 显示/隐藏
       editPanelVisible: false,
       // 编辑配置对话框 数据
-      editPanelData: {}
+      editPanelData: {},
+      // 发布用户 提示信息
+      systemUserName: '',
+      // 文章作者 提示信息
+      articleAuthorExtra: '',
+      // 接口文件名 禁用
+      InterfaceFileNameDisabled: false,
+      // 根目录 禁用
+      rootDirectoryDisabled: false
     }
   },
   computed: {
@@ -420,6 +428,7 @@ export default {
           this.getConfigManage()
           this.addPanelVisible = false
           this.form.resetFields()
+          this.newAddConfigFormReset()
         }
       })
     },
@@ -427,6 +436,7 @@ export default {
     addPanelCancel () {
       this.addPanelVisible = false
       this.form.resetFields()
+      this.newAddConfigFormReset()
     },
     bdTokenEvent (e) {
       this.bdTokenStatus = e.target.value
@@ -439,6 +449,7 @@ export default {
     },
     // 编辑网站配置
     editSiteConfig (values) {
+      console.log(values.cms_type)
       this.editPanelData = values
       this.editPanelVisible = true
     },
@@ -483,6 +494,74 @@ export default {
       const { data: res } = await this.$http.get(`pg/site_del?sid=${sid}`)
       if (res.status !== 0) return this.$message.error(res.reason)
       this.getConfigManage()
+    },
+    // 新增配置 CMS类型
+    getCmsType (value) {
+      switch (true) {
+        case value === '织梦(dedeCMS)':
+          this.systemUserName = '系统用户名'
+          this.articleAuthorExtra = ''
+          this.InterfaceFileNameDisabled = true
+          this.form.setFieldsValue({ path: 'index.php' })
+          this.rootDirectoryDisabled = true
+          this.form.setFieldsValue({ root: '91nlp' })
+          break
+        case value === '帝国(empCMS)':
+          this.systemUserName = '系统用户名'
+          this.articleAuthorExtra = ''
+          this.InterfaceFileNameDisabled = false
+          this.form.setFieldsValue({ path: '' })
+          this.rootDirectoryDisabled = true
+          this.form.setFieldsValue({ root: 'e/admin' })
+          break
+        case value === 'discuz':
+          this.articleAuthorExtra = '系统用户名'
+          this.systemUserName = ''
+          this.InterfaceFileNameDisabled = false
+          this.form.setFieldsValue({ path: '' })
+          this.rootDirectoryDisabled = true
+          this.form.setFieldsValue({ root: '/' })
+          break
+        case value === 'Z-BLOG':
+          this.articleAuthorExtra = '系统用户ID'
+          this.systemUserName = ''
+          this.InterfaceFileNameDisabled = false
+          this.form.setFieldsValue({ path: '' })
+          this.rootDirectoryDisabled = true
+          this.form.setFieldsValue({ root: 'zb_users/plugin/91nlp' })
+          break
+        case value === '易优CMS(EYouCMS)':
+          this.systemUserName = ''
+          this.articleAuthorExtra = ''
+          this.InterfaceFileNameDisabled = true
+          this.form.setFieldsValue({ path: 'J1nlp_ey.php' })
+          this.rootDirectoryDisabled = true
+          this.form.setFieldsValue({ root: '/api/J1nlp' })
+          break
+        case value === 'WordPress':
+          this.systemUserName = ''
+          this.articleAuthorExtra = ''
+          this.InterfaceFileNameDisabled = true
+          this.form.setFieldsValue({ path: 'admin-ajax.php' })
+          this.rootDirectoryDisabled = true
+          this.form.setFieldsValue({ root: 'wp-admin' })
+          break
+        default:
+          this.newAddConfigFormReset()
+      }
+    },
+    // 新增配置 表单重置
+    newAddConfigFormReset () {
+      this.systemUserName = ''
+      this.articleAuthorExtra = ''
+      this.InterfaceFileNameDisabled = false
+      this.form.setFieldsValue({ path: '' })
+      this.rootDirectoryDisabled = false
+      this.form.setFieldsValue({ root: '' })
+    },
+    // 编辑表单 CMS 类型
+    editFormCmsType (value) {
+      console.log(value)
     }
   }
 }
