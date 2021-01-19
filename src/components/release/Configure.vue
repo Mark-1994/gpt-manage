@@ -39,14 +39,14 @@
     </div>
 
     <!-- 新增配置对话框 -->
-    <a-modal v-model="addPanelVisible" title="新增配置" class="gpt-add-panel" :width="721" :footer="null" destroyOnClose>
+    <a-modal v-model="addPanelVisible" title="新增配置" class="gpt-add-panel" :width="721" :footer="null" destroyOnClose :afterClose="closeNewAddDialog">
 
       <a-form :form="form" layout="inline" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }" :colon="false" class="gpt-add-panel-form" @submit="addPanelSave" hideRequiredMark>
         <a-form-item label="网站名称">
           <a-input v-decorator="['site_name', { rules: [{ required: true, message: '不能为空!' }] }]"></a-input>
         </a-form-item>
         <a-form-item label="网站地址">
-          <a-input v-decorator="['site_url', { rules: [{ required: true, message: '不能为空!' }] }]"></a-input>
+          <a-input v-decorator="['site_url', { rules: [{ required: true, message: '不能为空!' }, { pattern: new RegExp(/^((https|http|ftp|rtsp|mms)?:\/\/)[^\s]+/), message: '请加上网址协议' }] }]"></a-input>
         </a-form-item>
         <a-form-item label="CMS类型">
           <a-select v-decorator="['cms_type', { rules: [{ required: true, message: '不能为空!' }] }]" @change="getCmsType">
@@ -123,10 +123,13 @@
               <a href="http://a.91nlp.cn/plugin/ey.zip" style="color: #fff;" target="_blank">易优CMS</a>
             </a-button>
             <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
-              <a href="http://a.91nlp.cn/plugin/zblog.zip" style="color: #fff;" target="_blank">Z-BLOG</a>
+              <a href="http://a.91nlp.cn/plugin/zblog/91nlp.zip" style="color: #fff;" target="_blank">Z-BLOG</a>
             </a-button>
             <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
               <a href="http://a.91nlp.cn/plugin/dede.zip" style="color: #fff;" target="_blank">dede</a>
+            </a-button>
+            <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
+              <a href="http://a.91nlp.cn/plugin/wp/91nlp.zip" style="color: #fff;" target="_blank">WordPress</a>
             </a-button>
           </a-space>
         </a-form-item>
@@ -152,7 +155,7 @@
     </a-modal>
 
     <!-- 编辑网站配置 对话框 -->
-    <a-modal v-model="editPanelVisible" title="编辑配置" class="gpt-add-panel" :width="721" :footer="null" destroyOnClose>
+    <a-modal v-model="editPanelVisible" title="编辑配置" class="gpt-add-panel" :width="721" :footer="null" destroyOnClose :afterClose="closeEditDialog">
 
       <a-form :form="formEdit" layout="inline" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }" :colon="false" class="gpt-add-panel-form" @submit="editPanelSave" hideRequiredMark>
         <a-form-item label="网站ID" v-show="false">
@@ -162,7 +165,7 @@
           <a-input v-decorator="['site_name', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.site_name }]"></a-input>
         </a-form-item>
         <a-form-item label="网站地址">
-          <a-input v-decorator="['site_url', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.link }]"></a-input>
+          <a-input v-decorator="['site_url', { rules: [{ required: true, message: '不能为空!' }, { pattern: new RegExp(/^((https|http|ftp|rtsp|mms)?:\/\/)[^\s]+/), message: '请加上网址协议' }], initialValue: editPanelData.link }]"></a-input>
         </a-form-item>
         <a-form-item label="CMS类型">
           <a-select v-decorator="['cms_type', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.cms_type }]" @change="editFormCmsType">
@@ -187,7 +190,7 @@
           </a-select>
         </a-form-item>
         <a-form-item label="接口文件名">
-          <a-input v-decorator="['path', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.path }]"></a-input>
+          <a-input v-decorator="['path', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.path }]" :disabled="InterfaceFileNameDisabled"></a-input>
         </a-form-item>
         <a-form-item label="发布登陆密码">
           <a-input-password v-decorator="['passwd', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.passwd }]"></a-input-password>
@@ -206,7 +209,7 @@
           </a-select>
         </a-form-item>
         <a-form-item label="根目录">
-          <a-input v-decorator="['root', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.root_dir }]"></a-input>
+          <a-input v-decorator="['root', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.root_dir }]" :disabled="rootDirectoryDisabled"></a-input>
         </a-form-item>
         <a-form-item label="文章作者">
           <a-input v-decorator="['author', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.post_author }]"></a-input>
@@ -239,10 +242,13 @@
               <a href="http://a.91nlp.cn/plugin/ey.zip" style="color: #fff;" target="_blank">易优CMS</a>
             </a-button>
             <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
-              <a href="http://a.91nlp.cn/plugin/zblog.zip" style="color: #fff;" target="_blank">Z-BLOG</a>
+              <a href="http://a.91nlp.cn/plugin/zblog/91nlp.zip" style="color: #fff;" target="_blank">Z-BLOG</a>
             </a-button>
             <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
               <a href="http://a.91nlp.cn/plugin/dede.zip" style="color: #fff;" target="_blank">dede</a>
+            </a-button>
+            <a-button type="primary" size="small" icon="download" :style="{ borderRadius: '17px', backgroundColor: '#FA9836', borderColor: '#FA9836', fontSize: '12px' }">
+              <a href="http://a.91nlp.cn/plugin/wp/91nlp.zip" style="color: #fff;" target="_blank">WordPress</a>
             </a-button>
           </a-space>
         </a-form-item>
@@ -428,7 +434,6 @@ export default {
           this.getConfigManage()
           this.addPanelVisible = false
           this.form.resetFields()
-          this.newAddConfigFormReset()
         }
       })
     },
@@ -436,7 +441,6 @@ export default {
     addPanelCancel () {
       this.addPanelVisible = false
       this.form.resetFields()
-      this.newAddConfigFormReset()
     },
     bdTokenEvent (e) {
       this.bdTokenStatus = e.target.value
@@ -449,9 +453,11 @@ export default {
     },
     // 编辑网站配置
     editSiteConfig (values) {
-      console.log(values.cms_type)
       this.editPanelData = values
       this.editPanelVisible = true
+      this.$nextTick(() => {
+        this.getEditFormConstraint(values.cms_type)
+      })
     },
     // 编辑对话框 取消按钮
     editPanelCancel () {
@@ -505,30 +511,34 @@ export default {
           this.form.setFieldsValue({ path: 'index.php' })
           this.rootDirectoryDisabled = true
           this.form.setFieldsValue({ root: '91nlp' })
+          this.form.setFieldsValue({ passwd: '91nlp' })
           break
         case value === '帝国(empCMS)':
           this.systemUserName = '系统用户名'
           this.articleAuthorExtra = ''
           this.InterfaceFileNameDisabled = false
-          this.form.setFieldsValue({ path: '' })
+          this.form.setFieldsValue({ path: '91nlp_emp.php' })
           this.rootDirectoryDisabled = true
           this.form.setFieldsValue({ root: 'e/admin' })
+          this.form.setFieldsValue({ passwd: '91nlp' })
           break
         case value === 'discuz':
           this.articleAuthorExtra = '系统用户名'
           this.systemUserName = ''
           this.InterfaceFileNameDisabled = false
-          this.form.setFieldsValue({ path: '' })
+          this.form.setFieldsValue({ path: '91nlp_discuz.php' })
           this.rootDirectoryDisabled = true
           this.form.setFieldsValue({ root: '/' })
+          this.form.setFieldsValue({ passwd: '91nlp' })
           break
         case value === 'Z-BLOG':
           this.articleAuthorExtra = '系统用户ID'
           this.systemUserName = ''
           this.InterfaceFileNameDisabled = false
-          this.form.setFieldsValue({ path: '' })
+          this.form.setFieldsValue({ path: '91nlp_zblog.php' })
           this.rootDirectoryDisabled = true
           this.form.setFieldsValue({ root: 'zb_users/plugin/91nlp' })
+          this.form.setFieldsValue({ passwd: '' })
           break
         case value === '易优CMS(EYouCMS)':
           this.systemUserName = ''
@@ -537,6 +547,7 @@ export default {
           this.form.setFieldsValue({ path: 'J1nlp_ey.php' })
           this.rootDirectoryDisabled = true
           this.form.setFieldsValue({ root: '/api/J1nlp' })
+          this.form.setFieldsValue({ passwd: '91nlp' })
           break
         case value === 'WordPress':
           this.systemUserName = ''
@@ -545,6 +556,7 @@ export default {
           this.form.setFieldsValue({ path: 'admin-ajax.php' })
           this.rootDirectoryDisabled = true
           this.form.setFieldsValue({ root: 'wp-admin' })
+          this.form.setFieldsValue({ passwd: '91nlp' })
           break
         default:
           this.newAddConfigFormReset()
@@ -558,10 +570,61 @@ export default {
       this.form.setFieldsValue({ path: '' })
       this.rootDirectoryDisabled = false
       this.form.setFieldsValue({ root: '' })
+      this.form.setFieldsValue({ passwd: '' })
     },
     // 编辑表单 CMS 类型
     editFormCmsType (value) {
-      console.log(value)
+      this.getEditFormConstraint(value)
+    },
+    // 关闭新增对话框 回调
+    closeNewAddDialog () {
+      this.newAddConfigFormReset()
+    },
+    // 编辑配置 表单约束
+    getEditFormConstraint (value) {
+      switch (true) {
+        case value === '织梦(dedeCMS)':
+          this.InterfaceFileNameDisabled = true
+          this.formEdit.setFieldsValue({ path: 'index.php' })
+          this.rootDirectoryDisabled = true
+          this.formEdit.setFieldsValue({ root: '91nlp' })
+          break
+        case value === '帝国(empCMS)':
+          this.InterfaceFileNameDisabled = false
+          this.formEdit.setFieldsValue({ path: '91nlp_emp.php' })
+          this.rootDirectoryDisabled = true
+          this.formEdit.setFieldsValue({ root: 'e/admin' })
+          break
+        case value === 'discuz':
+          this.InterfaceFileNameDisabled = false
+          this.formEdit.setFieldsValue({ path: '91nlp_discuz.php' })
+          this.rootDirectoryDisabled = true
+          this.formEdit.setFieldsValue({ root: '/' })
+          break
+        case value === 'Z-BLOG':
+          this.InterfaceFileNameDisabled = false
+          this.formEdit.setFieldsValue({ path: '91nlp_zblog.php' })
+          this.rootDirectoryDisabled = true
+          this.formEdit.setFieldsValue({ root: 'zb_users/plugin/91nlp' })
+          break
+        case value === '易优CMS(EYouCMS)':
+          this.InterfaceFileNameDisabled = true
+          this.formEdit.setFieldsValue({ path: 'J1nlp_ey.php' })
+          this.rootDirectoryDisabled = true
+          this.formEdit.setFieldsValue({ root: '/api/J1nlp' })
+          break
+        case value === 'WordPress':
+          this.InterfaceFileNameDisabled = true
+          this.formEdit.setFieldsValue({ path: 'admin-ajax.php' })
+          this.rootDirectoryDisabled = true
+          this.formEdit.setFieldsValue({ root: 'wp-admin' })
+          break
+        default:
+      }
+    },
+    closeEditDialog () {
+      this.InterfaceFileNameDisabled = false
+      this.rootDirectoryDisabled = false
     }
   }
 }

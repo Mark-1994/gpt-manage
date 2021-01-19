@@ -27,9 +27,9 @@
       <template slot="deal" slot-scope="record">
         <a href="javascript:;" @click="downloadItem(record.gn)" :disabled="!record.is_modified">下载</a>
         <a-divider type="vertical" />
-        <a href="javascript:;" @click="handle($event, record)" :disabled="record.is_modified">处理</a>
+        <a href="javascript:;" @click="handle($event, record)" :disabled="record.state === '生产中' || record.is_modified">处理</a>
         <a-divider type="vertical" />
-        <router-link :to="{ name: 'Kwlist', params: { gn: record.gn, is_modified: record.is_modified } }">关键词列表</router-link>
+        <router-link :to="{ name: 'Kwlist', params: { gn: record.gn, is_modified: record.is_modified } }" :disabled="record.state === '生产中'">关键词列表</router-link>
         <a-divider type="vertical" />
         <a-popconfirm
           v-if="allTask.length"

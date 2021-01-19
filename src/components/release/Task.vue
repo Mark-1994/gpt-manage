@@ -62,8 +62,9 @@
             </a-select-option>
           </a-select>
         </a-form-item>
-        <a-form-item label="发布文章数">
-          <a-input-number v-decorator="['post_num', { rules: [{ required: true, message: '不能为空!' }] }]" :min="0" :max="postNumMax" :style="{ width: '100%' }" :disabled="postNumDisable" />
+        <a-form-item label="发布文章数" :extra="'最大值：' + afterPostNumMax">
+          <!-- <a-input-number v-decorator="['post_num', { rules: [{ required: true, message: '不能为空!' }] }]" :min="0" :max="postNumMax" :style="{ width: '100%' }" :disabled="postNumDisable" /> -->
+          <a-input-number v-decorator="['post_num', { rules: [{ required: true, message: '不能为空!' }] }]" :min="0" :max="afterPostNumMax" :style="{ width: '100%' }" :disabled="postNumDisable" />
         </a-form-item>
         <a-form-item label="条数说明">
           <p :style="{ color: '#000', opacity: '.5', lineHeight: 'normal', margin: '0' }">如果发布条数为0，则发布已选择文章库中所有文章。</p>
@@ -201,7 +202,9 @@ export default {
       // 发布文章数 最大值
       postNumMax: 1,
       // 任务 暂停|启动 防抖
-      timer: null
+      timer: null,
+      // 发布文章数 最大值
+      afterPostNumMax: 0
     }
   },
   computed: {
@@ -324,6 +327,7 @@ export default {
         this.form.resetFields('post_num')
         return this.$message.error(`"${gn}"尚未处理!`)
       }
+      this.afterPostNumMax = res.remain_pn
       this.postNumDisable = false
     }
   }
