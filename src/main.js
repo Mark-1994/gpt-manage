@@ -45,7 +45,8 @@ import {
   TimePicker,
   Spin,
   Affix,
-  Carousel
+  Carousel,
+  Descriptions
 } from 'ant-design-vue'
 Vue.use(Button)
 Vue.use(Layout)
@@ -80,6 +81,7 @@ Vue.use(TimePicker)
 Vue.use(Spin)
 Vue.use(Affix)
 Vue.use(Carousel)
+Vue.use(Descriptions)
 
 Vue.use(VueQuillEditor)
 

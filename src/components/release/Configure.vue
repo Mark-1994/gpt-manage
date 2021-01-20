@@ -1,6 +1,9 @@
 <template>
   <div class="list_container">
-    <h3>发布配置管理</h3>
+    <h3 :style="{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }">
+      <span>发布配置管理</span>
+      <span :style="{ fontWeight: 'normal', fontSize: '12px', color: '#666' }" @click="showPluginInstallDocument">[插件安装]</span>
+    </h3>
 
     <div style="margin-bottom: 20px;text-align: left;padding: 0 40px;">
       <a-space :size="6" align="end" :style="{ flexWrap: 'wrap', lineHeight: '40px' }">
@@ -268,6 +271,427 @@
       </a-form>
 
     </a-modal>
+
+    <!-- 安装插件文档 -->
+    <a-drawer width="640" placement="right" :closable="false" :visible="installPluginDocumentvisible" @close="onCloseInstallPluginDocument">
+      <a-tabs default-active-key="1">
+        <a-tab-pane key="1" tab="dede">
+          <a-descriptions title="91nlp - 文章发布插件" :column="{ xs: 2, sm: 2, md: 2 }" bordered size="small">
+            <a-descriptions-item label="当前版本">
+              V1.1
+            </a-descriptions-item>
+            <a-descriptions-item label="插件等级">
+              部分非核心功能需要修改少量系统文件
+            </a-descriptions-item>
+            <a-descriptions-item label="适用系统">
+              6.8
+            </a-descriptions-item>
+            <a-descriptions-item label="适用编码">
+              gbk / utf-8
+            </a-descriptions-item>
+            <a-descriptions-item label="插件原价">
+              900
+            </a-descriptions-item>
+            <a-descriptions-item label="优惠价格">
+              800
+            </a-descriptions-item>
+            <a-descriptions-item label="插件作者">
+              91nlp
+            </a-descriptions-item>
+            <a-descriptions-item label="联系方式">
+
+            </a-descriptions-item>
+            <a-descriptions-item label="售后说明">
+              本插件版权归东坡网所有
+              <br />
+              在客户不侵犯东坡网权益的情况下
+              <br />
+              东坡网将对此插件提供为期一年的售后服务
+              <br>
+              服务内容包括：免费升级、BUG修复、使用指导
+              <br />
+              客户可以将插件用在多个网站，但东坡网仅对一个网站提供售后服务
+              <br />
+              东坡网插件常见问题
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="功能介绍">
+            <a-descriptions-item>
+              对于帝国cms的TAG功能，集：tag高级管理、tag静态、tag提取、动态缓存，四个插件功能与一身。效率更高，功能更强大。
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="一、TAG展示新增功能">
+            <a-descriptions-item>
+              TAG拼音功能，TAG的链接可以用拼音展示
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="插件安装截图" :column="{ xs: 1, sm: 1, md: 1 }" size="small" :colon="false" layout="vertical">
+            <a-descriptions-item label="（1）Sinfo信息管理界面">
+              <img src="../../assets/gpt-dede-plugin-1.png" alt="" width="100%">
+            </a-descriptions-item>
+            <a-descriptions-item label="（2）Sinfo信息管理界面">
+              <img src="../../assets/gpt-dede-plugin-2.png" alt="" width="100%">
+            </a-descriptions-item>
+            <a-descriptions-item label="（3）Sinfo信息管理界面">
+              <img src="../../assets/gpt-dede-plugin-3.png" alt="" width="100%">
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="其它说明">
+            <a-descriptions-item>
+              TAG拼音功能，TAG的链接可以用拼音展示
+            </a-descriptions-item>
+          </a-descriptions>
+        </a-tab-pane>
+        <a-tab-pane key="2" tab="discuz">
+          <a-descriptions title="91nlp - 文章发布插件" :column="{ xs: 2, sm: 2, md: 2 }" bordered size="small">
+            <a-descriptions-item label="当前版本">
+              V1.1
+            </a-descriptions-item>
+            <a-descriptions-item label="插件等级">
+              部分非核心功能需要修改少量系统文件
+            </a-descriptions-item>
+            <a-descriptions-item label="适用系统">
+              6.8
+            </a-descriptions-item>
+            <a-descriptions-item label="适用编码">
+              gbk / utf-8
+            </a-descriptions-item>
+            <a-descriptions-item label="插件原价">
+              900
+            </a-descriptions-item>
+            <a-descriptions-item label="优惠价格">
+              800
+            </a-descriptions-item>
+            <a-descriptions-item label="插件作者">
+              91nlp
+            </a-descriptions-item>
+            <a-descriptions-item label="联系方式">
+
+            </a-descriptions-item>
+            <a-descriptions-item label="售后说明">
+              本插件版权归东坡网所有
+              <br />
+              在客户不侵犯东坡网权益的情况下
+              <br />
+              东坡网将对此插件提供为期一年的售后服务
+              <br>
+              服务内容包括：免费升级、BUG修复、使用指导
+              <br />
+              客户可以将插件用在多个网站，但东坡网仅对一个网站提供售后服务
+              <br />
+              东坡网插件常见问题
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="功能介绍">
+            <a-descriptions-item>
+              对于帝国cms的TAG功能，集：tag高级管理、tag静态、tag提取、动态缓存，四个插件功能与一身。效率更高，功能更强大。
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="一、TAG展示新增功能">
+            <a-descriptions-item>
+              TAG拼音功能，TAG的链接可以用拼音展示
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="插件安装截图" :column="{ xs: 1, sm: 1, md: 1 }" size="small" :colon="false" layout="vertical">
+            <a-descriptions-item label="（1）修改第2行密码">
+              <img src="../../assets/gpt-discuz-plugin-1.png" alt="" width="100%">
+            </a-descriptions-item>
+            <a-descriptions-item label="（2）将文件【91nlp_discuz.php】上传到自己网站的根目录">
+
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="其它说明">
+            <a-descriptions-item>
+              TAG拼音功能，TAG的链接可以用拼音展示
+            </a-descriptions-item>
+          </a-descriptions>
+        </a-tab-pane>
+        <a-tab-pane key="3" tab="帝国CMS">
+          <a-descriptions title="91nlp - 文章发布插件" :column="{ xs: 2, sm: 2, md: 2 }" bordered size="small">
+            <a-descriptions-item label="当前版本">
+              V1.1
+            </a-descriptions-item>
+            <a-descriptions-item label="插件等级">
+              部分非核心功能需要修改少量系统文件
+            </a-descriptions-item>
+            <a-descriptions-item label="适用系统">
+              6.8
+            </a-descriptions-item>
+            <a-descriptions-item label="适用编码">
+              gbk / utf-8
+            </a-descriptions-item>
+            <a-descriptions-item label="插件原价">
+              900
+            </a-descriptions-item>
+            <a-descriptions-item label="优惠价格">
+              800
+            </a-descriptions-item>
+            <a-descriptions-item label="插件作者">
+              91nlp
+            </a-descriptions-item>
+            <a-descriptions-item label="联系方式">
+
+            </a-descriptions-item>
+            <a-descriptions-item label="售后说明">
+              本插件版权归东坡网所有
+              <br />
+              在客户不侵犯东坡网权益的情况下
+              <br />
+              东坡网将对此插件提供为期一年的售后服务
+              <br>
+              服务内容包括：免费升级、BUG修复、使用指导
+              <br />
+              客户可以将插件用在多个网站，但东坡网仅对一个网站提供售后服务
+              <br />
+              东坡网插件常见问题
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="功能介绍">
+            <a-descriptions-item>
+              对于帝国cms的TAG功能，集：tag高级管理、tag静态、tag提取、动态缓存，四个插件功能与一身。效率更高，功能更强大。
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="一、TAG展示新增功能">
+            <a-descriptions-item>
+              TAG拼音功能，TAG的链接可以用拼音展示
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="插件安装截图" :column="{ xs: 1, sm: 1, md: 1 }" size="small" :colon="false" layout="vertical">
+            <a-descriptions-item label="（1）修改第6行密码">
+              <img src="../../assets/gpt-emp-plugin-1.png" alt="" width="100%">
+            </a-descriptions-item>
+            <a-descriptions-item label="（2）将文件【91nlp_emp.php】上传到自己网站的【e/admin】目录">
+
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="其它说明">
+            <a-descriptions-item>
+              TAG拼音功能，TAG的链接可以用拼音展示
+            </a-descriptions-item>
+          </a-descriptions>
+        </a-tab-pane>
+        <a-tab-pane key="4" tab="易优CMS">
+          <a-descriptions title="91nlp - 文章发布插件" :column="{ xs: 2, sm: 2, md: 2 }" bordered size="small">
+            <a-descriptions-item label="当前版本">
+              V1.1
+            </a-descriptions-item>
+            <a-descriptions-item label="插件等级">
+              部分非核心功能需要修改少量系统文件
+            </a-descriptions-item>
+            <a-descriptions-item label="适用系统">
+              6.8
+            </a-descriptions-item>
+            <a-descriptions-item label="适用编码">
+              gbk / utf-8
+            </a-descriptions-item>
+            <a-descriptions-item label="插件原价">
+              900
+            </a-descriptions-item>
+            <a-descriptions-item label="优惠价格">
+              800
+            </a-descriptions-item>
+            <a-descriptions-item label="插件作者">
+              91nlp
+            </a-descriptions-item>
+            <a-descriptions-item label="联系方式">
+
+            </a-descriptions-item>
+            <a-descriptions-item label="售后说明">
+              本插件版权归东坡网所有
+              <br />
+              在客户不侵犯东坡网权益的情况下
+              <br />
+              东坡网将对此插件提供为期一年的售后服务
+              <br>
+              服务内容包括：免费升级、BUG修复、使用指导
+              <br />
+              客户可以将插件用在多个网站，但东坡网仅对一个网站提供售后服务
+              <br />
+              东坡网插件常见问题
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="功能介绍">
+            <a-descriptions-item>
+              对于帝国cms的TAG功能，集：tag高级管理、tag静态、tag提取、动态缓存，四个插件功能与一身。效率更高，功能更强大。
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="一、TAG展示新增功能">
+            <a-descriptions-item>
+              TAG拼音功能，TAG的链接可以用拼音展示
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="插件安装截图" :column="{ xs: 1, sm: 1, md: 1 }" size="small" :colon="false" layout="vertical">
+            <a-descriptions-item label="（1）将插件解压上传到网站【application/api/controller/】目录">
+
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="其它说明">
+            <a-descriptions-item>
+              TAG拼音功能，TAG的链接可以用拼音展示
+            </a-descriptions-item>
+          </a-descriptions>
+        </a-tab-pane>
+        <a-tab-pane key="5" tab="WordPress">
+          <a-descriptions title="91nlp - 文章发布插件" :column="{ xs: 2, sm: 2, md: 2 }" bordered size="small">
+            <a-descriptions-item label="当前版本">
+              V1.1
+            </a-descriptions-item>
+            <a-descriptions-item label="插件等级">
+              部分非核心功能需要修改少量系统文件
+            </a-descriptions-item>
+            <a-descriptions-item label="适用系统">
+              6.8
+            </a-descriptions-item>
+            <a-descriptions-item label="适用编码">
+              gbk / utf-8
+            </a-descriptions-item>
+            <a-descriptions-item label="插件原价">
+              900
+            </a-descriptions-item>
+            <a-descriptions-item label="优惠价格">
+              800
+            </a-descriptions-item>
+            <a-descriptions-item label="插件作者">
+              91nlp
+            </a-descriptions-item>
+            <a-descriptions-item label="联系方式">
+
+            </a-descriptions-item>
+            <a-descriptions-item label="售后说明">
+              本插件版权归东坡网所有
+              <br />
+              在客户不侵犯东坡网权益的情况下
+              <br />
+              东坡网将对此插件提供为期一年的售后服务
+              <br>
+              服务内容包括：免费升级、BUG修复、使用指导
+              <br />
+              客户可以将插件用在多个网站，但东坡网仅对一个网站提供售后服务
+              <br />
+              东坡网插件常见问题
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="功能介绍">
+            <a-descriptions-item>
+              对于帝国cms的TAG功能，集：tag高级管理、tag静态、tag提取、动态缓存，四个插件功能与一身。效率更高，功能更强大。
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="一、TAG展示新增功能">
+            <a-descriptions-item>
+              TAG拼音功能，TAG的链接可以用拼音展示
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="插件安装截图" :column="{ xs: 1, sm: 1, md: 1 }" size="small" :colon="false" layout="vertical">
+            <a-descriptions-item label="（1）将插件上传到网站【wp-content/plugins】目录, 并确保插件目录名为【91nlp】">
+
+            </a-descriptions-item>
+            <a-descriptions-item label="（2）进入 WordPree 后台插件菜单，启用 91NLP文章仿写生成工具">
+              <img src="../../assets/gpt-wp-plugin-1.png" alt="" width="100%">
+            </a-descriptions-item>
+            <a-descriptions-item label="（3）进入管理面板【91NLP】栏目，设置发布密码">
+              <img src="../../assets/gpt-wp-plugin-2.png" alt="" width="100%">
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="其它说明">
+            <a-descriptions-item>
+              TAG拼音功能，TAG的链接可以用拼音展示
+            </a-descriptions-item>
+          </a-descriptions>
+        </a-tab-pane>
+        <a-tab-pane key="6" tab="Z-BLOG">
+          <a-descriptions title="91nlp - 文章发布插件" :column="{ xs: 2, sm: 2, md: 2 }" bordered size="small">
+            <a-descriptions-item label="当前版本">
+              V1.1
+            </a-descriptions-item>
+            <a-descriptions-item label="插件等级">
+              部分非核心功能需要修改少量系统文件
+            </a-descriptions-item>
+            <a-descriptions-item label="适用系统">
+              6.8
+            </a-descriptions-item>
+            <a-descriptions-item label="适用编码">
+              gbk / utf-8
+            </a-descriptions-item>
+            <a-descriptions-item label="插件原价">
+              900
+            </a-descriptions-item>
+            <a-descriptions-item label="优惠价格">
+              800
+            </a-descriptions-item>
+            <a-descriptions-item label="插件作者">
+              91nlp
+            </a-descriptions-item>
+            <a-descriptions-item label="联系方式">
+
+            </a-descriptions-item>
+            <a-descriptions-item label="售后说明">
+              本插件版权归东坡网所有
+              <br />
+              在客户不侵犯东坡网权益的情况下
+              <br />
+              东坡网将对此插件提供为期一年的售后服务
+              <br>
+              服务内容包括：免费升级、BUG修复、使用指导
+              <br />
+              客户可以将插件用在多个网站，但东坡网仅对一个网站提供售后服务
+              <br />
+              东坡网插件常见问题
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="功能介绍">
+            <a-descriptions-item>
+              对于帝国cms的TAG功能，集：tag高级管理、tag静态、tag提取、动态缓存，四个插件功能与一身。效率更高，功能更强大。
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="一、TAG展示新增功能">
+            <a-descriptions-item>
+              TAG拼音功能，TAG的链接可以用拼音展示
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="插件安装截图" :column="{ xs: 1, sm: 1, md: 1 }" size="small" :colon="false" layout="vertical">
+            <a-descriptions-item label="（1）将插件压缩包上传到网站【zb_users/plugin/】目录,解压插件后将文件夹命名为【91nlp】">
+
+            </a-descriptions-item>
+            <a-descriptions-item label="（2）进入 zblog 后台插件管理页面，启用 91NLP文章仿写生成工具">
+              <img src="../../assets/gpt-zb-plugin-1.png" alt="" width="100%">
+            </a-descriptions-item>
+            <a-descriptions-item label="（3）进入 91NLP 文章仿写生成工具管理页面，设置发布密码">
+              <img src="../../assets/gpt-zb-plugin-2.png" alt="" width="100%">
+            </a-descriptions-item>
+          </a-descriptions>
+          <a-divider />
+          <a-descriptions title="其它说明">
+            <a-descriptions-item>
+              TAG拼音功能，TAG的链接可以用拼音展示
+            </a-descriptions-item>
+          </a-descriptions>
+        </a-tab-pane>
+      </a-tabs>
+    </a-drawer>
+
   </div>
 </template>
 
@@ -398,7 +822,9 @@ export default {
       // 接口文件名 禁用
       InterfaceFileNameDisabled: false,
       // 根目录 禁用
-      rootDirectoryDisabled: false
+      rootDirectoryDisabled: false,
+      // 插件安装文档 显示|隐藏
+      installPluginDocumentvisible: false
     }
   },
   computed: {
@@ -625,6 +1051,12 @@ export default {
     closeEditDialog () {
       this.InterfaceFileNameDisabled = false
       this.rootDirectoryDisabled = false
+    },
+    showPluginInstallDocument () {
+      this.installPluginDocumentvisible = true
+    },
+    onCloseInstallPluginDocument () {
+      this.installPluginDocumentvisible = false
     }
   }
 }
