@@ -2,7 +2,7 @@
   <div class="list_container">
     <h3 :style="{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }">
       <span>发布配置管理</span>
-      <span :style="{ fontWeight: 'normal', fontSize: '12px', color: '#666' }" @click="showPluginInstallDocument">[插件安装]</span>
+      <span :style="{ color: 'green' }" @click="showPluginInstallDocument">[插件安装]</span>
     </h3>
 
     <div style="margin-bottom: 20px;text-align: left;padding: 0 40px;">
@@ -284,16 +284,16 @@
               部分非核心功能需要修改少量系统文件
             </a-descriptions-item>
             <a-descriptions-item label="适用系统">
-              6.8
+              5.7
             </a-descriptions-item>
             <a-descriptions-item label="适用编码">
               gbk / utf-8
             </a-descriptions-item>
             <a-descriptions-item label="插件原价">
-              900
+
             </a-descriptions-item>
             <a-descriptions-item label="优惠价格">
-              800
+
             </a-descriptions-item>
             <a-descriptions-item label="插件作者">
               91nlp
@@ -302,47 +302,50 @@
 
             </a-descriptions-item>
             <a-descriptions-item label="售后说明">
-              本插件版权归东坡网所有
+              本插件版权归 91nlp 所有
               <br />
-              在客户不侵犯东坡网权益的情况下
+              在客户不侵犯 91nlp 权益的情况下
               <br />
-              东坡网将对此插件提供为期一年的售后服务
+              91nlp 将对此插件提供为期一年的售后服务
               <br>
               服务内容包括：免费升级、BUG修复、使用指导
               <br />
-              客户可以将插件用在多个网站，但东坡网仅对一个网站提供售后服务
+              客户可以将插件用在多个网站，但 91nlp 仅对一个网站提供售后服务
               <br />
-              东坡网插件常见问题
+              91nlp 插件常见问题
             </a-descriptions-item>
           </a-descriptions>
           <a-divider />
           <a-descriptions title="功能介绍">
             <a-descriptions-item>
-              对于帝国cms的TAG功能，集：tag高级管理、tag静态、tag提取、动态缓存，四个插件功能与一身。效率更高，功能更强大。
+              91NLP 文章智能仿写系统是国内首家真正实现 AI 仿写的系统，通过海量的文章数据模型及强大的服务器算力让 AI 实现高质量的原创文章生成。用户可以通过在线管理的方式对网站文章实现定时发布及时发布等功能。
             </a-descriptions-item>
           </a-descriptions>
           <a-divider />
-          <a-descriptions title="一、TAG展示新增功能">
+          <!-- <a-descriptions title="一、TAG展示新增功能">
             <a-descriptions-item>
               TAG拼音功能，TAG的链接可以用拼音展示
             </a-descriptions-item>
           </a-descriptions>
-          <a-divider />
+          <a-divider /> -->
           <a-descriptions title="插件安装截图" :column="{ xs: 1, sm: 1, md: 1 }" size="small" :colon="false" layout="vertical">
-            <a-descriptions-item label="（1）Sinfo信息管理界面">
-              <img src="../../assets/gpt-dede-plugin-1.png" alt="" width="100%">
+            <a-descriptions-item label='（1）如果网站用的 php7 及以上版本，需要修改【/include/dedeatt.class.php】文件中 var $Items = ""; 替换为 var $Items = array();'>
+              <img src="../../assets/gpt-dede-plugin-11.png" alt="" width="100%" @click="showpreviewPictureModal">
             </a-descriptions-item>
-            <a-descriptions-item label="（2）Sinfo信息管理界面">
-              <img src="../../assets/gpt-dede-plugin-2.png" alt="" width="100%">
+            <a-descriptions-item label="（2）进入织梦 模块管理">
+              <img src="../../assets/gpt-dede-plugin-1.png" alt="" width="100%" @click="showpreviewPictureModal">
             </a-descriptions-item>
-            <a-descriptions-item label="（3）Sinfo信息管理界面">
-              <img src="../../assets/gpt-dede-plugin-3.png" alt="" width="100%">
+            <a-descriptions-item label="（3）上传新模块页面">
+              <img src="../../assets/gpt-dede-plugin-2.png" alt="" width="100%" @click="showpreviewPictureModal">
+            </a-descriptions-item>
+            <a-descriptions-item label="（4）上传并安装插件">
+              <img src="../../assets/gpt-dede-plugin-3.png" alt="" width="100%" @click="showpreviewPictureModal">
             </a-descriptions-item>
           </a-descriptions>
           <a-divider />
           <a-descriptions title="其它说明">
             <a-descriptions-item>
-              TAG拼音功能，TAG的链接可以用拼音展示
+              目前我们通过几台超性能集群服务器进行训练已经完成了，体育模型（足球,NBA）、教育模型、金融、历史、军事、星座、散文、房产模型等热门行业的入库训练，为您快速生成大量优质语句通顺具有可读性的原创文章。
             </a-descriptions-item>
           </a-descriptions>
         </a-tab-pane>
@@ -355,16 +358,16 @@
               部分非核心功能需要修改少量系统文件
             </a-descriptions-item>
             <a-descriptions-item label="适用系统">
-              6.8
+              3.4
             </a-descriptions-item>
             <a-descriptions-item label="适用编码">
               gbk / utf-8
             </a-descriptions-item>
             <a-descriptions-item label="插件原价">
-              900
+
             </a-descriptions-item>
             <a-descriptions-item label="优惠价格">
-              800
+
             </a-descriptions-item>
             <a-descriptions-item label="插件作者">
               91nlp
@@ -373,35 +376,29 @@
 
             </a-descriptions-item>
             <a-descriptions-item label="售后说明">
-              本插件版权归东坡网所有
+              本插件版权归 91nlp 所有
               <br />
-              在客户不侵犯东坡网权益的情况下
+              在客户不侵犯 91nlp 权益的情况下
               <br />
-              东坡网将对此插件提供为期一年的售后服务
+              91nlp 将对此插件提供为期一年的售后服务
               <br>
               服务内容包括：免费升级、BUG修复、使用指导
               <br />
-              客户可以将插件用在多个网站，但东坡网仅对一个网站提供售后服务
+              客户可以将插件用在多个网站，但 91nlp 仅对一个网站提供售后服务
               <br />
-              东坡网插件常见问题
+              91nlp 插件常见问题
             </a-descriptions-item>
           </a-descriptions>
           <a-divider />
           <a-descriptions title="功能介绍">
             <a-descriptions-item>
-              对于帝国cms的TAG功能，集：tag高级管理、tag静态、tag提取、动态缓存，四个插件功能与一身。效率更高，功能更强大。
-            </a-descriptions-item>
-          </a-descriptions>
-          <a-divider />
-          <a-descriptions title="一、TAG展示新增功能">
-            <a-descriptions-item>
-              TAG拼音功能，TAG的链接可以用拼音展示
+              91NLP 文章智能仿写系统是国内首家真正实现 AI 仿写的系统，通过海量的文章数据模型及强大的服务器算力让 AI 实现高质量的原创文章生成。用户可以通过在线管理的方式对网站文章实现定时发布及时发布等功能。
             </a-descriptions-item>
           </a-descriptions>
           <a-divider />
           <a-descriptions title="插件安装截图" :column="{ xs: 1, sm: 1, md: 1 }" size="small" :colon="false" layout="vertical">
             <a-descriptions-item label="（1）修改第2行密码">
-              <img src="../../assets/gpt-discuz-plugin-1.png" alt="" width="100%">
+              <img src="../../assets/gpt-discuz-plugin-1.png" alt="" width="100%" @click="showpreviewPictureModal">
             </a-descriptions-item>
             <a-descriptions-item label="（2）将文件【91nlp_discuz.php】上传到自己网站的根目录">
 
@@ -410,7 +407,7 @@
           <a-divider />
           <a-descriptions title="其它说明">
             <a-descriptions-item>
-              TAG拼音功能，TAG的链接可以用拼音展示
+              目前我们通过几台超性能集群服务器进行训练已经完成了，体育模型（足球,NBA）、教育模型、金融、历史、军事、星座、散文、房产模型等热门行业的入库训练，为您快速生成大量优质语句通顺具有可读性的原创文章。
             </a-descriptions-item>
           </a-descriptions>
         </a-tab-pane>
@@ -423,16 +420,16 @@
               部分非核心功能需要修改少量系统文件
             </a-descriptions-item>
             <a-descriptions-item label="适用系统">
-              6.8
+              7.5
             </a-descriptions-item>
             <a-descriptions-item label="适用编码">
               gbk / utf-8
             </a-descriptions-item>
             <a-descriptions-item label="插件原价">
-              900
+
             </a-descriptions-item>
             <a-descriptions-item label="优惠价格">
-              800
+
             </a-descriptions-item>
             <a-descriptions-item label="插件作者">
               91nlp
@@ -441,35 +438,29 @@
 
             </a-descriptions-item>
             <a-descriptions-item label="售后说明">
-              本插件版权归东坡网所有
+              本插件版权归 91nlp 所有
               <br />
-              在客户不侵犯东坡网权益的情况下
+              在客户不侵犯 91nlp 权益的情况下
               <br />
-              东坡网将对此插件提供为期一年的售后服务
+              91nlp 将对此插件提供为期一年的售后服务
               <br>
               服务内容包括：免费升级、BUG修复、使用指导
               <br />
-              客户可以将插件用在多个网站，但东坡网仅对一个网站提供售后服务
+              客户可以将插件用在多个网站，但 91nlp 仅对一个网站提供售后服务
               <br />
-              东坡网插件常见问题
+              91nlp 插件常见问题
             </a-descriptions-item>
           </a-descriptions>
           <a-divider />
           <a-descriptions title="功能介绍">
             <a-descriptions-item>
-              对于帝国cms的TAG功能，集：tag高级管理、tag静态、tag提取、动态缓存，四个插件功能与一身。效率更高，功能更强大。
-            </a-descriptions-item>
-          </a-descriptions>
-          <a-divider />
-          <a-descriptions title="一、TAG展示新增功能">
-            <a-descriptions-item>
-              TAG拼音功能，TAG的链接可以用拼音展示
+              91NLP 文章智能仿写系统是国内首家真正实现 AI 仿写的系统，通过海量的文章数据模型及强大的服务器算力让 AI 实现高质量的原创文章生成。用户可以通过在线管理的方式对网站文章实现定时发布及时发布等功能。
             </a-descriptions-item>
           </a-descriptions>
           <a-divider />
           <a-descriptions title="插件安装截图" :column="{ xs: 1, sm: 1, md: 1 }" size="small" :colon="false" layout="vertical">
             <a-descriptions-item label="（1）修改第6行密码">
-              <img src="../../assets/gpt-emp-plugin-1.png" alt="" width="100%">
+              <img src="../../assets/gpt-emp-plugin-1.png" alt="" width="100%" @click="showpreviewPictureModal">
             </a-descriptions-item>
             <a-descriptions-item label="（2）将文件【91nlp_emp.php】上传到自己网站的【e/admin】目录">
 
@@ -478,7 +469,7 @@
           <a-divider />
           <a-descriptions title="其它说明">
             <a-descriptions-item>
-              TAG拼音功能，TAG的链接可以用拼音展示
+              目前我们通过几台超性能集群服务器进行训练已经完成了，体育模型（足球,NBA）、教育模型、金融、历史、军事、星座、散文、房产模型等热门行业的入库训练，为您快速生成大量优质语句通顺具有可读性的原创文章。
             </a-descriptions-item>
           </a-descriptions>
         </a-tab-pane>
@@ -491,16 +482,16 @@
               部分非核心功能需要修改少量系统文件
             </a-descriptions-item>
             <a-descriptions-item label="适用系统">
-              6.8
+              1.5.0
             </a-descriptions-item>
             <a-descriptions-item label="适用编码">
               gbk / utf-8
             </a-descriptions-item>
             <a-descriptions-item label="插件原价">
-              900
+
             </a-descriptions-item>
             <a-descriptions-item label="优惠价格">
-              800
+
             </a-descriptions-item>
             <a-descriptions-item label="插件作者">
               91nlp
@@ -509,29 +500,23 @@
 
             </a-descriptions-item>
             <a-descriptions-item label="售后说明">
-              本插件版权归东坡网所有
+              本插件版权归 91nlp 所有
               <br />
-              在客户不侵犯东坡网权益的情况下
+              在客户不侵犯 91nlp 权益的情况下
               <br />
-              东坡网将对此插件提供为期一年的售后服务
+              91nlp 将对此插件提供为期一年的售后服务
               <br>
               服务内容包括：免费升级、BUG修复、使用指导
               <br />
-              客户可以将插件用在多个网站，但东坡网仅对一个网站提供售后服务
+              客户可以将插件用在多个网站，但 91nlp 仅对一个网站提供售后服务
               <br />
-              东坡网插件常见问题
+              91nlp 插件常见问题
             </a-descriptions-item>
           </a-descriptions>
           <a-divider />
           <a-descriptions title="功能介绍">
             <a-descriptions-item>
-              对于帝国cms的TAG功能，集：tag高级管理、tag静态、tag提取、动态缓存，四个插件功能与一身。效率更高，功能更强大。
-            </a-descriptions-item>
-          </a-descriptions>
-          <a-divider />
-          <a-descriptions title="一、TAG展示新增功能">
-            <a-descriptions-item>
-              TAG拼音功能，TAG的链接可以用拼音展示
+              91NLP 文章智能仿写系统是国内首家真正实现 AI 仿写的系统，通过海量的文章数据模型及强大的服务器算力让 AI 实现高质量的原创文章生成。用户可以通过在线管理的方式对网站文章实现定时发布及时发布等功能。
             </a-descriptions-item>
           </a-descriptions>
           <a-divider />
@@ -543,7 +528,7 @@
           <a-divider />
           <a-descriptions title="其它说明">
             <a-descriptions-item>
-              TAG拼音功能，TAG的链接可以用拼音展示
+              目前我们通过几台超性能集群服务器进行训练已经完成了，体育模型（足球,NBA）、教育模型、金融、历史、军事、星座、散文、房产模型等热门行业的入库训练，为您快速生成大量优质语句通顺具有可读性的原创文章。
             </a-descriptions-item>
           </a-descriptions>
         </a-tab-pane>
@@ -556,16 +541,16 @@
               部分非核心功能需要修改少量系统文件
             </a-descriptions-item>
             <a-descriptions-item label="适用系统">
-              6.8
+              5.6
             </a-descriptions-item>
             <a-descriptions-item label="适用编码">
               gbk / utf-8
             </a-descriptions-item>
             <a-descriptions-item label="插件原价">
-              900
+
             </a-descriptions-item>
             <a-descriptions-item label="优惠价格">
-              800
+
             </a-descriptions-item>
             <a-descriptions-item label="插件作者">
               91nlp
@@ -574,29 +559,23 @@
 
             </a-descriptions-item>
             <a-descriptions-item label="售后说明">
-              本插件版权归东坡网所有
+              本插件版权归 91nlp 所有
               <br />
-              在客户不侵犯东坡网权益的情况下
+              在客户不侵犯 91nlp 权益的情况下
               <br />
-              东坡网将对此插件提供为期一年的售后服务
+              91nlp 将对此插件提供为期一年的售后服务
               <br>
               服务内容包括：免费升级、BUG修复、使用指导
               <br />
-              客户可以将插件用在多个网站，但东坡网仅对一个网站提供售后服务
+              客户可以将插件用在多个网站，但 91nlp 仅对一个网站提供售后服务
               <br />
-              东坡网插件常见问题
+              91nlp 插件常见问题
             </a-descriptions-item>
           </a-descriptions>
           <a-divider />
           <a-descriptions title="功能介绍">
             <a-descriptions-item>
-              对于帝国cms的TAG功能，集：tag高级管理、tag静态、tag提取、动态缓存，四个插件功能与一身。效率更高，功能更强大。
-            </a-descriptions-item>
-          </a-descriptions>
-          <a-divider />
-          <a-descriptions title="一、TAG展示新增功能">
-            <a-descriptions-item>
-              TAG拼音功能，TAG的链接可以用拼音展示
+              91NLP 文章智能仿写系统是国内首家真正实现 AI 仿写的系统，通过海量的文章数据模型及强大的服务器算力让 AI 实现高质量的原创文章生成。用户可以通过在线管理的方式对网站文章实现定时发布及时发布等功能。
             </a-descriptions-item>
           </a-descriptions>
           <a-divider />
@@ -605,16 +584,16 @@
 
             </a-descriptions-item>
             <a-descriptions-item label="（2）进入 WordPree 后台插件菜单，启用 91NLP文章仿写生成工具">
-              <img src="../../assets/gpt-wp-plugin-1.png" alt="" width="100%">
+              <img src="../../assets/gpt-wp-plugin-1.png" alt="" width="100%" @click="showpreviewPictureModal">
             </a-descriptions-item>
             <a-descriptions-item label="（3）进入管理面板【91NLP】栏目，设置发布密码">
-              <img src="../../assets/gpt-wp-plugin-2.png" alt="" width="100%">
+              <img src="../../assets/gpt-wp-plugin-2.png" alt="" width="100%" @click="showpreviewPictureModal">
             </a-descriptions-item>
           </a-descriptions>
           <a-divider />
           <a-descriptions title="其它说明">
             <a-descriptions-item>
-              TAG拼音功能，TAG的链接可以用拼音展示
+              目前我们通过几台超性能集群服务器进行训练已经完成了，体育模型（足球,NBA）、教育模型、金融、历史、军事、星座、散文、房产模型等热门行业的入库训练，为您快速生成大量优质语句通顺具有可读性的原创文章。
             </a-descriptions-item>
           </a-descriptions>
         </a-tab-pane>
@@ -627,16 +606,16 @@
               部分非核心功能需要修改少量系统文件
             </a-descriptions-item>
             <a-descriptions-item label="适用系统">
-              6.8
+              1.6
             </a-descriptions-item>
             <a-descriptions-item label="适用编码">
               gbk / utf-8
             </a-descriptions-item>
             <a-descriptions-item label="插件原价">
-              900
+
             </a-descriptions-item>
             <a-descriptions-item label="优惠价格">
-              800
+
             </a-descriptions-item>
             <a-descriptions-item label="插件作者">
               91nlp
@@ -645,29 +624,23 @@
 
             </a-descriptions-item>
             <a-descriptions-item label="售后说明">
-              本插件版权归东坡网所有
+              本插件版权归 91nlp 所有
               <br />
-              在客户不侵犯东坡网权益的情况下
+              在客户不侵犯 91nlp 权益的情况下
               <br />
-              东坡网将对此插件提供为期一年的售后服务
+              91nlp 将对此插件提供为期一年的售后服务
               <br>
               服务内容包括：免费升级、BUG修复、使用指导
               <br />
-              客户可以将插件用在多个网站，但东坡网仅对一个网站提供售后服务
+              客户可以将插件用在多个网站，但 91nlp 仅对一个网站提供售后服务
               <br />
-              东坡网插件常见问题
+              91nlp 插件常见问题
             </a-descriptions-item>
           </a-descriptions>
           <a-divider />
           <a-descriptions title="功能介绍">
             <a-descriptions-item>
-              对于帝国cms的TAG功能，集：tag高级管理、tag静态、tag提取、动态缓存，四个插件功能与一身。效率更高，功能更强大。
-            </a-descriptions-item>
-          </a-descriptions>
-          <a-divider />
-          <a-descriptions title="一、TAG展示新增功能">
-            <a-descriptions-item>
-              TAG拼音功能，TAG的链接可以用拼音展示
+              91NLP 文章智能仿写系统是国内首家真正实现 AI 仿写的系统，通过海量的文章数据模型及强大的服务器算力让 AI 实现高质量的原创文章生成。用户可以通过在线管理的方式对网站文章实现定时发布及时发布等功能。
             </a-descriptions-item>
           </a-descriptions>
           <a-divider />
@@ -676,21 +649,25 @@
 
             </a-descriptions-item>
             <a-descriptions-item label="（2）进入 zblog 后台插件管理页面，启用 91NLP文章仿写生成工具">
-              <img src="../../assets/gpt-zb-plugin-1.png" alt="" width="100%">
+              <img src="../../assets/gpt-zb-plugin-1.png" alt="" width="100%" @click="showpreviewPictureModal">
             </a-descriptions-item>
             <a-descriptions-item label="（3）进入 91NLP 文章仿写生成工具管理页面，设置发布密码">
-              <img src="../../assets/gpt-zb-plugin-2.png" alt="" width="100%">
+              <img src="../../assets/gpt-zb-plugin-2.png" alt="" width="100%" @click="showpreviewPictureModal">
             </a-descriptions-item>
           </a-descriptions>
           <a-divider />
           <a-descriptions title="其它说明">
             <a-descriptions-item>
-              TAG拼音功能，TAG的链接可以用拼音展示
+              目前我们通过几台超性能集群服务器进行训练已经完成了，体育模型（足球,NBA）、教育模型、金融、历史、军事、星座、散文、房产模型等热门行业的入库训练，为您快速生成大量优质语句通顺具有可读性的原创文章。
             </a-descriptions-item>
           </a-descriptions>
         </a-tab-pane>
       </a-tabs>
     </a-drawer>
+
+    <a-modal v-model="previewPictureVisible" title="图片预览" width="80%" :footer="null">
+      <img :src="previewPictureDefaultValue" alt="" width="100%">
+    </a-modal>
 
   </div>
 </template>
@@ -824,7 +801,10 @@ export default {
       // 根目录 禁用
       rootDirectoryDisabled: false,
       // 插件安装文档 显示|隐藏
-      installPluginDocumentvisible: false
+      installPluginDocumentvisible: false,
+      // 图片预览 对话框 显示|隐藏
+      previewPictureVisible: false,
+      previewPictureDefaultValue: ''
     }
   },
   computed: {
@@ -1057,6 +1037,10 @@ export default {
     },
     onCloseInstallPluginDocument () {
       this.installPluginDocumentvisible = false
+    },
+    showpreviewPictureModal (e) {
+      this.previewPictureVisible = true
+      this.previewPictureDefaultValue = e.target.currentSrc
     }
   }
 }
