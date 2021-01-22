@@ -42,7 +42,7 @@
     </div>
 
     <!-- 新增配置对话框 -->
-    <a-modal v-model="addPanelVisible" title="新增配置" class="gpt-add-panel" :width="721" :footer="null" destroyOnClose :afterClose="closeNewAddDialog">
+    <a-modal v-model="addPanelVisible" title="新增配置" class="gpt-add-panel" :width="721" :footer="null" destroyOnClose :afterClose="closeNewAddDialog" :maskClosable="false">
 
       <a-form :form="form" layout="inline" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }" :colon="false" class="gpt-add-panel-form" @submit="addPanelSave" hideRequiredMark>
         <a-form-item label="网站名称">
@@ -98,7 +98,7 @@
         <a-form-item label="文章作者" :extra="articleAuthorExtra">
           <a-input v-decorator="['author', { rules: [{ required: true, message: '不能为空!' }] }]"></a-input>
         </a-form-item>
-        <a-form-item label="文章来源">
+        <a-form-item label="文章来源" extra="自定义">
           <a-input v-decorator="['post_orgin', { rules: [{ required: true, message: '不能为空!' }] }]"></a-input>
         </a-form-item>
         <a-form-item label="百度站长TOKEN" v-if="false">
@@ -141,7 +141,7 @@
         </a-form-item>
         <a-form-item style="width: 100%;text-align: center;" :wrapper-col="{ span: 24 }">
           <a-space :size="8">
-            <a-button class="gpt-add-panel-sure" html-type="submit">
+            <a-button class="gpt-add-panel-sure" html-type="submit" :loading="newAddConfigFormSave">
               保存
             </a-button>
             <a-button class="gpt-add-panel-cancel" @click="addPanelCancel">
@@ -804,7 +804,9 @@ export default {
       installPluginDocumentvisible: false,
       // 图片预览 对话框 显示|隐藏
       previewPictureVisible: false,
-      previewPictureDefaultValue: ''
+      previewPictureDefaultValue: '',
+      // 新增配置 表单 保存 按钮 loading 状态
+      newAddConfigFormSave: false
     }
   },
   computed: {
@@ -833,13 +835,49 @@ export default {
       e.preventDefault()
       this.form.validateFields(async (error, values) => {
         if (!error) {
+          this.newAddConfigFormSave = true
           values.push_bd = false
           values.bd_token = ''
           const { data: res } = await this.$http.post('pg/nsite', values)
           if (res.status !== 0) return this.$message.error(res.reason)
           this.getConfigManage()
-          this.addPanelVisible = false
-          this.form.resetFields()
+            .then(res => {
+              if (!res) {
+                this.siteCheck(this.allTask[this.allTask.length - 1].id)
+                  .then(res => {
+                    this.newAddConfigFormSave = false
+                    this.addPanelVisible = false
+                    this.form.resetFields()
+                    if (res) {
+                      this.editPanelData = this.allTask[this.allTask.length - 1]
+                      this.editPanelVisible = true
+                      // setTimeout(() => {
+                      //   this.disabledFormInput(this.allTask[this.allTask.length - 1].cms_type)
+                      // }, 500)
+                      this.$nextTick(() => {
+                        this.disabledFormInput(this.allTask[this.allTask.length - 1].cms_type)
+                      })
+                    }
+                  })
+              }
+            })
+
+          // this.addPanelVisible = false
+          // this.form.resetFields()
+
+          // setTimeout(() => {
+          //   this.siteCheck(this.allTask[this.allTask.length - 1].id)
+          //     .then(res => {
+          //       this.newAddConfigFormSave = false
+          //       this.addPanelVisible = false
+          //       this.form.resetFields()
+          //       if (res) {
+          //         this.editPanelData = this.allTask[this.allTask.length - 1]
+          //         this.disabledFormInput(this.allTask[this.allTask.length - 1].cms_type)
+          //         this.editPanelVisible = true
+          //       }
+          //     })
+          // }, 0)
         }
       })
     },
@@ -862,7 +900,8 @@ export default {
       this.editPanelData = values
       this.editPanelVisible = true
       this.$nextTick(() => {
-        this.getEditFormConstraint(values.cms_type)
+        // this.getEditFormConstraint(values.cms_type)
+        this.disabledFormInput(values.cms_type)
       })
     },
     // 编辑对话框 取消按钮
@@ -912,7 +951,7 @@ export default {
       switch (true) {
         case value === '织梦(dedeCMS)':
           this.systemUserName = '系统用户名'
-          this.articleAuthorExtra = ''
+          this.articleAuthorExtra = '自定义'
           this.InterfaceFileNameDisabled = true
           this.form.setFieldsValue({ path: 'index.php' })
           this.rootDirectoryDisabled = true
@@ -921,7 +960,7 @@ export default {
           break
         case value === '帝国(empCMS)':
           this.systemUserName = '系统用户名'
-          this.articleAuthorExtra = ''
+          this.articleAuthorExtra = '自定义'
           this.InterfaceFileNameDisabled = false
           this.form.setFieldsValue({ path: '91nlp_emp.php' })
           this.rootDirectoryDisabled = true
@@ -930,7 +969,7 @@ export default {
           break
         case value === 'discuz':
           this.articleAuthorExtra = '系统用户名'
-          this.systemUserName = ''
+          this.systemUserName = '自定义'
           this.InterfaceFileNameDisabled = false
           this.form.setFieldsValue({ path: '91nlp_discuz.php' })
           this.rootDirectoryDisabled = true
@@ -939,7 +978,7 @@ export default {
           break
         case value === 'Z-BLOG':
           this.articleAuthorExtra = '系统用户ID'
-          this.systemUserName = ''
+          this.systemUserName = '自定义'
           this.InterfaceFileNameDisabled = false
           this.form.setFieldsValue({ path: '91nlp_zblog.php' })
           this.rootDirectoryDisabled = true
@@ -947,8 +986,8 @@ export default {
           this.form.setFieldsValue({ passwd: '' })
           break
         case value === '易优CMS(EYouCMS)':
-          this.systemUserName = ''
-          this.articleAuthorExtra = ''
+          this.systemUserName = '自定义'
+          this.articleAuthorExtra = '自定义'
           this.InterfaceFileNameDisabled = true
           this.form.setFieldsValue({ path: 'J1nlp_ey.php' })
           this.rootDirectoryDisabled = true
@@ -956,8 +995,8 @@ export default {
           this.form.setFieldsValue({ passwd: '91nlp' })
           break
         case value === 'WordPress':
-          this.systemUserName = ''
-          this.articleAuthorExtra = ''
+          this.systemUserName = '自定义'
+          this.articleAuthorExtra = '自定义'
           this.InterfaceFileNameDisabled = true
           this.form.setFieldsValue({ path: 'admin-ajax.php' })
           this.rootDirectoryDisabled = true
@@ -985,6 +1024,7 @@ export default {
     // 关闭新增对话框 回调
     closeNewAddDialog () {
       this.newAddConfigFormReset()
+      this.newAddConfigFormSave = false
     },
     // 编辑配置 表单约束
     getEditFormConstraint (value) {
@@ -1024,6 +1064,36 @@ export default {
           this.formEdit.setFieldsValue({ path: 'admin-ajax.php' })
           this.rootDirectoryDisabled = true
           this.formEdit.setFieldsValue({ root: 'wp-admin' })
+          break
+        default:
+      }
+    },
+    // 编辑按钮 禁用表单输入框
+    disabledFormInput (value) {
+      switch (true) {
+        case value === '织梦(dedeCMS)':
+          this.InterfaceFileNameDisabled = true
+          this.rootDirectoryDisabled = true
+          break
+        case value === '帝国(empCMS)':
+          this.InterfaceFileNameDisabled = false
+          this.rootDirectoryDisabled = true
+          break
+        case value === 'discuz':
+          this.InterfaceFileNameDisabled = false
+          this.rootDirectoryDisabled = true
+          break
+        case value === 'Z-BLOG':
+          this.InterfaceFileNameDisabled = false
+          this.rootDirectoryDisabled = true
+          break
+        case value === '易优CMS(EYouCMS)':
+          this.InterfaceFileNameDisabled = true
+          this.rootDirectoryDisabled = true
+          break
+        case value === 'WordPress':
+          this.InterfaceFileNameDisabled = true
+          this.rootDirectoryDisabled = true
           break
         default:
       }

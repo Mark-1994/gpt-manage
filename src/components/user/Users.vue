@@ -397,18 +397,18 @@ export default {
       const { data: res } = await this.$http.get('pg/index')
       window.localStorage.setItem('nick_name', '')
 
-      // if (window.location.host !== 'a.91nlp.cn') {
-      //   if (res.status !== 0) {
-      //     return this.$message.error('Error', function () {
-      //       window.location.href = '/login/#/login'
-      //     })
-      //   } else {
-      //     const _this = this
-      //     return this.$message.error('Error', function () {
-      //       window.location.href = _this.$route.params.mb && _this.$route.params.mb ? ('http://a.91nlp.cn/#/login?mb=' + _this.$route.params.mb + '&passwd=' + _this.$route.params.passwd) : 'http://a.91nlp.cn/#/login'
-      //     })
-      //   }
-      // }
+      if (window.location.host !== 'a.91nlp.cn') {
+        if (res.status !== 0) {
+          return this.$message.error('Error', function () {
+            window.location.href = '/login/#/login'
+          })
+        } else {
+          const _this = this
+          return this.$message.error('Error', function () {
+            window.location.href = _this.$route.params.mb && _this.$route.params.mb ? ('http://a.91nlp.cn/#/login?mb=' + _this.$route.params.mb + '&passwd=' + _this.$route.params.passwd) : 'http://a.91nlp.cn/#/login'
+          })
+        }
+      }
 
       if (res.status === 10) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/' })
       if (res.status === 3) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/#/login' })
