@@ -54,21 +54,26 @@
     </div>
 
     <!-- 编辑 对话框 -->
-    <a-modal v-model="editVisible" title="编辑" width="80%" okText="保存" cancelText="取消" @ok="handleOk">
+    <a-modal v-model="editVisible" title="编辑" width="80%" okText="保存" cancelText="取消" @ok="handleOk" :afterClose="closeResetSource">
       <a-input v-model="editPanelData.title" :style="{ marginBottom: '8px' }" placeholder="文章标题" />
-      <quill-editor v-model="editPanelData.post"></quill-editor>
+      <quill-editor v-model="editPanelData.post" :options="quillOption"></quill-editor>
     </a-modal>
 
   </div>
 </template>
 
 <script>
+import { Quill } from 'vue-quill-editor'
+import quillConfig from './quill-config.js'
 export default {
   created () {
     if (!this.$route.params.gn) {
       return this.$router.push('/list')
     }
     this.getKwList(this.$route.params.gn ? this.$route.params.gn : '')
+  },
+  mounted () {
+    quillConfig.register(Quill)
   },
   data () {
     return {
@@ -120,7 +125,8 @@ export default {
       // 点击编辑 保存 id
       idList: {},
       // 是否禁止 二次 编辑提交
-      onceAgainPost: this.$route.params.is_modified
+      onceAgainPost: this.$route.params.is_modified,
+      quillOption: quillConfig
     }
   },
   computed: {
@@ -144,6 +150,12 @@ export default {
       this.idList[rowData.id] = rowData
       this.editPanelData = rowData
       this.editVisible = true
+      this.$nextTick(() => {
+        quillConfig.initButton()
+      })
+    },
+    closeResetSource () {
+      quillConfig.initButton()
     },
     // 保存编辑的内容
     saveEditContent () {

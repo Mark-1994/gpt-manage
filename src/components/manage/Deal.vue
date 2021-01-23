@@ -328,7 +328,7 @@
     </a-modal>
 
     <!-- 内容编辑器 对话框 -->
-    <a-modal v-model="contentEditVisible" :title="contentEditCacheRecord.tt" width="80%" :footer="null">
+    <a-modal v-model="contentEditVisible" :title="contentEditCacheRecord.tt" width="80%" :footer="null" :afterClose="closeResetSource">源码
       <template slot="footer">
         <a-button @click="handleCancel">
           取消
@@ -337,7 +337,7 @@
           确认
         </a-button>
       </template>
-      <quill-editor v-model="contentEditCacheRecord.txt"></quill-editor>
+      <quill-editor v-model="contentEditCacheRecord.txt" :options="quillOption"></quill-editor>
     </a-modal>
 
     <!-- 地域词 小助手 -->
@@ -473,6 +473,8 @@
 import JSZip from 'jszip'
 import FileSaver from 'file-saver'
 import { NCCheckedList, NCPlainOptions, NECheckedList, NEPlainOptions, ECCheckedList, ECPlainOptions, CCCheckedList, CCPlainOptions, SCCheckedList, SCPlainOptions, SWCheckedList, SWPlainOptions, NWCheckedList, NWPlainOptions, prefixData, suffixData } from './worddata.js'
+import { Quill } from 'vue-quill-editor'
+import quillConfig from './quill-config.js'
 const columns = [
   {
     title: '序号',
@@ -539,6 +541,9 @@ export default {
     this.getMkDefaultVal()
     this.getAllSubject(this.downloadArticle.gn)
     this.getTaskKeywordsNum()
+  },
+  mounted () {
+    quillConfig.register(Quill)
   },
   data () {
     return {
@@ -690,7 +695,8 @@ export default {
       // 禁止二次编辑
       onceAgainPost: false,
       // 表格 loading
-      loading: true
+      loading: true,
+      quillOption: quillConfig
     }
   },
   computed: {
@@ -1190,6 +1196,12 @@ export default {
       this.contentEditCacheRecord = this.contentEditRecord
       this.idList[val.id] = val
       this.contentEditVisible = true
+      this.$nextTick(() => {
+        quillConfig.initButton()
+      })
+    },
+    closeResetSource () {
+      quillConfig.initButton()
     },
     // 获取任务所有主词
     async getAllSubject (val) {
