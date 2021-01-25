@@ -8,12 +8,12 @@
               <img src="../assets/gpt-logo.svg" alt="" />
             </router-link>
           </a-col>
-          <a-col :span="4" :offset="13">
+          <a-col :span="4" :offset="7">
             联系客服 QQ：<a href="http://wpa.qq.com/msgrd?v=3&uin=206819887&site=qq&menu=yes" target="_blank" style="color: #fff;">206819887</a>
           </a-col>
-          <!-- <a-col :span="4">
-            加入QQ群：206819887
-          </a-col> -->
+          <a-col :span="6">
+            QQ 群：953072010（进群报用户名送500积分）
+          </a-col>
           <a-col :span="3" class="header-right">
             <a-dropdown :trigger="['click']">
               <a class="ant-dropdown-link" @click="e => e.preventDefault()">
@@ -195,7 +195,8 @@ export default {
       // 文章列表
       articleList: [],
       // 帮助助手 显示|隐藏
-      helperVisible: false
+      // helperVisible: false
+      helperVisible: this.$store.state.from_path_details
     }
   },
   methods: {

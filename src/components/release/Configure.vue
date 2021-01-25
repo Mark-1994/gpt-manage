@@ -135,6 +135,9 @@
               <a href="http://a.91nlp.cn/plugin/wp/91nlp.zip" style="color: #fff;" target="_blank">WordPress</a>
             </a-button>
           </a-space>
+          <a-button type="link" block :style="{ padding: '0', textAlign: 'left' }" @click="showPluginInstallDocument">
+            [插件安装教程]
+          </a-button>
         </a-form-item>
         <a-form-item label="发布用户" :extra="systemUserName">
           <a-input v-decorator="['user', { rules: [{ required: true, message: '不能为空!' }] }]"></a-input>
@@ -254,6 +257,9 @@
               <a href="http://a.91nlp.cn/plugin/wp/91nlp.zip" style="color: #fff;" target="_blank">WordPress</a>
             </a-button>
           </a-space>
+          <a-button type="link" block :style="{ padding: '0', textAlign: 'left' }" @click="showPluginInstallDocument">
+            [插件安装教程]
+          </a-button>
         </a-form-item>
         <a-form-item label="发布用户">
           <a-input v-decorator="['user', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.user }]"></a-input>
@@ -1103,6 +1109,11 @@ export default {
       this.rootDirectoryDisabled = false
     },
     showPluginInstallDocument () {
+      // 关闭编辑配置对话框
+      this.editPanelVisible = false
+      // 关闭新增配置对话框
+      this.addPanelVisible = false
+      // 显示插件安装文档
       this.installPluginDocumentvisible = true
     },
     onCloseInstallPluginDocument () {

@@ -13,7 +13,7 @@
           >
             <a-form-item label="文章生成" class="gpt-article-generate-title"></a-form-item>
 
-            <a-form-item label="关键词" extra="关键词格式：每行一个" style="text-align: left;">
+            <a-form-item label="关键词" extra="※ 关键词会用作文章生成的依据，当用户输入关键词后我们的AI文章仿写系统会根据用户输入的关键词生成最接近的文章。关键词可以是核心词或者长尾词甚至一句话。同时91NLP文章仿写系统还支持批量关键词上传功能（1行1个）。" style="text-align: left;">
 
               <!-- <a-upload
                 v-decorator="[
@@ -49,7 +49,7 @@
 
             </a-form-item>
 
-            <a-form-item label="文章类型" style="text-align: left;">
+            <a-form-item label="文章类型" style="text-align: left;" extra="※ 文章类型是我们通过海量文章语料给GPU学习后获得的文章模型，用户可以选择想生成的文章类型配合关键词进行文章生成。其中 公用模型 为系统模型，用户也可以选择自助上传语料通过我们机器学习获得更贴近您行业的文章模型。">
               <a-select
                 v-decorator="[
                   'model_id',
@@ -67,12 +67,12 @@
               </a-select>
             </a-form-item>
 
-            <a-form-item label="文章数量" :extra="`文章数量不得低于 ${kwValue.split('\n').filter(item => item).length}`" style="text-align: left;">
+            <a-form-item label="文章数量" :extra="`※ 文章数量不得低于 ${kwValue.split('\n').filter(item => item).length}，文章数量是根据用户提交的关键词产生一个基本数量，如您提交了10个关键词我们将依据您提交的关键词为您生成不小于10篇的文章，当然您也可以选择10个关键词输入11篇文章这时系统会对第一个关键词生成2篇文章以此类推。同时文章数量越多生成等待时间越长。目前1000字文章大概是5-9秒钟一篇。`" style="text-align: left;">
               <a-input-number v-model="articleNum" :min="kwValue.split('\n').filter(item => item).length" @change="articleNumber" />
             </a-form-item>
 
             <!-- <a-form-item label="文章字数" extra="VIP会员可选择1000字文章 升级会员" style="text-align: left;"> -->
-            <a-form-item label="文章字数" style="text-align: left;">
+            <a-form-item label="文章字数" style="text-align: left;" extra="※ 由于我们所有的文章生成都是机器通过GPU即时演算产生（并非换词模式）所以将会大大消耗GPU性能。目前我们开放了1000字的文章生成功能，后期会开放更多字数给大家。">
               <a-radio-group
                 v-decorator="[
                   'wn',
@@ -88,7 +88,7 @@
               </a-radio-group>
             </a-form-item>
 
-            <a-form-item label="文章名称" extra="标题不得超过10个字" style="text-align: left;">
+            <a-form-item label="文章名称" extra="※ 不能超过10个字用于标记任务名" style="text-align: left;">
               <a-input
                 placeholder="请输入"
                 :maxLength="10"
@@ -149,14 +149,14 @@
 
           </a-form>
 
-          <div class="gpt-list-footer">
+          <!-- <div class="gpt-list-footer">
             <p>功能说明：</p>
             <p>关键词：关键词会用作文章生成的依据，当用户输入关键词后我们的AI文章仿写系统会根据用户输入的关键词生成最接近的文章。关键词可以是核心词或者长尾词甚至一句话。同时91NLP文章仿写系统还支持批量关键词上传功能（1行1个）。</p>
             <p>文章类型：文章类型是我们通过海量文章语料给GPU学习后获得的文章模型，用户可以选择想生成的文章类型配合关键词进行文章生成。其中 公用模型 为系统模型，用户也可以选择自助上传语料通过我们机器学习获得更贴近您行业的文章模型。</p>
             <p>文章数量：文章数量是根据用户提交的关键词产生一个基本数量，如您提交了10个关键词我们将依据您提交的关键词为您生成不小于10篇的文章，当然您也可以选择10个关键词输入11篇文章这时系统会对第一个关键词生成2篇文章以此类推。同时文章数量越多生成等待时间越长。目前1000字文章大概是5-9秒钟一篇。</p>
             <p>文章字数：由于我们所有的文章生成都是机器通过GPU即时演算产生（并非换词模式）所以将会大大消耗GPU性能。目前我们开放了1000字的文章生成功能，后期会开放更多字数给大家。</p>
             <p>文章名称：不能超过10个字用于标记任务名。</p>
-          </div>
+          </div> -->
 
         </div>
       </a-col>
@@ -243,7 +243,7 @@ export default {
   data: () => ({
     formItemLayout: {
       labelCol: { span: 3, offset: 1 },
-      wrapperCol: { span: 9 }
+      wrapperCol: { span: 19 }
     },
     // 文章数量
     articleNum: 1,
