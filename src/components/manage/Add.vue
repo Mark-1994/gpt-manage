@@ -218,7 +218,7 @@
     </a-row>
 
     <!-- 文章生成 对话框 -->
-    <a-modal v-model="articleGenerateVisible" title="文章生成" @ok="articleGenerateHandleOk">
+    <a-modal v-model="articleGenerateVisible" title="文章生成" @ok="articleGenerateHandleOk" :confirm-loading="confirmLoading" okText="确认" cancelText="取消">
       <p>文章数量：{{ articleNum }}</p>
       <p>文章字数：{{ articleWordCount }}</p>
       <p>文章类型：{{ articleTypeCurrent }}</p>
@@ -270,7 +270,8 @@ export default {
     // 模型 id
     articleModelId: 0,
     // 提交 防抖
-    timer: null
+    timer: null,
+    confirmLoading: false
   }),
   methods: {
     handleSubmit (e) {
@@ -323,10 +324,13 @@ export default {
     },
     // 生成文章
     async getArticleGenerate (values) {
+      this.confirmLoading = true
       const { data: res } = await this.$http.post('gen_post', values)
+      this.confirmLoading = false
       if (res.status !== 0) return this.$message.error(res.reason)
-      this.$message.success('提交了')
       this.articleGenerateVisible = false
+      this.$router.push('/list')
+      // this.$message.success('提交了')
     },
     // 单篇文章价格
     async getArticlePrice (values) {
