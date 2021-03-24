@@ -796,6 +796,7 @@ export default {
           if (res.status !== 0) return _this.$message.error(res.reason)
           setTimeout(function () {
             _this.getCheckArticleEdited()
+            _this.$router.push('/list')
           }, 800)
         },
         onCancel () {
