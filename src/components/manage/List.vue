@@ -58,7 +58,7 @@
     </a-modal>
 
     <!-- 下载 对话框 -->
-    <a-modal v-model="downloadTypeVisible" title="下载方式" okText="确定" cancelText="取消" @ok="handleOk">
+    <a-modal v-model="downloadTypeVisible" title="下载方式" okText="确定" cancelText="取消" @ok="handleOk" :confirm-loading="confirmLoading" :maskClosable="false">
       <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
         <a-form-item label="文本格式" extra="纯文本格式为不含html标签格式，如果之前曾经处理过内容加粗外链等也将无效。富文本格式为带html标签格式，如果之前曾经处理过内容加粗外链等这种格式可以生效。">
           <a-radio-group v-model="downloadTypeVal">
@@ -195,7 +195,8 @@ export default {
       // 下载 对话框 值
       downloadTypeVal: 0,
       // 缓存 项目名
-      gnCacheVal: ''
+      gnCacheVal: '',
+      confirmLoading: false
     }
   },
   methods: {
@@ -265,7 +266,10 @@ export default {
         gn: gn
       }
       const { data: res } = await this.$http.post('dlpost', val)
-      if (res.status !== 0) return this.$message.error(res.reason)
+      if (res.status !== 0) {
+        this.confirmLoading = false
+        return this.$message.error(res.reason)
+      }
       const zip = new JSZip()
       for (let i = 0; i < res.posts.length; i++) {
         if (!this.downloadTypeVal) {
@@ -278,10 +282,12 @@ export default {
         .then(content => {
           FileSaver.saveAs(content, gn + '.zip')
           this.downloadTypeVisible = false
+          this.confirmLoading = false
         })
     },
     // 下载确定按钮
     handleOk () {
+      this.confirmLoading = true
       this.getItemArticle(this.gnCacheVal)
     }
   }

@@ -20,6 +20,9 @@
       <template slot="create_at" slot-scope="text">
         {{ text | dateFormat }}
       </template>
+      <template slot="cur_time" slot-scope="text">
+        {{ text | dateFormat }}
+      </template>
       <template slot="deal" slot-scope="record">
         <a-space :size="2">
           <a-button type="primary" :icon="!(record.dn + record.en >= record.push_num) && record.state ? 'pause' : 'caret-right'" size="small" :disabled="record.dn + record.en >= record.push_num" @click="onChangeState(!record.state, record.id)"></a-button>
@@ -68,6 +71,9 @@
         </a-form-item>
         <a-form-item label="条数说明">
           <p :style="{ color: '#000', opacity: '.5', lineHeight: 'normal', margin: '0' }">如果发布条数为0，则发布已选择文章库中所有文章。</p>
+        </a-form-item>
+        <a-form-item label="发布说明">
+          <p :style="{ color: '#000', opacity: '.5', margin: '0' }">文章发布时间间隔大约为一分钟。</p>
         </a-form-item>
         <a-form-item style="width: 100%;text-align: center;" :wrapper-col="{ span: 24 }">
           <a-space :size="8">
@@ -173,6 +179,12 @@ export default {
           title: '创建时间',
           dataIndex: 'create_at',
           scopedSlots: { customRender: 'create_at' },
+          align: 'center'
+        },
+        {
+          title: '最近一次发布时间',
+          dataIndex: 'cur_time',
+          scopedSlots: { customRender: 'cur_time' },
           align: 'center'
         },
         {

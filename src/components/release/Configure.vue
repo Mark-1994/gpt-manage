@@ -217,10 +217,10 @@
         <a-form-item label="根目录">
           <a-input v-decorator="['root', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.root_dir }]" :disabled="rootDirectoryDisabled"></a-input>
         </a-form-item>
-        <a-form-item label="文章作者">
+        <a-form-item label="文章作者" :extra="editConfigArticleExtra">
           <a-input v-decorator="['author', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.post_author }]"></a-input>
         </a-form-item>
-        <a-form-item label="文章来源">
+        <a-form-item label="文章来源" extra="自定义">
           <a-input v-decorator="['post_orgin', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.post_orgin }]"></a-input>
         </a-form-item>
         <a-form-item label="百度站长TOKEN" v-if="false">
@@ -261,7 +261,7 @@
             [插件安装教程]
           </a-button>
         </a-form-item>
-        <a-form-item label="发布用户">
+        <a-form-item label="发布用户" :extra="editConfigIssueExtra">
           <a-input v-decorator="['user', { rules: [{ required: true, message: '不能为空!' }], initialValue: editPanelData.user }]"></a-input>
         </a-form-item>
         <a-form-item style="width: 100%;text-align: center;" :wrapper-col="{ span: 24 }">
@@ -812,7 +812,11 @@ export default {
       previewPictureVisible: false,
       previewPictureDefaultValue: '',
       // 新增配置 表单 保存 按钮 loading 状态
-      newAddConfigFormSave: false
+      newAddConfigFormSave: false,
+      // 编辑配置文章作者提示文字
+      editConfigArticleExtra: '',
+      // 编辑配置发布用户提示文字
+      editConfigIssueExtra: ''
     }
   },
   computed: {
@@ -1040,36 +1044,48 @@ export default {
           this.formEdit.setFieldsValue({ path: 'index.php' })
           this.rootDirectoryDisabled = true
           this.formEdit.setFieldsValue({ root: '91nlp' })
+          this.editConfigArticleExtra = '自定义'
+          this.editConfigIssueExtra = '系统用户名'
           break
         case value === '帝国(empCMS)':
           this.InterfaceFileNameDisabled = false
           this.formEdit.setFieldsValue({ path: '91nlp_emp.php' })
           this.rootDirectoryDisabled = true
           this.formEdit.setFieldsValue({ root: 'e/admin' })
+          this.editConfigArticleExtra = '自定义'
+          this.editConfigIssueExtra = '系统用户名'
           break
         case value === 'discuz':
           this.InterfaceFileNameDisabled = false
           this.formEdit.setFieldsValue({ path: '91nlp_discuz.php' })
           this.rootDirectoryDisabled = true
           this.formEdit.setFieldsValue({ root: '/' })
+          this.editConfigArticleExtra = '系统用户名'
+          this.editConfigIssueExtra = '自定义'
           break
         case value === 'Z-BLOG':
           this.InterfaceFileNameDisabled = false
           this.formEdit.setFieldsValue({ path: '91nlp_zblog.php' })
           this.rootDirectoryDisabled = true
           this.formEdit.setFieldsValue({ root: 'zb_users/plugin/91nlp' })
+          this.editConfigArticleExtra = '系统用户ID'
+          this.editConfigIssueExtra = '自定义'
           break
         case value === '易优CMS(EYouCMS)':
           this.InterfaceFileNameDisabled = true
           this.formEdit.setFieldsValue({ path: 'J1nlp_ey.php' })
           this.rootDirectoryDisabled = true
           this.formEdit.setFieldsValue({ root: '/api/J1nlp' })
+          this.editConfigArticleExtra = '自定义'
+          this.editConfigIssueExtra = '自定义'
           break
         case value === 'WordPress':
           this.InterfaceFileNameDisabled = true
           this.formEdit.setFieldsValue({ path: 'admin-ajax.php' })
           this.rootDirectoryDisabled = true
           this.formEdit.setFieldsValue({ root: 'wp-admin' })
+          this.editConfigArticleExtra = '自定义'
+          this.editConfigIssueExtra = '自定义'
           break
         default:
       }
@@ -1080,26 +1096,38 @@ export default {
         case value === '织梦(dedeCMS)':
           this.InterfaceFileNameDisabled = true
           this.rootDirectoryDisabled = true
+          this.editConfigArticleExtra = '自定义'
+          this.editConfigIssueExtra = '系统用户名'
           break
         case value === '帝国(empCMS)':
           this.InterfaceFileNameDisabled = false
           this.rootDirectoryDisabled = true
+          this.editConfigArticleExtra = '自定义'
+          this.editConfigIssueExtra = '系统用户名'
           break
         case value === 'discuz':
           this.InterfaceFileNameDisabled = false
           this.rootDirectoryDisabled = true
+          this.editConfigArticleExtra = '系统用户名'
+          this.editConfigIssueExtra = '自定义'
           break
         case value === 'Z-BLOG':
           this.InterfaceFileNameDisabled = false
           this.rootDirectoryDisabled = true
+          this.editConfigArticleExtra = '系统用户ID'
+          this.editConfigIssueExtra = '自定义'
           break
         case value === '易优CMS(EYouCMS)':
           this.InterfaceFileNameDisabled = true
           this.rootDirectoryDisabled = true
+          this.editConfigArticleExtra = '自定义'
+          this.editConfigIssueExtra = '自定义'
           break
         case value === 'WordPress':
           this.InterfaceFileNameDisabled = true
           this.rootDirectoryDisabled = true
+          this.editConfigArticleExtra = '自定义'
+          this.editConfigIssueExtra = '自定义'
           break
         default:
       }

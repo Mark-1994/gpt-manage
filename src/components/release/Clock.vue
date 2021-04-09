@@ -36,6 +36,9 @@
       <template slot="create_at" slot-scope="text">
         {{ text | dateFormat }}
       </template>
+      <template slot="cur_time" slot-scope="text">
+        {{ text | dateFormat }}
+      </template>
       <template slot="deal" slot-scope="record">
         <a-space :size="2">
           <a-button type="primary" :icon="!(record.dn + record.en >= record.push_num) && record.state ? 'pause' : 'caret-right'" size="small" :disabled="record.dn + record.en >= record.push_num" @click="onChangeState(!record.state, record.id)"></a-button>
@@ -264,6 +267,12 @@ export default {
           title: '创建时间',
           dataIndex: 'create_at',
           scopedSlots: { customRender: 'create_at' },
+          align: 'center'
+        },
+        {
+          title: '最近一次发布时间',
+          dataIndex: 'cur_time',
+          scopedSlots: { customRender: 'cur_time' },
           align: 'center'
         },
         {
