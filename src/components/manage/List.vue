@@ -2,7 +2,7 @@
   <div class="list_container">
     <h3>文章队列</h3>
 
-    <a-table :columns="columns" :data-source="allTask" bordered :pagination="{ position: 'bottom' }" @change="pageTurning" size="middle" :scroll="{ x: 900 }">
+    <a-table :columns="columns" :data-source="allTask" bordered :pagination="{ position: 'bottom' }" @change="pageTurning" size="middle" :scroll="{ x: 900 }" :loading="loading">
       <template slot="keywords">
         <a href="javascript:;" @click="showKeywords">查看</a>
       </template>
@@ -72,6 +72,7 @@
         </a-form-item>
       </a-form>
     </a-modal>
+
   </div>
 </template>
 
@@ -196,7 +197,8 @@ export default {
       downloadTypeVal: 0,
       // 缓存 项目名
       gnCacheVal: '',
-      confirmLoading: false
+      confirmLoading: false,
+      loading: true
     }
   },
   methods: {
@@ -204,6 +206,7 @@ export default {
     async getAllTask (rn, pn) {
       const { data: res } = await this.$http.get(`pg/task_ls?rn=${rn}&pn=${pn}`)
       if (res.status === 3) return this.$message.error(res.reason, function () { window.location.href = 'http://a.91nlp.cn/#/login' })
+      this.loading = false
       if (res.status !== 0) return this.$message.error(res.reason)
 
       res.list.sort(function (a, b) {
@@ -247,9 +250,11 @@ export default {
     },
     // 删除文章事件
     async onDelete (gn) {
+      this.loading = true
       const { data: res } = await this.$http.post('rmpg', {
         gn: gn
       })
+      this.loading = false
       if (res.status !== 0) return this.$message.error(res.reason)
       const dataSource = [...this.allTask]
       this.allTask = dataSource.filter(item => item.gn !== gn)
